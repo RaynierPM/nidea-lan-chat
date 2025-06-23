@@ -1,0 +1,25 @@
+{
+  "name": "nidea-lan-chat",
+  "version": "1.0.0",
+  "description": "A lan-chat application.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RaynierPM/nidea-lan-chat.git"
+  },
+  "keywords": [
+    "chat",
+    "lan",
+    "nidea",
+    "socket"
+  ],
+  "author": "RaynierPM",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RaynierPM/nidea-lan-chat/issues"
+  },
+  "homepage": "https://github.com/RaynierPM/nidea-lan-chat#readme"
+}
