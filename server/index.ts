@@ -1,37 +1,94 @@
-import net from 'node:net'
-import {createSocket} from 'node:dgram'
+import net, { Socket, type Server } from 'node:net'
 import { configuration } from './config/configuration'
 import { NetworkUtils } from '../common/utils/network'
 
-const broadcast = createSocket('udp4')
-broadcast.on('listening', () => {
-  
-})
-broadcast.bind(configuration.exposePort)
+export class app {
+  private _server: Server;
 
-const sockets: net.Socket[] = []
+  private connections: Record<string, Socket> = {}
 
-const server = net.createServer((socket) => {
-  console.log("New client: " + socket.localAddress)
-  sockets.push(socket)
+  private room: any;
+
+  private abort_controller = new AbortController()
+
+  get server() {
+    return this._server
+  }
   
-  socket.on("data", (data) => {
-    const message = data.toString()
-    if (message) {
-      sockets.forEach(sc => {
-        if (sc.localAddress !== socket.localAddress) {
-          sc.write(socket.localAddress + ": " + message)
-        }
-      })
+  private static _instance: app
+
+  static getInstance() {
+    if (!this._instance) {
+      this._instance = new app()
     }
-  })
-  
-  socket.on("end", () => {    
-    console.log(`Client disconnected`)
-    sockets.filter(sc => sc.localAddress !== socket.localAddress)
-  })
-})
+    return this._instance
+  }
 
-server.listen(configuration, () => {
-  console.log(`Just listening PORT:${NetworkUtils.getPrivateIp()}:${configuration.port}`)
-})
+  private constructor() {
+    this._server = net.createServer((socket) => {
+      this.handleConnection(socket)
+      socket.on("end", () => this.handleDisconnect(socket))
+      socket.on("data", (data) => this.handleMessage(socket, data))
+    })
+  }
+
+  public startServer() {
+    this.server.listen({
+      port: configuration.port,
+      signal: this.abort_controller.signal
+    }, () => {
+      console.log(`Just listening: ${NetworkUtils.getPrivateIp()}:${configuration.port}`)    
+    })
+  }
+
+  public exposeServer() {
+
+  }
+
+  public stopServer() {
+    this.abort_controller.abort()
+  }
+
+  public send(addresses: string | string[], message:object) {
+    if (!Array.isArray(addresses)) {
+      addresses = [addresses]
+    }
+
+    addresses.forEach((addr) => {
+      const socket = this.connections[addr]
+      if (addr) {
+        socket.write(JSON.stringify(message))
+      }
+    })
+  }
+
+  private handleConnection(socket: Socket) {
+    const scId = this.getSocketIdentifier(socket)
+    if (scId) this.connections[scId] = socket
+  }
+
+  private handleMessage = (socket: Socket, data: Buffer) => {
+    const str = data.toString()
+    try {
+      const event = JSON.parse(str)
+    } catch {
+      // Send an 'Not valid event' to emitter
+      console.error("Not valid payload", str)
+    }
+    const addresses = Object.keys(this.connections)
+    .filter(addr => addr !== socket.localAddress)
+    this.send(addresses, {message: str})
+  }
+
+  private handleDisconnect = (socket: Socket) => {
+    // Execute a disconnet event to everybody
+    const scId = this.getSocketIdentifier(socket)
+    if (scId) delete this.connections[scId]
+  }
+
+  private getSocketIdentifier(socket:Socket) {
+    return socket.localAddress
+  }
+}
+
+app.getInstance().startServer()
