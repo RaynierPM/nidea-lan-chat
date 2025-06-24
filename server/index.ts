@@ -9,19 +9,26 @@ broadcast.on('listening', () => {
 })
 broadcast.bind(configuration.exposePort)
 
-const server = net.createServer((socket) => {  
+const sockets: net.Socket[] = []
+
+const server = net.createServer((socket) => {
+  console.log("New client: " + socket.localAddress)
+  sockets.push(socket)
+  
   socket.on("data", (data) => {
-    try {
-      console.log(JSON.parse(data.toString()))
-      console.log(`${socket.remoteAddress}: ${data.toString()}`)  
-    } catch (err) {
-      console.log("Not valid action/payload")
-      socket.write(JSON.stringify({message: "No gays here"}))
+    const message = data.toString()
+    if (message) {
+      sockets.forEach(sc => {
+        if (sc.localAddress !== socket.localAddress) {
+          sc.write(socket.localAddress + ": " + message)
+        }
+      })
     }
   })
   
   socket.on("end", () => {    
     console.log(`Client disconnected`)
+    sockets.filter(sc => sc.localAddress !== socket.localAddress)
   })
 })
 
