@@ -1,5 +1,5 @@
-import { UserI } from "./User.interface";
-
-export interface EventCommand {
-  execute<T>(): T
+export type JoinEventOpts = {
+  id: string
+  username: string
+  address: string
 }

@@ -1,8 +1,7 @@
-import { EventCommand } from "../interfaces/Event.interface";
 import { UserI } from "../interfaces/User.interface";
 
-export abstract class EventBase implements EventCommand {
-  private _author?: UserI
+export abstract class EventBase {
+  private _author?: UserI['id']
 
   get author() {
     return this._author
@@ -13,9 +12,8 @@ export abstract class EventBase implements EventCommand {
     return this._type
   }
 
-  constructor(type: string) {
+  constructor(type: string, author: UserI['id']) {
     this._type = type
+    !!author && (this._author = author)
   }
-
-  abstract execute<T>(): T
 }

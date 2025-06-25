@@ -13,4 +13,4 @@ const testingRoom = new Room({
   owner: owner,
 })
 
-SocketManager.getInstance().startServer(testingRoom)
+SocketManager.instance.startServer(testingRoom)

@@ -7,6 +7,8 @@ import { RoomExposer } from "../udp";
 
 export class SocketManager {
   
+  private static _instance: SocketManager
+  
   private _server: Server;
   
   private connections: Record<string, Socket> = {}
@@ -19,11 +21,9 @@ export class SocketManager {
     return this._server
   }
   
-  private static _instance: SocketManager
-  
   private roomExposer?: RoomExposer
   
-  static getInstance() {
+  static get instance() {
     if (!this._instance) {
       this._instance = new SocketManager()
     }
@@ -42,9 +42,7 @@ export class SocketManager {
     if (!room) throw new RoomRequired()
     this._room = room
 
-    this.roomExposer = new RoomExposer(room)
-
-    if (!this._room.isHidden) this.roomExposer?.expose_room()
+    if (!this._room.isHidden) this.exposeServer()
 
     this.server.listen({
       port: configuration.port,
@@ -55,7 +53,8 @@ export class SocketManager {
   }
 
   public exposeServer() {
-
+    this.roomExposer = new RoomExposer(this._room!)
+    this.roomExposer.expose_room()
   }
 
   public stopServer() {
@@ -88,6 +87,10 @@ export class SocketManager {
       // Send an 'Not valid event' to emitter
       console.error("Not valid payload", str)
     }
+  }
+
+  private handleEvents() {
+
   }
 
   private handleDisconnect = (socket: Socket) => {

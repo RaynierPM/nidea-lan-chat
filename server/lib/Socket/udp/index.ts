@@ -27,7 +27,7 @@ export class RoomExposer {
   }
 
   private isAValidRequest(request:string) {
-    return new RegExp(CLIENT_BROADCAST_REQUEST, 'gi').test(request)
+    return new RegExp(CLIENT_BROADCAST_REQUEST, 'g').test(request)
   }
 
   private handleRequest = (msg: Buffer, rInfo: RemoteInfo) => {
@@ -43,8 +43,9 @@ export class RoomExposer {
       port, addr, 
       (err) => {
         console.log(`Unable to retrieve room exposition to ${addr}:${port}`)
-        console.error(err?.message)
-      })
+        console.error(err)
+      }
+    )
   }
 
   private getConnectionInfo():ConnectionInfo {
