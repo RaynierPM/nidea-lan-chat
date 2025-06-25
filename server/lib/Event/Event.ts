@@ -1,3 +1,4 @@
+import { EventTypes } from "../../../common/interfaces/event.interface";
 import { UserI } from "../interfaces/User.interface";
 
 export abstract class EventBase {
@@ -6,13 +7,13 @@ export abstract class EventBase {
   get author() {
     return this._author
   }
-  private _type: string;
+  private _type: EventTypes;
 
-  get type(): string {
+  get type(): EventTypes {
     return this._type
   }
 
-  constructor(type: string, author: UserI['id']) {
+  constructor(type: EventTypes, author: UserI['id']) {
     this._type = type
     !!author && (this._author = author)
   }

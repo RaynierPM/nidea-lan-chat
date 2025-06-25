@@ -1,3 +1,4 @@
+import { EventTypes } from "../../../../common/interfaces/event.interface";
 import { JoinEventOpts } from "../../interfaces/Event.interface";
 import { EventBase } from "../Event";
 
@@ -18,7 +19,7 @@ export class JoinEvent extends EventBase {
     return this._address
   }
   
-  constructor(type: string, {address, id, username}: JoinEventOpts) {
+  constructor(type: EventTypes, {address, id, username}: JoinEventOpts) {
     super(type, id)
     this._id = id
     this._username = username

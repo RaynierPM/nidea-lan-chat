@@ -10,6 +10,12 @@ export class Room extends Chat {
     return this._owner
   }
 
+  private _roomName: string;
+
+  get roomName() {
+    return this._roomName
+  }
+
   private _isHidden:boolean = false
 
   get isHidden() {
@@ -36,9 +42,10 @@ export class Room extends Chat {
     if (!owner) {
       throw new RoomOwnerRequired()
     }
-    super(name ?? `${owner.username}'s Room`)
+    super("general")
     this._owner = owner
     this._password = password
     this._isHidden = isHidden ?? this._isHidden
+    this._roomName = name ?? `${owner.username}'s Room`
   }
 }

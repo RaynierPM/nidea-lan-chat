@@ -4,6 +4,7 @@ import { NetworkUtils } from "../../../../common/utils/network";
 import { Room } from "../../chat/Room";
 import { RoomRequired } from "../../../errors/chat/Room.errors";
 import { RoomExposer } from "../udp";
+import { EventBase } from "../../Event/Event";
 
 export class SocketManager {
   
@@ -84,13 +85,13 @@ export class SocketManager {
     try {
       const event = JSON.parse(str)
     } catch {
-      // Send an 'Not valid event' to emitter
-      console.error("Not valid payload", str)
+      socket.write(`${str.slice(0, str.length-1)} is not valid payload`)
+      console.error("Not valid payload")
     }
   }
 
-  private handleEvents() {
-
+  private handleEvents(event: EventBase) {
+    
   }
 
   private handleDisconnect = (socket: Socket) => {
