@@ -11,7 +11,7 @@ export class SocketManager {
   
   private connections: Record<string, Socket> = {}
   
-  // private room: Room;
+  private _room?: Room;
   
   private abort_controller = new AbortController()
   
@@ -21,7 +21,7 @@ export class SocketManager {
   
   private static _instance: SocketManager
   
-  private roomExposer: RoomExposer = new RoomExposer()
+  private roomExposer?: RoomExposer
   
   static getInstance() {
     if (!this._instance) {
@@ -38,11 +38,13 @@ export class SocketManager {
     })
   }
 
-  public startServer() {
-    // if (!this.room) throw new RoomRequired()
+  public startServer(room: Room) {
+    if (!room) throw new RoomRequired()
+    this._room = room
 
-    // if (!this.room?.isHidden) 
-    this.roomExposer.expose_room()
+    this.roomExposer = new RoomExposer(room)
+
+    if (!this._room.isHidden) this.roomExposer?.expose_room()
 
     this.server.listen({
       port: configuration.port,

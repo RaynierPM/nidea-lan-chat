@@ -17,6 +17,10 @@ export class Room extends Chat {
   }
 
   private _password?: string;
+
+  get withPassword() {
+    return !!this._password
+  }
   
   verifyPassword(password: string):boolean {
     return this._password === password
@@ -32,7 +36,7 @@ export class Room extends Chat {
     if (!owner) {
       throw new RoomOwnerRequired()
     }
-    super(name)
+    super(name ?? `${owner.username}'s Room`)
     this._owner = owner
     this._password = password
     this._isHidden = isHidden ?? this._isHidden
