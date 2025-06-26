@@ -1,7 +1,7 @@
 import { UserStatuses } from "../../../common/interfaces/User.interface";
 import { UserI } from "../interfaces/User.interface";
 
-export class User implements UserI {
+export class Participant implements UserI {
   private _id: string
   get id() {
     return this._id
@@ -35,7 +35,7 @@ export class User implements UserI {
     this._createdAt = new Date()
   }
 
-  getConnData(): { address: UserI["address"]; id: UserI["id"]; } {
+  getConnData(): { address: string; id: UserI["id"]; } {
     return {
       address: this.address,
       id: this.id

@@ -46,8 +46,11 @@ export class RoomExposer {
       JSON.stringify(this.getConnectionInfo(), null, 2), 
       port, addr, 
       (err) => {
-        console.log(`Unable to retrieve room exposition to ${addr}:${port}`)
-        console.error(err)
+        if (err) {
+          console.log(`Unable to retrieve room exposition to ${addr}:${port}`)
+          console.error(err)
+        }
+        console.log('Connected with:'+addr+port)
       }
     )
   }

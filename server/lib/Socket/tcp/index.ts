@@ -3,9 +3,9 @@ import { configuration } from "../../../config/configuration";
 import { NetworkUtils } from "../../../../common/utils/network";
 import { Room } from "../../chat/Room";
 import { RoomRequired } from "../../../errors/chat/Room.errors";
-import { RoomExposer } from "../udp";
-import { EventBase } from "../../../../common/lib/Event/Event";
 import { BaseEvent } from "../../interfaces/Event.interface";
+import { TCPSocketListener } from "../../interfaces/socket.interface";
+import { EventTypes } from "../../../../common/interfaces/event.interface";
 
 export class SocketManager {
   
@@ -16,14 +16,14 @@ export class SocketManager {
   private connections: Record<string, Socket> = {}
   
   private abort_controller = new AbortController()
+
+  private listeners: Partial<Record<EventTypes, TCPSocketListener[]>> = {}
   
   get server() {
     return this._server
   }
   
   private _room?: Room;
-  
-  private roomExposer?: RoomExposer
   
   static get instance() {
     if (!this._instance) {
@@ -44,19 +44,12 @@ export class SocketManager {
     if (!room) throw new RoomRequired()
     this._room = room
 
-    if (!this._room.isHidden) this.exposeServer()
-
     this.server.listen({
       port: configuration.port,
       signal: this.abort_controller.signal
     }, () => {
       console.log(`Just listening: ${NetworkUtils.getPrivateIp()}:${configuration.port}`)    
     })
-  }
-
-  public exposeServer() {
-    this.roomExposer = new RoomExposer(this._room!)
-    this.roomExposer.expose_room()
   }
 
   public stopServer() {
@@ -74,6 +67,14 @@ export class SocketManager {
         socket.write(JSON.stringify(message))
       }
     })
+  }
+
+  public on(type:EventTypes, listener:TCPSocketListener) {
+    if (this.listeners[type]) {
+      this.listeners[type].push(listener)
+    }else {
+      this.listeners[type] = [listener]
+    }
   }
 
   private handleConnection(socket: Socket) {
