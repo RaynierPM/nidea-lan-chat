@@ -13,19 +13,19 @@ export class Message {
     return this._content
   }
 
-  private _timestampt: number
+  private _timestamp: number
 
   get date() {
-    return new Date(this._timestampt)
+    return new Date(this._timestamp)
   }
 
   get timestampt() {
-    return this._timestampt
+    return this._timestamp
   }
 
   constructor(user:UserI, content: string) {
     this._content = content
     this._user = user
-    this._timestampt = Number(new Date())
+    this._timestamp = Number(new Date())
   }
 }

@@ -1,4 +1,4 @@
-import net, { type Server, type Socket } from "net";
+import net, { SocketAddress, type Server, type Socket } from "net";
 import { configuration } from "../../../config/configuration";
 import { NetworkUtils } from "../../../../common/utils/network";
 import { Room } from "../../chat/Room";
@@ -94,12 +94,11 @@ export class SocketManager {
   }
 
   private handleDisconnect = (socket: Socket) => {
-    // Execute a disconnet event to everybody
     const scId = this.getSocketIdentifier(socket)
     if (scId) delete this.connections[scId]
   }
 
   private getSocketIdentifier(socket:Socket) {
-    return socket.localAddress
+    return socket.remoteAddress ?? socket.localAddress
   }
 }

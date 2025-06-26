@@ -50,7 +50,6 @@ export class RoomExposer {
           console.log(`Unable to retrieve room exposition to ${addr}:${port}`)
           console.error(err)
         }
-        console.log('Connected with:'+addr+port)
       }
     )
   }
