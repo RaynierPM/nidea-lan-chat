@@ -1,8 +1,4 @@
-export enum UserStatuses {
-  ACTIVE,
-  INACTIVE,
-  DISCONNECTED,
-}
+import { UserStatuses } from "../../../common/interfaces/User.interface"
 
 export interface UserI {
   id: string

@@ -35,7 +35,7 @@ export class Chat {
     addFile();
   */
 
-  private _participants: UserI[] = []
+  protected _participants: UserI[] = []
 
   get participants() {
     return this._participants
@@ -52,7 +52,6 @@ export class Chat {
   expulseParticipant(userId: string) {
     if (this.participants.some(u => u.id === userId)) {
       this._participants = this._participants.filter(u => u.id !== userId)
-      // Notify participant expulsion
     }
   }
 

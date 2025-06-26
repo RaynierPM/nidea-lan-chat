@@ -1,18 +1,22 @@
 import { EventTypes } from "../../../common/interfaces/event.interface";
-import { InvalidaEventType } from "../../errors/event/InvalidEventType";
-import { EventHandler } from "../interfaces/Event.interface";
-import { EventBase } from "./Event";
-import { JoinEvent } from "./variants/JoinEvent";
+import { InvalidEventType } from "../../errors/event/InvalidEventType";
+import { BaseEvent, EventHandler } from "../interfaces/Event.interface";
 
 export abstract class EventFactory {
-  static getEventHandler(event: EventBase): EventHandler {
+  static getEventHandler(event: BaseEvent): EventHandler {
     switch(event.type) {
-      // case EventTypes.JOIN:
-      //   return 
-      // case EventTypes.MESSAGE:
-      //   return new MessageEven()
+      case EventTypes.JOIN:
+        
+      case EventTypes.MESSAGE:
+        
+      case EventTypes.EXIT:
+        
+      case EventTypes.EXPULSE:
+        
+      case EventTypes.JOINED:
+        
       default:
-        throw new InvalidaEventType(event.type)
+        throw new InvalidEventType(event.type)
     }
   }
 }

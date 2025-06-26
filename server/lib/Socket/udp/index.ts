@@ -9,17 +9,21 @@ import { ConnectionInfo, PublicRoomInfo } from '../../../../common/interfaces/Ch
 export class RoomExposer {
   private socket: Socket
   private roomToExpose: Room
+  private abortController: AbortController
 
   constructor(room: Room) {
     if (!room) throw new RoomRequired()
+    this.abortController = new AbortController()
     this.roomToExpose = room
 
-    this.socket = createSocket('udp4')
+    this.socket = createSocket({
+      type: 'udp4', 
+      reusePort: true,
+      signal: this.abortController.signal,
+    })
     
-    this.socket.on("listening", () => {this.handleListening()})
-
+    this.socket.on("listening", this.handleListening)
     this.socket.on("message", this.handleRequest)
-
   }
   
   private handleListening() {
@@ -69,5 +73,9 @@ export class RoomExposer {
   
   expose_room() {
     this.socket.bind(configuration.exposePort)
+  }
+
+  stop_exposure() {
+    this.abortController.abort()
   }
 }

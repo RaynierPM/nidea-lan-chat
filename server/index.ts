@@ -3,7 +3,7 @@ import { configuration } from './config/configuration'
 import { NetworkUtils } from '../common/utils/network'
 import { SocketManager } from './lib/Socket/tcp'
 import { Room } from './lib/chat/Room'
-import { User } from '../common/interfaces/User/User'
+import { User } from './lib/User/User'
 
 if (!NetworkUtils.getPrivateIp()) throw new Error('Required has connected to some Network to HOST a room')
 

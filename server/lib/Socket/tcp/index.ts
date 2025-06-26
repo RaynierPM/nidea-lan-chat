@@ -4,7 +4,8 @@ import { NetworkUtils } from "../../../../common/utils/network";
 import { Room } from "../../chat/Room";
 import { RoomRequired } from "../../../errors/chat/Room.errors";
 import { RoomExposer } from "../udp";
-import { EventBase } from "../../Event/Event";
+import { EventBase } from "../../../../common/lib/Event/Event";
+import { BaseEvent } from "../../interfaces/Event.interface";
 
 export class SocketManager {
   
@@ -14,13 +15,13 @@ export class SocketManager {
   
   private connections: Record<string, Socket> = {}
   
-  private _room?: Room;
-  
   private abort_controller = new AbortController()
   
   get server() {
     return this._server
   }
+  
+  private _room?: Room;
   
   private roomExposer?: RoomExposer
   
@@ -83,15 +84,12 @@ export class SocketManager {
   private handleMessage = (socket: Socket, data: Buffer) => {
     const str = data.toString()
     try {
-      const event = JSON.parse(str)
+      const event = JSON.parse(str) as BaseEvent
+      this._room?.handleEvent(event)
     } catch {
       socket.write(`${str.slice(0, str.length-1)} is not valid payload`)
       console.error("Not valid payload")
     }
-  }
-
-  private handleEvents(event: EventBase) {
-    
   }
 
   private handleDisconnect = (socket: Socket) => {

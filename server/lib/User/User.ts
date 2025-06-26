@@ -1,4 +1,5 @@
-import { UserI, UserStatuses } from "../../../server/lib/interfaces/User.interface";
+import { UserStatuses } from "../../../common/interfaces/User.interface";
+import { UserI } from "../interfaces/User.interface";
 
 export class User implements UserI {
   private _id: string
@@ -11,7 +12,7 @@ export class User implements UserI {
     return this._username
   }
   
-  private _status: UserStatuses
+  private _status: UserStatuses 
   get status() {
     return this._status
   }

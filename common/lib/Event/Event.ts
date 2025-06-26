@@ -1,5 +1,5 @@
-import { EventTypes } from "../../../common/interfaces/event.interface";
-import { UserI } from "../interfaces/User.interface";
+import { EventTypes } from "../../interfaces/event.interface";
+import { UserI } from "../../../server/lib/interfaces/User.interface";
 
 export abstract class EventBase {
   private _author?: UserI['id']
@@ -7,6 +7,7 @@ export abstract class EventBase {
   get author() {
     return this._author
   }
+  
   private _type: EventTypes;
 
   get type(): EventTypes {

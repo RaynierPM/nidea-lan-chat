@@ -1,5 +1,5 @@
-import { EventTypes } from "../../../../common/interfaces/event.interface";
-import { JoinEventOpts } from "../../interfaces/Event.interface";
+import { EventTypes } from "../../../interfaces/event.interface";
+import { JoinEventOpts } from "../../../../server/lib/interfaces/Event.interface";
 import { EventBase } from "../Event";
 
 export class JoinEvent extends EventBase {
