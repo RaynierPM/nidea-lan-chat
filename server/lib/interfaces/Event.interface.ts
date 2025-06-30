@@ -1,11 +1,10 @@
 import { Socket } from "net"
 import { EventBase } from "../../../common/lib/Event/Event"
-import { EventTypes } from "../../../common/interfaces/event.interface"
+import { EventActionTypes } from "../../../common/interfaces/event.interface"
 
 export type JoinEventOpts = {
   id: string
   username: string
-  address: string
 }
 
 export interface EventHandler {
@@ -14,39 +13,32 @@ export interface EventHandler {
 
 export type Events =
   | JoinEvent | ExitEvent
-  | ExpulseEvent | JoinedNoticeEvent
+  | ExpulseEvent
   | MessageEvent
 
 export interface BaseEvent {
-  type: EventTypes;
+  type: EventActionTypes;
   timestamp: number;
-  author?: string
 }
 export interface JoinEvent extends BaseEvent {
-  type: EventTypes.JOIN;
+  type: EventActionTypes.JOIN;
   chatId: string;
 }
 
 export interface ExitEvent extends BaseEvent {
-  type: EventTypes.EXIT;
+  type: EventActionTypes.EXIT;
   chatId: string;
 }
 
 export interface ExpulseEvent extends BaseEvent {
-  type: EventTypes.EXPULSE;
+  type: EventActionTypes.EXPULSE;
   chatId: string;
   targetUserId: string;
   reason?: string;
 }
 
-export interface JoinedNoticeEvent extends BaseEvent {
-  type: EventTypes.JOINED;
-  chatId: string;
-  targetUserId: string;
-}
-
 export interface MessageEvent extends BaseEvent {
-  type: EventTypes.MESSAGE;
+  type: EventActionTypes.MESSAGE;
   chatId: string;
   content: string;
 }

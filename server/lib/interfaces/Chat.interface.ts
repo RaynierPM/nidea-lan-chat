@@ -1,4 +1,4 @@
-import { UserI } from "./User.interface"
+import { UserI } from "../../../common/interfaces/User.interface"
 
 export type CreationRoomOpts = {
   name?: string

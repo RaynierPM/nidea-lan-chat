@@ -1,4 +1,4 @@
-import { UserI } from "../../../server/lib/interfaces/User.interface";
+import { UserI } from "../../interfaces/User.interface"
 
 export class User implements UserI {
   private _id: UserI['id']

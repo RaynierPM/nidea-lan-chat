@@ -1,13 +1,14 @@
-export enum EventTypes {
-  JOIN,
-  MESSAGE,
-  EXIT,
-  EXPULSE,
-  JOINED,
+import { UserI } from "./User.interface";
+
+export enum EventActionTypes {
+  JOIN = "JOIN_EVENT",
+  MESSAGE = "MESSAGE_EVENT",
+  EXIT = "EXIT_EVENT",
+  EXPULSE = "EXPULSION_EVENT",
 }
 
-export type JoinEventOpts = {
-  id: string
-  username: string
-  address: string
+export interface Event {
+  type: EventActionTypes
+  authorId: UserI['id']
+  payload: unknown
 }

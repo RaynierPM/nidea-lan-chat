@@ -1,21 +1,25 @@
-import { EventTypes } from "../../interfaces/event.interface";
-import { UserI } from "../../../server/lib/interfaces/User.interface";
+import { InvalidEventType } from "../../../server/errors/event/InvalidEventType";
+import { Event, EventActionTypes } from "../../interfaces/event.interface";
 
-export abstract class EventBase {
-  private _author?: UserI['id']
+export abstract class EventBase implements Event {
+  public type: EventActionTypes;
+  public authorId: string;
+  public payload: unknown;
 
-  get author() {
-    return this._author
-  }
-  
-  private _type: EventTypes;
-
-  get type(): EventTypes {
-    return this._type
+  constructor(type: EventActionTypes, authorId: string) {
+    if (!Object.values(EventActionTypes).includes(type)) throw new InvalidEventType(type)
+    this.type = type
+    this.authorId = authorId
   }
 
-  constructor(type: EventTypes, author: UserI['id']) {
-    this._type = type
-    !!author && (this._author = author)
+  protected abstract validate(payload: unknown): void
+
+  toJson() {
+    const mappedEvent = {
+      type: this.type,
+      authorId: this.authorId,
+      payload: this.payload
+    }
+    return JSON.stringify(mappedEvent)
   }
 }

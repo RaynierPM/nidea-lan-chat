@@ -1,13 +1,15 @@
-import { EventTypes } from "../../../common/interfaces/event.interface";
+import { EventActionTypes } from "../../../common/interfaces/event.interface";
 import { InvalidEventType } from "../../../server/errors/event/InvalidEventType";
 import { EventHandler } from "../../../server/lib/interfaces/Event.interface";
 import { EventBase } from "./Event";
 
 export abstract class EventFactory {
-  static getEventHandler(event: EventBase): EventHandler {
+  static getEvent(event: EventBase): EventHandler {
     switch(event.type) {
-      case EventTypes.JOIN:
-      case EventTypes.MESSAGE:
+      case EventActionTypes.JOIN:
+      case EventActionTypes.MESSAGE:
+      case EventActionTypes.EXIT:
+      case EventActionTypes.EXPULSE:
       default:
         throw new InvalidEventType(event.type)
     }

@@ -1,9 +1,9 @@
-import { EventTypes } from "../../../common/interfaces/event.interface";
+import { EventActionTypes } from "../../../common/interfaces/event.interface";
+import { UserI } from "../../../common/interfaces/User.interface";
 import { RoomOwnerRequired } from "../../errors/chat/Room.errors";
 import { InvalidEventType } from "../../errors/event/InvalidEventType";
 import { CreationRoomOpts } from "../interfaces/Chat.interface";
 import { BaseEvent } from "../interfaces/Event.interface";
-import { UserI } from "../interfaces/User.interface";
 import { Chat } from "./Chat";
 
 export class Room extends Chat {
@@ -55,10 +55,10 @@ export class Room extends Chat {
   expulseParticipant(userId: string): void {
     if (this.participants.some(u => u.id === userId)) {
       this._participants = this._participants.filter(u => u.id !== userId)
+      // Notify participant expulsion
       this.chats.forEach(chat => {
         chat.expulseParticipant(userId)
       })
-      // Notify participant expulsion
     }
   }
 
@@ -68,11 +68,10 @@ export class Room extends Chat {
 
   handleEvent(event: BaseEvent) {
     switch(event.type) {
-      case EventTypes.JOIN:
-      case EventTypes.MESSAGE:        
-      case EventTypes.EXIT:
-      case EventTypes.EXPULSE:
-      case EventTypes.JOINED:
+      case EventActionTypes.JOIN:
+      case EventActionTypes.MESSAGE:        
+      case EventActionTypes.EXIT:
+      case EventActionTypes.EXPULSE:
       default:
         throw new InvalidEventType(event.type)
     }

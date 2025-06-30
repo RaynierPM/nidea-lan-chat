@@ -5,7 +5,7 @@ import { Room } from "../../chat/Room";
 import { RoomRequired } from "../../../errors/chat/Room.errors";
 import { BaseEvent } from "../../interfaces/Event.interface";
 import { TCPSocketListener } from "../../interfaces/socket.interface";
-import { EventTypes } from "../../../../common/interfaces/event.interface";
+import { EventActionTypes } from "../../../../common/interfaces/event.interface";
 
 export class SocketManager {
   
@@ -17,7 +17,7 @@ export class SocketManager {
   
   private abort_controller = new AbortController()
 
-  private listeners: Partial<Record<EventTypes, TCPSocketListener[]>> = {}
+  private listeners: Partial<Record<EventActionTypes, TCPSocketListener[]>> = {}
   
   get server() {
     return this._server
@@ -69,7 +69,7 @@ export class SocketManager {
     })
   }
 
-  public on(type:EventTypes, listener:TCPSocketListener) {
+  public on(type:EventActionTypes, listener:TCPSocketListener) {
     if (this.listeners[type]) {
       this.listeners[type].push(listener)
     }else {

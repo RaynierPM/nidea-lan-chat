@@ -1,11 +1,8 @@
-import { AutoIncrementSequence } from "../../../common/utils/autoIncrementManager";
-import { UserI } from "../interfaces/User.interface";
+import { UserI } from "../../../common/interfaces/User.interface";
+import { GlobalAutoIcrement } from "../../../common/utils/autoIncrementManager";
 import { Message } from "./Message";
 
 export class Chat {
-
-  private autoIncrement = new AutoIncrementSequence()
-
   private _id: number;
 
   get id() {
@@ -65,6 +62,6 @@ export class Chat {
 
   constructor(name: string) {
     this._name = name
-    this._id = this.autoIncrement.getNext()
+    this._id = GlobalAutoIcrement.getInstance().getNext()
   }
 }

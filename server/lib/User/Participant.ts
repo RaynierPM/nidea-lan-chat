@@ -1,5 +1,6 @@
-import { UserStatuses } from "../../../common/interfaces/User.interface";
-import { UserI } from "../interfaces/User.interface";
+import { Socket } from "net";
+import { UserI, UserStatuses } from "../../../common/interfaces/User.interface";
+import { EventBase } from "../../../common/lib/Event/Event";
 
 export class Participant implements UserI {
   private _id: string
@@ -17,28 +18,22 @@ export class Participant implements UserI {
     return this._status
   }
   
-  private _address: string
-  get address() {
-    return this._address
-  }
-  
+  private _socket: Socket
+
   private _createdAt: Date
   get createdAt() {
     return this._createdAt
   }
   
-  constructor(id: string, username: string, address: string) {
+  constructor(id: string, username: string, socket: Socket) {
     this._id = id
     this._username = username
     this._status = UserStatuses.ACTIVE
-    this._address = address
+    this._socket = socket
     this._createdAt = new Date()
   }
 
-  getConnData(): { address: string; id: UserI["id"]; } {
-    return {
-      address: this.address,
-      id: this.id
-    }
+  notify(event:EventBase) {
+    this._socket.write(event.toJson())
   }
 }

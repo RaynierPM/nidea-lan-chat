@@ -1,7 +1,7 @@
-import { UserI } from "../interfaces/User.interface"
+import { UserI } from "../../../common/interfaces/User.interface"
 
 export class Message {
-  private _user: UserI
+  private _user: UserI['id']
 
   get user() {
     return this._user
@@ -23,9 +23,9 @@ export class Message {
     return this._timestamp
   }
 
-  constructor(user:UserI, content: string) {
+  constructor(userId:UserI['id'], content: string) {
     this._content = content
-    this._user = user
+    this._user = userId
     this._timestamp = Number(new Date())
   }
 }

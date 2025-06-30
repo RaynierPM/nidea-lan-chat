@@ -1,4 +1,4 @@
-import { UserI } from "../../server/lib/interfaces/User.interface"
+import { UserI } from "./User.interface"
 
 export type ConnectionInfo = {
   room: PublicRoomInfo

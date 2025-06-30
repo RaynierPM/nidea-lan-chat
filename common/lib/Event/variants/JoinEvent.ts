@@ -1,28 +1,26 @@
-import { EventTypes } from "../../../interfaces/event.interface";
-import { JoinEventOpts } from "../../../../server/lib/interfaces/Event.interface";
+import { NotValidEventPayload } from "../../../errors/event.errors";
+import { EventActionTypes } from "../../../interfaces/event.interface";
+import { UserI } from "../../../interfaces/User.interface";
 import { EventBase } from "../Event";
 
+type JoinEventPayload = {
+  userId: UserI['id']
+  timestamp: number
+  username: string
+}
+
 export class JoinEvent extends EventBase {
-  private _id: string;
-
-  get id() {
-    return this._id
+  constructor({type, authorId}:{type: EventActionTypes, authorId: string}, payload: JoinEventPayload) {
+    super(type, authorId)
+    this.validate(payload)
+    this.payload = payload
   }
-  private _username: string;
 
-  get username() {
-    return this._username
-  }
-  private _address: string;
-
-  get address() {
-    return this._address
-  }
-  
-  constructor(type: EventTypes, {address, id, username}: JoinEventOpts) {
-    super(type, id)
-    this._id = id
-    this._username = username
-    this._address = address  
+  validate(payload: JoinEventPayload) {
+    const errors = {}
+    console.log(payload)
+    if (!Object.keys(errors).length) {
+      throw new NotValidEventPayload(errors)
+    }
   }
 }
