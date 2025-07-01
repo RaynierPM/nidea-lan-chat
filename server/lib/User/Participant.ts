@@ -1,6 +1,7 @@
 import { Socket } from "net";
 import { UserI, UserStatuses } from "../../../common/interfaces/User.interface";
 import { EventBase } from "../../../common/lib/Event/Event";
+import { SocketWithId } from "../interfaces/socket.interface";
 
 export class Participant implements UserI {
   private _id: string
@@ -17,15 +18,24 @@ export class Participant implements UserI {
   get status() {
     return this._status
   }
+
+  set status(newStatus: UserStatuses) {
+    if (Object.values(UserStatuses).includes(newStatus)) this._status = newStatus      
+  }
   
-  private _socket: Socket
+  private _socket: SocketWithId
+
+  get socketId() {
+    return this._socket._id
+  }
 
   private _createdAt: Date
+  
   get createdAt() {
     return this._createdAt
   }
   
-  constructor(id: string, username: string, socket: Socket) {
+  constructor(id: string, username: string, socket: SocketWithId) {
     this._id = id
     this._username = username
     this._status = UserStatuses.ACTIVE

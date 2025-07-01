@@ -8,16 +8,13 @@ export class AutoIncrementSequence {
 
 export class GlobalAutoIcrement {
   private static _instance: GlobalAutoIcrement
-
-  private current: number = 1
   private autoIncrementSequence: AutoIncrementSequence
 
   static getInstance() {
-    let instance = this._instance
-    if (!instance) {
+    if (!this._instance) {
       this._instance = new GlobalAutoIcrement()
     }
-    return instance
+    return this._instance
   }
   
   private constructor() {

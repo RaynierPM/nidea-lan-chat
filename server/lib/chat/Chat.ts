@@ -1,6 +1,11 @@
-import { UserI } from "../../../common/interfaces/User.interface";
+import { UserStatuses } from "../../../common/interfaces/User.interface";
 import { GlobalAutoIcrement } from "../../../common/utils/autoIncrementManager";
+import { Participant } from "../User/Participant";
 import { Message } from "./Message";
+import { JoinEvent } from "../../../common/lib/Event/variants/JoinEvent";
+import { MessageEvent } from "../../../common/lib/Event/variants/MessageEvent";
+import { EventActionTypes } from "../../../common/interfaces/event.interface";
+import { TimestampUtils } from "../../../common/utils/timestamp";
 
 export class Chat {
   private _id: number;
@@ -23,6 +28,13 @@ export class Chat {
 
   addMessage(message: Message) {
     this._messages.push(message)
+    this._participants.forEach(usr => {
+      usr.notify(new MessageEvent(usr.id, {
+        content: message.content,
+        roomId: this._id,
+        timestamp: TimestampUtils.getTimestampFrom()
+      }))
+    })
   }
   // Could in future delete OR edit messages
 
@@ -32,18 +44,35 @@ export class Chat {
     addFile();
   */
 
-  protected _participants: UserI[] = []
+  protected _participants: Participant[] = []
 
   get participants() {
     return this._participants
   }
 
-  addParticipant(newUser: UserI) {
-    if (this.participants.some(u => u.id === newUser.id)) {
-      // Notify status change
+  constructor(name: string) {
+    this._name = name
+    this._id = GlobalAutoIcrement.getInstance().getNext()
+  }
+
+  addParticipant(newUser: Participant) {
+    const participant = this.getParticipant(newUser.id)
+    if (participant) {
+      participant.status = UserStatuses.ACTIVE
     } else {
       this._participants.push(newUser)
+      this.participants.forEach(user => {
+        user.notify(new JoinEvent(
+          user.id, 
+          {username: user.username, timestamp: TimestampUtils.getTimestampFrom(), userId: user.id}
+        ))
+      })
     }
+  }
+
+  disconnect(userId: string) {
+    const user = this.getParticipant(userId)
+    if (user) user.status = UserStatuses.DISCONNECTED
   }
 
   expulseParticipant(userId: string) {
@@ -52,16 +81,7 @@ export class Chat {
     }
   }
 
-  recordMessage(message: Message) {
-    this._messages.push(message)
-  }
-
   getParticipant(userId: string) {
     return this.participants.find(u => u.id === userId)
-  }
-
-  constructor(name: string) {
-    this._name = name
-    this._id = GlobalAutoIcrement.getInstance().getNext()
   }
 }

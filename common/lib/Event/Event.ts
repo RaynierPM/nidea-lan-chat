@@ -5,6 +5,7 @@ export abstract class EventBase implements Event {
   public type: EventActionTypes;
   public authorId: string;
   public payload: unknown;
+  public readonly timestamp = Number(new Date())
 
   constructor(type: EventActionTypes, authorId: string) {
     if (!Object.values(EventActionTypes).includes(type)) throw new InvalidEventType(type)
@@ -18,7 +19,8 @@ export abstract class EventBase implements Event {
     const mappedEvent = {
       type: this.type,
       authorId: this.authorId,
-      payload: this.payload
+      payload: this.payload,
+      timestamp: this.timestamp
     }
     return JSON.stringify(mappedEvent)
   }

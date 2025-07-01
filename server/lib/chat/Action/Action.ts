@@ -1,10 +1,13 @@
+import { Socket } from "net";
 import { EventActionTypes } from "../../../../common/interfaces/event.interface";
 import { ActionI, ActionMetadataI } from "./Action.interface";
+import { EventBase } from "../../../../common/lib/Event/Event";
+import { Room } from "../Room";
 
 export abstract class ActionBase implements ActionI {
   private _type: EventActionTypes
 
-  private _payload: unknown
+  protected abstract _payload: unknown
 
   get payload() {
     return this._payload
@@ -16,8 +19,9 @@ export abstract class ActionBase implements ActionI {
 
   abstract readonly metadata: ActionMetadataI
 
-  constructor(type: EventActionTypes, payload: unknown) {
+  constructor(type: EventActionTypes) {
     this._type = type
-    this._payload = payload
   }
+
+  abstract handle(socket:Socket, room: Room): void 
 }

@@ -1,4 +1,5 @@
 import { UserI } from "../../../common/interfaces/User.interface"
+import { TimestampUtils } from "../../../common/utils/timestamp"
 
 export class Message {
   private _user: UserI['id']
@@ -16,16 +17,16 @@ export class Message {
   private _timestamp: number
 
   get date() {
-    return new Date(this._timestamp)
+    return TimestampUtils.getDateFrom(this._timestamp)
   }
 
-  get timestampt() {
+  get timestamp() {
     return this._timestamp
   }
 
   constructor(userId:UserI['id'], content: string) {
     this._content = content
     this._user = userId
-    this._timestamp = Number(new Date())
+    this._timestamp = TimestampUtils.getTimestampFrom()
   }
 }

@@ -10,8 +10,8 @@ type JoinEventPayload = {
 }
 
 export class JoinEvent extends EventBase {
-  constructor({type, authorId}:{type: EventActionTypes, authorId: string}, payload: JoinEventPayload) {
-    super(type, authorId)
+  constructor(authorId: UserI['id'], payload: JoinEventPayload) {
+    super(EventActionTypes.JOIN, authorId)
     this.validate(payload)
     this.payload = payload
   }
@@ -19,7 +19,7 @@ export class JoinEvent extends EventBase {
   validate(payload: JoinEventPayload) {
     const errors = {}
     console.log(payload)
-    if (!Object.keys(errors).length) {
+    if (Object.keys(errors).length) {
       throw new NotValidEventPayload(errors)
     }
   }

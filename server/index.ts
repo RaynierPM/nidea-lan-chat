@@ -6,7 +6,7 @@ import { User } from '../common/lib/User/User'
 
 if (!NetworkUtils.getPrivateIp()) throw new Error('Required has connected to some Network to HOST a room')
 
-const owner = new User(NetworkUtils.getNetworkMacAddr()!, 'Papotico', )
+const owner = new User(NetworkUtils.getNetworkMacAddr()!, 'Papotico')
 
 const testingRoom = new Room({
   owner: owner,

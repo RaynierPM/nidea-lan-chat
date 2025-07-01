@@ -1,11 +1,13 @@
-import net, { SocketAddress, type Server, type Socket } from "net";
+import net, { type Server, type Socket } from "net";
 import { configuration } from "../../../config/configuration";
 import { NetworkUtils } from "../../../../common/utils/network";
 import { Room } from "../../chat/Room";
 import { RoomRequired } from "../../../errors/chat/Room.errors";
-import { BaseEvent } from "../../interfaces/Event.interface";
-import { TCPSocketListener } from "../../interfaces/socket.interface";
+import { SocketWithId, TCPSocketListener } from "../../interfaces/socket.interface";
 import { EventActionTypes } from "../../../../common/interfaces/event.interface";
+import { ActionI } from "../../chat/Action/Action.interface";
+import { ActionFactory } from "../../chat/Action/Action.factory";
+import { AutoIncrementSequence } from "../../../../common/utils/autoIncrementManager";
 
 export class SocketManager {
   
@@ -17,13 +19,15 @@ export class SocketManager {
   
   private abort_controller = new AbortController()
 
-  private listeners: Partial<Record<EventActionTypes, TCPSocketListener[]>> = {}
+  private listeners: Partial<Record<EventActionTypes | "*", TCPSocketListener[]>> = {}
+
+  private socketSequence = new AutoIncrementSequence()
   
   get server() {
     return this._server
   }
   
-  private _room?: Room;
+  private room?: Room;
   
   static get instance() {
     if (!this._instance) {
@@ -34,6 +38,7 @@ export class SocketManager {
 
   private constructor() {
     this._server = net.createServer((socket) => {
+      (socket as SocketWithId)._id = this.socketSequence.getNext()
       this.handleConnection(socket)
       socket.on("end", () => this.handleDisconnect(socket))
       socket.on("data", (data) => this.handleMessage(socket, data))
@@ -42,13 +47,14 @@ export class SocketManager {
 
   public startServer(room: Room) {
     if (!room) throw new RoomRequired()
-    this._room = room
+    this.room = room
 
     this.server.listen({
       port: configuration.port,
       signal: this.abort_controller.signal
     }, () => {
-      console.log(`Just listening: ${NetworkUtils.getPrivateIp()}:${configuration.port}`)    
+      console.log(`Just listening: ${NetworkUtils.getPrivateIp()}:${configuration.port}`)
+      room.loadListeners(this)   
     })
   }
 
@@ -69,7 +75,7 @@ export class SocketManager {
     })
   }
 
-  public on(type:EventActionTypes, listener:TCPSocketListener) {
+  public on(type:EventActionTypes | "*", listener:TCPSocketListener) {
     if (this.listeners[type]) {
       this.listeners[type].push(listener)
     }else {
@@ -85,17 +91,27 @@ export class SocketManager {
   private handleMessage = (socket: Socket, data: Buffer) => {
     const str = data.toString()
     try {
-      const event = JSON.parse(str) as BaseEvent
-      this._room?.handleEvent(event)
-    } catch {
+      const action = ActionFactory.getEventHandler(JSON.parse(str))
+      const listeners = this.listeners[action.type]
+      if (listeners) {
+        listeners.forEach((listener) => {
+          listener(socket, action)
+        })
+      }
+      this.listeners["*"]?.forEach(listener => listener(socket, action))
+    } catch (err) {
       socket.write(`${str.slice(0, str.length-1)} is not valid payload`)
-      console.error("Not valid payload")
+      console.error("Not valid payload", err)
     }
   }
 
   private handleDisconnect = (socket: Socket) => {
     const scId = this.getSocketIdentifier(socket)
     if (scId) delete this.connections[scId]
+    const participant = this.room?.participants.find(usr => usr.socketId)
+    if (participant) {
+      this.room!.disconnect(participant.id)
+    }
   }
 
   private getSocketIdentifier(socket:Socket) {
