@@ -6,6 +6,7 @@ import { JoinEvent } from "../../../common/lib/Event/variants/JoinEvent";
 import { MessageEvent } from "../../../common/lib/Event/variants/MessageEvent";
 import { EventActionTypes } from "../../../common/interfaces/event.interface";
 import { TimestampUtils } from "../../../common/utils/timestamp";
+import { DisconnectEvent } from "../../../common/lib/Event/variants/Disconnect.event";
 
 export class Chat {
   private _id: number;
@@ -31,8 +32,7 @@ export class Chat {
     this._participants.forEach(usr => {
       usr.notify(new MessageEvent(usr.id, {
         content: message.content,
-        roomId: this._id,
-        timestamp: TimestampUtils.getTimestampFrom()
+        roomId: this._id
       }))
     })
   }
@@ -64,7 +64,7 @@ export class Chat {
       this.participants.forEach(user => {
         user.notify(new JoinEvent(
           user.id, 
-          {username: user.username, timestamp: TimestampUtils.getTimestampFrom(), userId: user.id}
+          {username: user.username, userId: user.id}
         ))
       })
     }
@@ -72,7 +72,10 @@ export class Chat {
 
   disconnect(userId: string) {
     const user = this.getParticipant(userId)
-    if (user) user.status = UserStatuses.DISCONNECTED
+    if (user) {
+      user.status = UserStatuses.DISCONNECTED
+      user.notify(new DisconnectEvent(user.id))
+    }
   }
 
   expulseParticipant(userId: string) {

@@ -23,10 +23,10 @@ export class Participant implements UserI {
     if (Object.values(UserStatuses).includes(newStatus)) this._status = newStatus      
   }
   
-  private _socket: SocketWithId
+  private _socket: SocketWithId | null
 
   get socketId() {
-    return this._socket._id
+    return this._socket?._id
   }
 
   private _createdAt: Date
@@ -44,6 +44,11 @@ export class Participant implements UserI {
   }
 
   notify(event:EventBase) {
-    this._socket.write(event.toJson())
+    this._socket?.write(event.toJson())
+  }
+
+  disconnect() {
+    this._status = UserStatuses.DISCONNECTED
+    this._socket = null
   }
 }

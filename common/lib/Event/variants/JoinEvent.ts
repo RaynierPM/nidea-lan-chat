@@ -5,7 +5,6 @@ import { EventBase } from "../Event";
 
 type JoinEventPayload = {
   userId: UserI['id']
-  timestamp: number
   username: string
 }
 
@@ -16,9 +15,8 @@ export class JoinEvent extends EventBase {
     this.payload = payload
   }
 
-  validate(payload: JoinEventPayload) {
+  validate(_: JoinEventPayload) {
     const errors = {}
-    console.log(payload)
     if (Object.keys(errors).length) {
       throw new NotValidEventPayload(errors)
     }

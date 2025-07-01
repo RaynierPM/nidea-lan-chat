@@ -4,7 +4,6 @@ import { UserI } from "../../../interfaces/User.interface"
 import { EventBase } from "../Event"
 
 type MessageEventPayload = {
-  timestamp: number
   content: string
   roomId: number
 }
@@ -16,9 +15,8 @@ export class MessageEvent extends EventBase {
     this.payload = payload
   }
 
-  protected validate(payload: MessageEventPayload): void {
+  protected validate(_: MessageEventPayload): void {
     const errors = {}
-    console.log(errors, payload)
     if (Object.keys(errors).length) throw new NotValidEventPayload(errors)
   }
 }
