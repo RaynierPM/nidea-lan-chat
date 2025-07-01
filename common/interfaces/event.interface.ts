@@ -7,7 +7,8 @@ export enum EventActionTypes {
   MESSAGE = "MESSAGE_EVENT",
   EXIT = "EXIT_EVENT",
   EXPULSE = "EXPULSION_EVENT",
-  DISCONNECT = "DISCONNECT_EVENT"
+  DISCONNECT = "DISCONNECT_EVENT",
+  CONNECT = "CONNECT_EVENT",
 }
 
 export interface Event {

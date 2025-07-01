@@ -39,9 +39,10 @@ export class SocketManager {
   private constructor() {
     this._server = net.createServer((socket) => {
       (socket as SocketWithId)._id = this.socketSequence.getNext()
-      this.handleConnection(socket)
-      socket.on("end", () => this.handleDisconnect(socket))
+      this.handleConnection(socket as SocketWithId)
+      socket.on("end", () => this.handleDisconnect(socket as SocketWithId))
       socket.on("data", (data) => this.handleMessage(socket, data))
+      socket.on("error", (err) => this.handleError(err))
     })
   }
 
@@ -83,9 +84,16 @@ export class SocketManager {
     }
   }
 
-  private handleConnection(socket: Socket) {
+  private handleConnection(socket: SocketWithId) {
     const scId = this.getSocketIdentifier(socket)
     if (scId) this.connections[scId] = socket
+    const participant = this.room?.participants
+      .find(usr => [usr.socketLocalAddr, usr.socketRemoteAddr]
+        .includes(socket.localAddress || socket.remoteAddress)
+      )
+    if (participant) {
+      this.room?.connect(participant.id, socket)
+    }
   }
 
   private handleMessage = (socket: Socket, data: Buffer) => {
@@ -105,13 +113,17 @@ export class SocketManager {
     }
   }
 
-  private handleDisconnect = (socket: Socket) => {
+  private handleDisconnect = (socket: SocketWithId) => {
     const scId = this.getSocketIdentifier(socket)
     if (scId) delete this.connections[scId]
-    const participant = this.room?.participants.find(usr => usr.socketId)
+    const participant = this.room?.participants.find(usr => usr.socketId === socket._id)
     if (participant) {
       this.room!.disconnect(participant.id)
     }
+  }
+
+  private handleError = (err: Error) => {
+    console.error(err.message)
   }
 
   private getSocketIdentifier(socket:Socket) {

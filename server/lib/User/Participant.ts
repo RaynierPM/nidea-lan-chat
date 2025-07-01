@@ -2,6 +2,7 @@ import { Socket } from "net";
 import { UserI, UserStatuses } from "../../../common/interfaces/User.interface";
 import { EventBase } from "../../../common/lib/Event/Event";
 import { SocketWithId } from "../interfaces/socket.interface";
+import { SocketCloseByOtherInstance } from "../../../common/errors/event.errors";
 
 export class Participant implements UserI {
   private _id: string
@@ -29,6 +30,14 @@ export class Participant implements UserI {
     return this._socket?._id
   }
 
+  get socketRemoteAddr() {
+    return this._socket?.remoteAddress
+  }
+
+  get socketLocalAddr() {
+    return this._socket?.localAddress
+  }
+
   private _createdAt: Date
   
   get createdAt() {
@@ -50,5 +59,12 @@ export class Participant implements UserI {
   disconnect() {
     this._status = UserStatuses.DISCONNECTED
     this._socket = null
+  }
+
+  connect(socket: SocketWithId) {
+    // @@ Add a better error instance
+    if (this._socket) this._socket.destroy(new SocketCloseByOtherInstance(this._socket, socket))
+    this._status = UserStatuses.ACTIVE
+    this._socket = socket
   }
 }

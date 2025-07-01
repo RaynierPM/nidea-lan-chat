@@ -7,6 +7,8 @@ import { MessageEvent } from "../../../common/lib/Event/variants/MessageEvent";
 import { EventActionTypes } from "../../../common/interfaces/event.interface";
 import { TimestampUtils } from "../../../common/utils/timestamp";
 import { DisconnectEvent } from "../../../common/lib/Event/variants/Disconnect.event";
+import { SocketWithId } from "../interfaces/socket.interface";
+import { ConnectEvent } from "../../../common/lib/Event/variants/Connect.event";
 
 export class Chat {
   private _id: number;
@@ -73,8 +75,16 @@ export class Chat {
   disconnect(userId: string) {
     const user = this.getParticipant(userId)
     if (user) {
-      user.status = UserStatuses.DISCONNECTED
+      user.disconnect()
       user.notify(new DisconnectEvent(user.id))
+    }
+  }
+
+  connect(userId: string, socket: SocketWithId) {
+    const user = this.getParticipant(userId)
+    if (user) {
+      user.connect(socket)
+      user.notify(new ConnectEvent(user.id))
     }
   }
 

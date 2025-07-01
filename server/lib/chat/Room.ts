@@ -1,17 +1,11 @@
-import { Socket } from "net";
-import { EventActionTypes } from "../../../common/interfaces/event.interface";
 import { UserI } from "../../../common/interfaces/User.interface";
 import { RoomOwnerRequired } from "../../errors/chat/Room.errors";
-import { InvalidEventType } from "../../errors/event/InvalidEventType";
 import { CreationRoomOpts } from "../interfaces/Chat.interface";
 import { Chat } from "./Chat";
 import { NetworkUtils } from "../../../common/utils/network";
 import { configuration } from "../../config/configuration";
-import { ActionI } from "./Action/Action.interface";
-import { JoinAction } from "./Action/variants/JoinAction";
 import { SocketManager } from "../Socket/tcp";
 import { ActionFactory } from "./Action/Action.factory";
-import { Message } from "./Message";
 
 export class Room extends Chat {
   private _owner: UserI;
