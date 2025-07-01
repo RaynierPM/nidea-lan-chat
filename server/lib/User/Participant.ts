@@ -3,6 +3,7 @@ import { UserI, UserStatuses } from "../../../common/interfaces/User.interface";
 import { EventBase } from "../../../common/lib/Event/Event";
 import { SocketWithId } from "../interfaces/socket.interface";
 import { SocketCloseByOtherInstance } from "../../../common/errors/event.errors";
+import { TimestampUtils } from "../../../common/utils/timestamp";
 
 export class Participant implements UserI {
   private _id: string
@@ -38,10 +39,10 @@ export class Participant implements UserI {
     return this._socket?.localAddress
   }
 
-  private _createdAt: Date
+  private _timestamp: number
   
-  get createdAt() {
-    return this._createdAt
+  get timestamp() {
+    return this._timestamp
   }
   
   constructor(id: string, username: string, socket: SocketWithId) {
@@ -49,7 +50,7 @@ export class Participant implements UserI {
     this._username = username
     this._status = UserStatuses.ACTIVE
     this._socket = socket
-    this._createdAt = new Date()
+    this._timestamp = TimestampUtils.getTimestampFrom()
   }
 
   notify(event:EventBase) {
@@ -66,5 +67,14 @@ export class Participant implements UserI {
     if (this._socket) this._socket.destroy(new SocketCloseByOtherInstance(this._socket, socket))
     this._status = UserStatuses.ACTIVE
     this._socket = socket
+  }
+
+  getData() {
+    return {
+      id: this.id,
+      username: this.username,
+      status: this.status,
+      timestamp: this.timestamp,
+    }
   }
 }

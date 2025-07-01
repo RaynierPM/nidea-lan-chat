@@ -5,6 +5,7 @@ import { ActionMetadataI } from "../Action.interface";
 import { Room } from "../../Room";
 import { Participant } from "../../../User/Participant";
 import { SocketWithId } from "../../../interfaces/socket.interface";
+import { GetHistoryEvent } from "../../../../../common/lib/Event/variants/GetHistory.event";
 
 export type JoinActionPayload = {
   id: UserI['id']
@@ -31,5 +32,6 @@ export class JoinAction extends ActionBase {
     if (room.participants.some(participant => participant.socketId === socket._id)) throw new Error('No valid re-join from same PC')
     const {id, username} = this._payload
     room.addParticipant(new Participant(id, username, socket))
+    socket.write(new GetHistoryEvent(id, room.getRoomInfo()).toJson())
   }
 }

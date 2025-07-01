@@ -6,6 +6,7 @@ import { JoinEvent } from "../../../common/lib/Event/variants/JoinEvent";
 import { MessageEvent } from "../../../common/lib/Event/variants/MessageEvent";
 import { SocketWithId } from "../interfaces/socket.interface";
 import { ConnectEvent } from "../../../common/lib/Event/variants/Connect.event";
+import { ChatInfo } from "../interfaces/Chat.interface";
 
 export class Chat {
   private _id: number;
@@ -93,5 +94,14 @@ export class Chat {
 
   getParticipant(userId: string) {
     return this.participants.find(u => u.id === userId)
+  }
+
+  getChatInfo():ChatInfo {
+    return {
+      id: this.id,
+      name: this.name,
+      messages: this.messages.map(msg => msg.getData()),
+      participants: this.participants.map(participant => participant.getData())
+    }
   }
 }

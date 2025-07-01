@@ -2,10 +2,10 @@ import { UserI } from "../../../common/interfaces/User.interface"
 import { TimestampUtils } from "../../../common/utils/timestamp"
 
 export class Message {
-  private _user: UserI['id']
+  private _userId: UserI['id'] | null
 
-  get user() {
-    return this._user
+  get userId() {
+    return this._userId
   }
   
   private _content: string
@@ -26,7 +26,15 @@ export class Message {
 
   constructor(userId:UserI['id'], content: string) {
     this._content = content
-    this._user = userId
+    this._userId = userId
     this._timestamp = TimestampUtils.getTimestampFrom()
+  }
+
+  getData() {
+    return {
+      content: this.content,
+      userId: this.userId,
+      timestamp: this.timestamp
+    }
   }
 }

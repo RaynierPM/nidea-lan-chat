@@ -1,6 +1,6 @@
-import { UserI } from "../../../common/interfaces/User.interface";
+import { UserI, UserStatuses } from "../../../common/interfaces/User.interface";
 import { RoomOwnerRequired } from "../../errors/chat/Room.errors";
-import { CreationRoomOpts } from "../interfaces/Chat.interface";
+import { CreationRoomOpts, RoomInfo } from "../interfaces/Chat.interface";
 import { Chat } from "./Chat";
 import { NetworkUtils } from "../../../common/utils/network";
 import { configuration } from "../../config/configuration";
@@ -78,5 +78,12 @@ export class Room extends Chat {
     socketManager.on("*", (socket, action) => {
       ActionFactory.getEventHandler(action).handle(socket, this)
     })
+  }
+
+  getRoomInfo():RoomInfo {
+    return {
+      ...this.getChatInfo(),
+      chats: this.chats.map(chat => chat.getChatInfo())
+    }
   }
 }
