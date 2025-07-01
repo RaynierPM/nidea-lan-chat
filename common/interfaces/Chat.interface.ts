@@ -7,6 +7,7 @@ export type ConnectionInfo = {
 }
 
 export type PublicRoomInfo = {
+  id: number
   name: string
   withPassword: boolean
   user: Pick<UserI, 'id'> & Pick<UserI, 'username'>

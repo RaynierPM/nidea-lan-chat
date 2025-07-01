@@ -5,7 +5,6 @@ import { Room } from "../../chat/Room";
 import { RoomRequired } from "../../../errors/chat/Room.errors";
 import { SocketWithId, TCPSocketListener } from "../../interfaces/socket.interface";
 import { EventActionTypes } from "../../../../common/interfaces/event.interface";
-import { ActionI } from "../../chat/Action/Action.interface";
 import { ActionFactory } from "../../chat/Action/Action.factory";
 import { AutoIncrementSequence } from "../../../../common/utils/autoIncrementManager";
 
@@ -63,19 +62,6 @@ export class SocketManager {
     this.abort_controller.abort()
   }
 
-  public send(addresses: string | string[], message:object) {
-    if (!Array.isArray(addresses)) {
-      addresses = [addresses]
-    }
-
-    addresses.forEach((addr) => {
-      const socket = this.connections[addr]
-      if (addr) {
-        socket.write(JSON.stringify(message))
-      }
-    })
-  }
-
   public on(type:EventActionTypes | "*", listener:TCPSocketListener) {
     if (this.listeners[type]) {
       this.listeners[type].push(listener)
@@ -108,8 +94,11 @@ export class SocketManager {
       }
       this.listeners["*"]?.forEach(listener => listener(socket, action))
     } catch (err) {
-      socket.write(`${str.slice(0, str.length-1)} is not valid payload`)
-      console.error("Not valid payload", err)
+      socket.write(JSON.stringify({
+        response: "Error",
+        reason: err instanceof Error? err.message : err
+      }))
+      console.error("Not valid payload: \n", err)
     }
   }
 

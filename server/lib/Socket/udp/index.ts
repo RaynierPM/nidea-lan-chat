@@ -64,6 +64,7 @@ export class RoomExposer {
 
   private getRoomInfo():PublicRoomInfo {
     return {
+      id: this.roomToExpose.id,
       name: this.roomToExpose.roomName,
       withPassword: this.roomToExpose.withPassword,
       user: {
