@@ -1,5 +1,5 @@
 [
-  {"type": "JOIN_EVENT", "payload": {"id": "nidea", "username": "raynier"}},
+  {"type": "JOIN_EVENT", "payload": {"id": "84:fd:d1:b7:a5:16", "username": "raynier"}},
   {"type": "JOIN_EVENT", "payload": {"id": "nidea2", "username": "pitel"}},
   {"type": "MESSAGE_EVENT", "payload": {"id": "nidea1", "content": "Waos ta working"}},
   {"type": "MESSAGE_EVENT", "payload": {"id": "nidea2", "content": "Una vaina bien"}},

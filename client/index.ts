@@ -10,9 +10,19 @@ class App {
 
   private roomScanner: RoomScanner
 
-  constructor() {}
+  constructor() {
+    this.roomScanner = new RoomScanner(this)
+  }
 
   search() {
-    
+    this.roomScanner.scan()
+    .then(() => {
+      console.log(`Available room quantity: ${this.availableRooms.length}`)
+      this.availableRooms.forEach(room => {
+        console.log(room)
+      })
+    })
   }
 }
+
+new App().search()
