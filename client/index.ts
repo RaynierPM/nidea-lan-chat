@@ -15,13 +15,19 @@ class App {
   }
 
   search() {
+    console.log("Scanning rooms...")
     this.roomScanner.scan()
     .then(() => {
+      console.log("Scan finished")
       console.log(`Available room quantity: ${this.availableRooms.length}`)
       this.availableRooms.forEach(room => {
-        console.log(room)
+        this.printConnectionInfo(room)
       })
     })
+  }
+
+  private printConnectionInfo(room: ConnectionInfo) {
+    console.log(`==== | ${room.room.name} | ===> \nAddress: ${room.addr}:${room.port} \nOwner: ${room.room.user.username} \n${new Array(20).fill('-').join('')}`)
   }
 }
 

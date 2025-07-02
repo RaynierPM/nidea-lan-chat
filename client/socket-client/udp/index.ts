@@ -21,7 +21,6 @@ export class RoomScanner {
     this.socket.on('message', this.handleMessage)
     this.socket.on('listening', () => {
       this.socket.setBroadcast(true)
-      console.log('Scanning rooms...')
       this.sendRequest()
     })
   }
@@ -32,7 +31,6 @@ export class RoomScanner {
     this.socket.bind(7777)
 
     setTimeout(() => {
-      console.log("Finishing Scan...")
       this.socket.close()
       resolver()
     }, 5000)
@@ -55,7 +53,6 @@ export class RoomScanner {
   private sendRequest() {
     let message = Buffer.from(CLIENT_BROADCAST_REQUEST)
     this.socket.send(message, 0, message.length, configuration.exposePort, '192.168.0.220', (err) => {
-      console.log("Sended request?")
       if (err) {
         console.log(err)
       }
