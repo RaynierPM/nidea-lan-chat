@@ -36,14 +36,12 @@ export class RoomExposer {
 
   private handleRequest = (msg: Buffer, rInfo: RemoteInfo) => {
     const decodedMsg = msg.toString()
-    console.log({decodedMsg})
     if (this.isAValidRequest(decodedMsg)) {
       this.retrieveConnectionInfo(rInfo.address, rInfo.port)
     }
   }
 
   private retrieveConnectionInfo(addr: string, port: number) {
-    console.log("Retrieving room info")
     this.socket.send(
       JSON.stringify(this.getConnectionInfo(), null, 2), 
       port, addr, 
