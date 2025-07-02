@@ -1,11 +1,13 @@
 import { NotValidEventPayload } from "../../../errors/event.errors";
 import { EventActionTypes } from "../../../interfaces/event.interface";
-import { UserI } from "../../../interfaces/User.interface";
+import { UserI, UserStatuses } from "../../../interfaces/User.interface";
 import { EventBase } from "../Event";
 
 type JoinEventPayload = {
   userId: UserI['id']
   username: string
+  timestamp: number
+  status: UserStatuses
 }
 
 export class JoinEvent extends EventBase {

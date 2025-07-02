@@ -4,6 +4,8 @@ import { RoomScanner } from "./socket-client/udp";
 class App {
   private availableRooms: ConnectionInfo[] = []
 
+  
+
   addConnInfo(conn: ConnectionInfo) {
     this.availableRooms.push(conn)
   }
@@ -16,6 +18,7 @@ class App {
 
   search() {
     console.log("Scanning rooms...")
+    this.availableRooms = []
     this.roomScanner.scan()
     .then(() => {
       console.log("Scan finished")

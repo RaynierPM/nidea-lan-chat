@@ -7,6 +7,7 @@ import { MessageEvent } from "../../../common/lib/Event/variants/MessageEvent";
 import { SocketWithId } from "../interfaces/socket.interface";
 import { ConnectEvent } from "../../../common/lib/Event/variants/Connect.event";
 import { ChatInfo } from "../interfaces/Chat.interface";
+import { DisconnectEvent } from "../../../common/lib/Event/variants/Disconnect.event";
 
 export class Chat {
   private _id: number;
@@ -65,7 +66,12 @@ export class Chat {
       this.participants.forEach(user => {
         user.notify(new JoinEvent(
           user.id, 
-          {username: user.username, userId: user.id}
+          {
+            username: user.username, 
+            userId: user.id,
+            status: user.status,
+            timestamp: user.timestamp
+          }
         ))
       })
     }
@@ -75,6 +81,9 @@ export class Chat {
     const user = this.getParticipant(userId)
     if (user) {
       user.disconnect()
+      this.participants.forEach(participant => {
+        participant.notify(new DisconnectEvent(user.id))
+      })
     }
   }
 

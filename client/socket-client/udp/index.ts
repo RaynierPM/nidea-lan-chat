@@ -26,8 +26,8 @@ export class RoomScanner {
   }
 
   scan():Promise<void> {
-    let resolver: () => void, rejecter: () => void;
-    const promise = new Promise<void>((res, rej) => {resolver=res; rejecter=rej;})
+    let resolver: () => void;
+    const promise = new Promise<void>((res) => {resolver=res;})
     this.socket.bind(7777)
 
     setTimeout(() => {
