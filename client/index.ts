@@ -43,7 +43,7 @@ export class App {
   }
 
   getParticipant(userId: UserI['id']) {
-    return this._chatInfo?.participants.find(part => {console.log(part);return part.id === userId})
+    return this._chatInfo?.participants.find(part =>part.id === userId)
   }
 
   addMessage(chatId: number, message: MessageI) {
