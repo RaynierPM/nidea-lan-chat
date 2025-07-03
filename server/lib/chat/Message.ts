@@ -1,7 +1,8 @@
+import { MessageI } from "../../../common/interfaces/message.interface"
 import { UserI } from "../../../common/interfaces/User.interface"
 import { TimestampUtils } from "../../../common/utils/timestamp"
 
-export class Message {
+export class Message implements MessageI {
   private _userId: UserI['id'] | null
 
   get userId() {

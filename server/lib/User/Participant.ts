@@ -31,6 +31,12 @@ export class Participant implements UserI {
     return this._socket?._id
   }
 
+  set socket(socket: SocketWithId) {
+    if (socket._id) {
+      this._socket = socket
+    }
+  }
+
   get socketRemoteAddr() {
     return this._socket?.remoteAddress
   }

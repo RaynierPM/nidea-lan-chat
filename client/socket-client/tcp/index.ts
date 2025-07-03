@@ -1,8 +1,11 @@
 import {createConnection, Socket} from 'net'
 import { Event, EventActionTypes } from '../../../common/interfaces/event.interface'
 import { TCPSocketListener } from '../../interfaces/app.interface'
-import { ActionI } from '../../../server/lib/chat/Action/Action.interface'
 import { ConnectionRequiredError } from '../../errors/socket'
+import { JoinAction } from '../../../server/lib/chat/Action/variants/JoinAction'
+import { UserI } from '../../../common/interfaces/User.interface'
+import { ActionBase } from '../../../server/lib/chat/Action/Action'
+import { lanChatReadme } from '../../cli-text'
 
 export class SocketManager {
   private connection?: Socket
@@ -13,10 +16,16 @@ export class SocketManager {
 
   }
 
-  connect(addr: string, port: number) {
-    this.connection = createConnection({port, path: addr}, () => {
-
+  connect(addr: string, port: number, user: UserI) {
+    console.log("Trying to connect to: ", addr, port)
+    this.connection = createConnection(port, addr, () => {
+      console.clear()
+      console.log(lanChatReadme)
+      this.emit(new JoinAction(user))
     })
+    this.connection.on("data", this.handleMessages)
+    this.connection.on("close", this.onClose)
+    this.connection.on("error", (err) => console.log(err))
   }
 
   on(type: EventActionTypes | "*", listener: TCPSocketListener) {
@@ -27,13 +36,13 @@ export class SocketManager {
     }
   }
 
-  emit(action: ActionI) {
+  emit(action: ActionBase) {
     // @@ Connection needed error
     if (!this.connection) throw new ConnectionRequiredError()
-    this.connection.write(JSON.stringify(action))
+    this.connection.write(action.toJson())
   }
 
-  private handleMessages(data: Buffer) {
+  private handleMessages = (data: Buffer) => {
     try {
       const event = JSON.parse(data.toString()) as Event
       const listeners = this.listeners[event.type]
@@ -41,8 +50,17 @@ export class SocketManager {
         listeners.forEach(listener => listener(event))
       }
       this.listeners['*']?.forEach(listener => listener(event))
-    } catch {
+    } catch (err) {
+      console.log(err)
       console.log(" +== Unprocesable event received ==+")
     }
+  }
+
+  private onClose(error: boolean) {
+    if (error) {
+      console.log("Unexpected error registered")
+    }
+    console.log("Closing app by server desconnection")
+    process.exit(0)
   }
 }

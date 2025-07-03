@@ -15,6 +15,7 @@ export enum EventActionTypes {
 
 export interface Event {
   type: EventActionTypes
-  authorId: UserI['id']
+  authorId?: UserI['id']
   payload: unknown
+  timestamp: number
 }

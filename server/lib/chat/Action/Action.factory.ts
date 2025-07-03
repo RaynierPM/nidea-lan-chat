@@ -9,9 +9,9 @@ export abstract class ActionFactory {
   static getEventHandler(event: ActionI): ActionBase {
     switch(event.type) {
       case EventActionTypes.JOIN:
-        return new JoinAction(event.type, event.payload as JoinActionPayload)
+        return new JoinAction(event.payload as JoinActionPayload)
       case EventActionTypes.MESSAGE:
-        return new MessageAction(event.type, event.payload as MessageActionPayload)
+        return new MessageAction(event.payload as MessageActionPayload)
       case EventActionTypes.EXIT:
         
       case EventActionTypes.EXPULSE:

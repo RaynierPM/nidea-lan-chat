@@ -18,8 +18,8 @@ export class JoinAction extends ActionBase {
   
   protected _payload: JoinActionPayload;
   
-  constructor(type: EventActionTypes, payload: JoinActionPayload) {
-    super(type)
+  constructor(payload: JoinActionPayload) {
+    super(EventActionTypes.JOIN)
     this._payload = payload
     this.metadata = {
       timestamp: Number(new Date()),
@@ -31,7 +31,14 @@ export class JoinAction extends ActionBase {
     // @@ Replace by valid error
     if (room.participants.some(participant => participant.socketId === socket._id)) throw new Error('No valid re-join from same PC')
     const {id, username} = this._payload
-    room.addParticipant(new Participant(id, username, socket))
-    socket.write(new GetHistoryEvent(id, room.getRoomInfo()).toJson())
+    const existsOnRoom = room
+      .participants
+      .some(part => part.id === id)
+    if (existsOnRoom) {
+      room.connect(id, socket)
+    }else {
+      room.addParticipant(new Participant(id, username, socket))
+    }
+    socket.write(new GetHistoryEvent(room.getRoomInfo()).toJson())
   }
 }

@@ -1,10 +1,69 @@
 import { ConnectionInfo } from "../common/interfaces/Chat.interface";
+import { Event } from "../common/interfaces/event.interface";
+import { MessageI } from "../common/interfaces/message.interface";
+import { UserI } from "../common/interfaces/User.interface";
+import { User } from "../common/lib/User/User";
+import { NetworkUtils } from "../common/utils/network";
+import { configuration } from "../server/config/configuration";
+import { MessageAction } from "../server/lib/chat/Action/variants/MessageAction";
+import { EventHandler } from "./event/handler";
+import { RoomInfo } from "./interfaces/chat.interface";
+import { SocketManager } from "./socket-client/tcp";
 import { RoomScanner } from "./socket-client/udp";
 
-class App {
+export class App {
   private availableRooms: ConnectionInfo[] = []
 
-  
+  private _chatInfo: RoomInfo | null = null
+
+  private eventHandler = new EventHandler(this)
+
+  set chatInfo(chatData: RoomInfo) {
+    this._chatInfo = chatData
+  }
+
+  get participants() {
+    return this._chatInfo?.participants.map(part => ({username: part.username, status: part.status}))
+  }
+
+  get messages() {
+    return this._chatInfo?.messages
+  }
+
+  getParticipant(userId: UserI['id']) {
+    return this._chatInfo?.participants.find(part => part.id === userId)
+  }
+
+  addMessage(chatId: number, message: MessageI) {
+    this._chatInfo
+      ?.chats
+      .find(chat => chat.id === chatId)
+      ?.messages.push(message)
+    this.printMessage(message)
+  }
+
+  printMessage(message: MessageI) {
+    const isMe = message.userId === this.user.id
+    const username = !message.userId
+      ? "System" 
+      : isMe 
+      ? "Me" 
+      : this.getParticipant(message.userId)?.username || "Unknown"
+      
+    console.log(`--${username}: ${message.content}`)
+  }
+
+  printRoomName() {
+    console.log(" + ===== Chat: " + this._chatInfo?.name + " ==== + ")
+  }
+
+  getUser(userId: UserI['id']) {
+    return this._chatInfo?.participants.find(user => user.id === userId)
+  }
+
+  private user:UserI
+
+  private socketManager: SocketManager
 
   addConnInfo(conn: ConnectionInfo) {
     this.availableRooms.push(conn)
@@ -12,17 +71,20 @@ class App {
 
   private roomScanner: RoomScanner
 
-  constructor() {
+  constructor(username: string, id:UserI['id'] = NetworkUtils.getNetworkMacAddr()!) {
+    this.user = new User(id, username)
     this.roomScanner = new RoomScanner(this)
+    this.socketManager = new SocketManager()
+    this.loadListener()
   }
 
   search() {
     console.log("Scanning rooms...")
     this.availableRooms = []
-    this.roomScanner.scan()
+    return this.roomScanner.scan()
     .then(() => {
       console.log("Scan finished")
-      console.log(`Available room quantity: ${this.availableRooms.length}`)
+      console.log(`Available room quantity: ${this.availableRooms.length}\n`)
       this.availableRooms.forEach(room => {
         this.printConnectionInfo(room)
       })
@@ -30,8 +92,28 @@ class App {
   }
 
   private printConnectionInfo(room: ConnectionInfo) {
-    console.log(`==== | ${room.room.name} | ===> \nAddress: ${room.addr}:${room.port} \nOwner: ${room.room.user.username} \n${new Array(20).fill('-').join('')}`)
+    console.log(`==== | ${room.room.name} | ===> \nAddress: ${room.addr}:${room.port} \nOwner: ${room.room.user.username} \n${new Array(30).fill('-').join('')}`)
+  }
+
+  loadListener() {
+    this.socketManager.on("*", (event) => {
+      this.handleEvent(event)
+    })
+  }
+
+  private handleEvent = (event:Event) => {
+    this.eventHandler.handle(event)
+  }
+
+  connectToServer(addr: string, port: number = configuration.port) {
+    this.socketManager.connect(
+      addr, 
+      port, 
+      {id: this.user.id, username: this.user.username}
+    )
+  }
+
+  sendMessage(content: string) {
+    this.socketManager.emit(new MessageAction({content, userId: this.user.id}))
   }
 }
-
-new App().search()

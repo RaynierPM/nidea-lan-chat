@@ -5,7 +5,8 @@
   "type": "module",
   "main": "index.ts",
   "scripts": {
-    "dev": "tsx server/index.ts -- --env-file=./.env"
+    "dev": "tsx server/index.ts -- --env-file=./.env",
+    "dev:client": "tsx client/cli.ts -- --env-file=./.env"
   },
   "repository": {
     "type": "git",

@@ -21,4 +21,22 @@ export abstract class NetworkUtils {
     return this.getNetworkInterface()?.mac || null
   }
 
+  public static getNetworkMask() {
+    return this.getNetworkInterface()?.netmask
+  }
+
+  public static getBroadcastableAddr() {
+    const netMask = this.getNetworkMask()
+    const splittedIpv4 = this.getPrivateIp()?.split('.')
+    if (!netMask || !splittedIpv4) return 
+    
+    return netMask
+      .split('.')
+      .map((ipSection, idx) => {
+        if (ipSection === '255') return splittedIpv4[idx]
+        else return '255'
+      })
+      .join('.')
+  }
+
 }

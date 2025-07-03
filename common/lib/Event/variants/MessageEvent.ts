@@ -3,7 +3,7 @@ import { EventActionTypes, EventEssential } from "../../../interfaces/event.inte
 import { UserI } from "../../../interfaces/User.interface"
 import { EventBase } from "../Event"
 
-type MessageEventPayload = {
+export type MessageEventPayload = {
   content: string
   roomId: number
 }

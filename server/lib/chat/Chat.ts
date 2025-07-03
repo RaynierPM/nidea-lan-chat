@@ -6,8 +6,8 @@ import { JoinEvent } from "../../../common/lib/Event/variants/JoinEvent";
 import { MessageEvent } from "../../../common/lib/Event/variants/MessageEvent";
 import { SocketWithId } from "../interfaces/socket.interface";
 import { ConnectEvent } from "../../../common/lib/Event/variants/Connect.event";
-import { ChatInfo } from "../interfaces/Chat.interface";
 import { DisconnectEvent } from "../../../common/lib/Event/variants/Disconnect.event";
+import { ChatInfo } from "../../../client/interfaces/chat.interface";
 
 export class Chat {
   private _id: number;
@@ -57,24 +57,18 @@ export class Chat {
   }
 
   addParticipant(newUser: Participant) {
-    const participant = this.getParticipant(newUser.id)
-    if (participant) {
-      participant.status = UserStatuses.ACTIVE
-      console.log("User is connected again")
-    } else {
-      this._participants.push(newUser)
-      this.participants.forEach(user => {
-        user.notify(new JoinEvent(
-          user.id, 
-          {
-            username: user.username, 
-            userId: user.id,
-            status: user.status,
-            timestamp: user.timestamp
-          }
-        ))
-      })
-    }
+    this._participants.push(newUser)
+    this.participants.forEach(user => {
+      user.notify(new JoinEvent(
+        user.id, 
+        {
+          username: user.username, 
+          userId: user.id,
+          status: user.status,
+          timestamp: user.timestamp
+        }
+      ))
+    })
   }
 
   disconnect(userId: string) {

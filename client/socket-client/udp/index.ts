@@ -3,6 +3,7 @@ import { ConnInfoStore } from '../../interfaces/app.interface'
 import { configuration } from '../../../server/config/configuration'
 import { ConnectionInfo } from '../../../common/interfaces/Chat.interface'
 import { CLIENT_BROADCAST_REQUEST } from '../../../common/utils/socket'
+import { NetworkUtils } from '../../../common/utils/network'
 
 export class RoomScanner {
   private connectionStore: ConnInfoStore
@@ -33,12 +34,10 @@ export class RoomScanner {
     setTimeout(() => {
       this.socket.close()
       resolver()
-    }, 5000)
+    }, .5e3)
 
     return promise
   }
-
-
 
   private handleMessage = (msg: Buffer) => {
     try {
@@ -52,7 +51,12 @@ export class RoomScanner {
 
   private sendRequest() {
     let message = Buffer.from(CLIENT_BROADCAST_REQUEST)
-    this.socket.send(message, 0, message.length, configuration.exposePort, '192.168.0.220', (err) => {
+    this.socket.send(
+      message, 
+      0, 
+      message.length, 
+      configuration.exposePort, 
+      NetworkUtils.getBroadcastableAddr(), (err) => {
       if (err) {
         console.log(err)
       }

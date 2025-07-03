@@ -1,12 +1,12 @@
-import { RoomInfo } from "../../../../server/lib/interfaces/Chat.interface";
+import { RoomInfo } from "../../../../client/interfaces/chat.interface";
 import { NotValidEventPayload } from "../../../errors/event.errors";
 import { EventActionTypes } from "../../../interfaces/event.interface";
 import { UserI } from "../../../interfaces/User.interface";
 import { EventBase } from "../Event";
 
 export class GetHistoryEvent extends EventBase {
-  constructor(authorId: UserI['id'], payload: RoomInfo) {
-    super(EventActionTypes.GET_HISTORY, authorId)
+  constructor(payload: RoomInfo) {
+    super(EventActionTypes.GET_HISTORY)
     this.validate(payload)
     this.payload = payload
   }

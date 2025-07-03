@@ -6,23 +6,3 @@ export type CreationRoomOpts = {
   owner: UserI
   isHidden?: boolean
 }
-
-export type ChatInfo = {
-  id: number;
-  name: string;
-  messages: {
-      content: string;
-      userId: string | null;
-      timestamp: number;
-  }[];
-  participants: {
-      id: string;
-      username: string;
-      status: UserStatuses;
-      timestamp: number;
-  }[]
-}
-
-export interface RoomInfo extends ChatInfo {
-  chats: ChatInfo[]
-}

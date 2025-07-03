@@ -18,8 +18,8 @@ export class MessageAction extends ActionBase {
   
   protected _payload: MessageActionPayload;
   
-  constructor(type: EventActionTypes, payload: MessageActionPayload) {
-    super(type)
+  constructor(payload: MessageActionPayload) {
+    super(EventActionTypes.MESSAGE)
     this._payload = payload
     this.metadata = {
       timestamp: Number(new Date()),
@@ -29,7 +29,7 @@ export class MessageAction extends ActionBase {
   }
 
   handle(_: SocketWithId, room: Room): void {
-    const {userId, roomId, content} = this._payload
+    const {userId, content} = this._payload
     room.addMessage(new Message(userId, content))
   }
 }

@@ -1,11 +1,12 @@
-import { UserI, UserStatuses } from "../../../common/interfaces/User.interface";
+import { UserI } from "../../../common/interfaces/User.interface";
 import { RoomOwnerRequired } from "../../errors/chat/Room.errors";
-import { CreationRoomOpts, RoomInfo } from "../interfaces/Chat.interface";
+import { CreationRoomOpts} from "../interfaces/Chat.interface";
 import { Chat } from "./Chat";
 import { NetworkUtils } from "../../../common/utils/network";
 import { configuration } from "../../config/configuration";
 import { SocketManager } from "../Socket/tcp";
 import { ActionFactory } from "./Action/Action.factory";
+import { RoomInfo } from "../../../client/interfaces/chat.interface";
 
 export class Room extends Chat {
   private _owner: UserI;

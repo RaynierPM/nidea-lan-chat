@@ -3,11 +3,11 @@ import { Event, EventActionTypes } from "../../interfaces/event.interface";
 
 export abstract class EventBase implements Event {
   public type: EventActionTypes;
-  public authorId: string;
+  public authorId?: string;
   public payload: unknown;
   public readonly timestamp = Number(new Date())
 
-  constructor(type: EventActionTypes, authorId: string) {
+  constructor(type: EventActionTypes, authorId?: string) {
     if (!Object.values(EventActionTypes).includes(type)) throw new InvalidEventType(type)
     this.type = type
     this.authorId = authorId
