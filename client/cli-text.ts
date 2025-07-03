@@ -10,9 +10,10 @@ export const lanChatReadme = `
 
 🛠️ COMMANDS:
 /party     → Show users in the room.
+/history   → Show message history again.
+/clear     → Clear the terminal screen.
 /exit      → Leave the chat silently.
 /Abandon   → Leave and notify others. (REALLY? Nah, is not working :D)
-/clear     → Clear the terminal screen.
-/history   → Show message history again.
+
 /help      → Show this helper message again.
 `;

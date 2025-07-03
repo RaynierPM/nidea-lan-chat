@@ -31,10 +31,10 @@ export class Chat {
   addMessage(message: Message) {
     this._messages.push(message)
     this._participants.forEach(usr => {
-      usr.notify(new MessageEvent(usr.id, {
+      usr.notify(new MessageEvent({
         content: message.content,
         roomId: this._id
-      }))
+      }, message.userId || undefined))
     })
   }
   // Could in future delete OR edit messages
@@ -85,7 +85,7 @@ export class Chat {
     const user = this.getParticipant(userId)
     if (user) {
       user.connect(socket)
-      user.notify(new ConnectEvent(user.id))
+      user.notify(new ConnectEvent(userId))
     }
   }
 

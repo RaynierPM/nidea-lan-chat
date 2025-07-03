@@ -31,7 +31,7 @@ export class App {
   }
 
   getParticipant(userId: UserI['id']) {
-    return this._chatInfo?.participants.find(part => part.id === userId)
+    return this._chatInfo?.participants.find(part => {console.log(part);return part.id === userId})
   }
 
   addMessage(chatId: number, message: MessageI) {
@@ -44,6 +44,8 @@ export class App {
 
   printMessage(message: MessageI) {
     const isMe = message.userId === this.user.id
+    console.log("owner:" + this.user.id)
+    console.log("User:" + message.userId)
     const username = !message.userId
       ? "System" 
       : isMe 

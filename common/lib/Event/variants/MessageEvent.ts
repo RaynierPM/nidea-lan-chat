@@ -9,7 +9,7 @@ export type MessageEventPayload = {
 }
 
 export class MessageEvent extends EventBase {
-  constructor(authorId: UserI['id'], payload:MessageEventPayload ) {
+  constructor(payload:MessageEventPayload, authorId?: UserI['id']) {
     super(EventActionTypes.MESSAGE, authorId)
     this.validate(payload)
     this.payload = payload
