@@ -34,7 +34,7 @@ export class RoomScanner {
     setTimeout(() => {
       this.socket.close()
       resolver()
-    }, .5e3)
+    }, 1e3)
 
     return promise
   }
