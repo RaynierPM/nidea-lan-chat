@@ -50,7 +50,7 @@ export class App {
       ? "Me" 
       : this.getParticipant(message.userId)?.username || "Unknown"
       
-    console.log(`--${username}: ${message.content}`)
+    console.log(`${isMe? "--" : "**"}${username}: ${message.content}`)
   }
 
   printRoomName() {
