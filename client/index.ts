@@ -4,6 +4,7 @@ import { MessageI } from "../common/interfaces/message.interface";
 import { UserI } from "../common/interfaces/User.interface";
 import { User } from "../common/lib/User/User";
 import { NetworkUtils } from "../common/utils/network";
+import { TimestampUtils } from "../common/utils/timestamp";
 import { configuration } from "../server/config/configuration";
 import { MessageAction } from "../server/lib/chat/Action/variants/MessageAction";
 import { EventHandler } from "./event/handler";
@@ -44,15 +45,15 @@ export class App {
 
   printMessage(message: MessageI) {
     const isMe = message.userId === this.user.id
-    console.log("owner:" + this.user.id)
-    console.log("User:" + message.userId)
     const username = !message.userId
       ? "System" 
       : isMe 
       ? "Me" 
       : this.getParticipant(message.userId)?.username || "Unknown"
+
+    const date = TimestampUtils.getDateFrom(message.timestamp).toLocaleDateString()
       
-    console.log(`${isMe? "--" : "**"}${username}: ${message.content}`)
+    console.log(`${isMe? "--" : "**"}${username}: ${message.content} ~~date:${date}~~`)
   }
 
   printRoomName() {
