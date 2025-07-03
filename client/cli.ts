@@ -65,14 +65,13 @@ async function requestConnection() {
   
   console.log(`
 ${printMany("=", 30)}
-Check the list above and insert room's address. 
+Check the list above and insert room's address (If empty will connecto to yourself). 
 (if u want to specify a port different from default {${configuration.port}} add ':')
 example: 192.168.0.231:1234`)
 
   rl.question("->", connString => {
     if (!connString) {
-      console.log("Going out!")
-      process.exit(0)
+      connString = 'localhost'
     }
     const [addr, port] = connString.split(':')
     app.connectToServer(addr, Number(port) || configuration.port)
