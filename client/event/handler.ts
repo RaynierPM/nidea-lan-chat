@@ -22,7 +22,7 @@ export class EventHandler {
         break;
       case EventActionTypes.JOIN:
         const joinPayload: JoinEventPayload = event.payload as JoinEventPayload
-        
+        this.app.addParticipant(joinPayload)
         break;
     }
   }

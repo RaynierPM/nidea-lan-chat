@@ -39,7 +39,9 @@ export class JoinAction extends ActionBase {
       room.connect(id, socket)
     }else {
       room.addParticipant(new Participant(id, username, socket))
-      room.addMessage(new Message(null, `Has been joined: ${username}`))
+      setTimeout(() => {
+        room.addMessage(new Message(null, `Has been joined: ${username}`))
+      }, 500)
     }
     socket.write(new GetHistoryEvent(room.getRoomInfo()).toJson())
   }

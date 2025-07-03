@@ -62,10 +62,10 @@ export class Chat {
       user.notify(new JoinEvent(
         user.id, 
         {
-          username: user.username, 
-          userId: user.id,
-          status: user.status,
-          timestamp: user.timestamp
+          username: newUser.username, 
+          userId: newUser.id,
+          status: newUser.status,
+          timestamp: newUser.timestamp
         }
       ))
     })
