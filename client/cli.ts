@@ -38,6 +38,9 @@ function handleCommands(command: string) {
       app.printRoomName()
       console.log(lanChatReadme)
       break;
+    default:
+      console.log(" === Unknown command === ")
+      break;
   }
 }
 
