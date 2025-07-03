@@ -3,7 +3,7 @@ import { EventActionTypes } from "../../../interfaces/event.interface";
 import { UserI, UserStatuses } from "../../../interfaces/User.interface";
 import { EventBase } from "../Event";
 
-type JoinEventPayload = {
+export type JoinEventPayload = {
   userId: UserI['id']
   username: string
   timestamp: number

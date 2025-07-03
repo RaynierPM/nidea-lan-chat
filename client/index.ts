@@ -2,6 +2,7 @@ import { ConnectionInfo } from "../common/interfaces/Chat.interface";
 import { Event } from "../common/interfaces/event.interface";
 import { MessageI } from "../common/interfaces/message.interface";
 import { UserI } from "../common/interfaces/User.interface";
+import { JoinEventPayload } from "../common/lib/Event/variants/JoinEvent";
 import { User } from "../common/lib/User/User";
 import { NetworkUtils } from "../common/utils/network";
 import { TimestampUtils } from "../common/utils/timestamp";
@@ -26,6 +27,16 @@ export class App {
   get participants() {
     return this._chatInfo?.participants.map(part => ({username: part.username, status: part.status}))
   }
+
+  addParticipant(user: JoinEventPayload) {
+    this._chatInfo?.participants.push({
+      id: user.userId,
+      status: user.status,
+      timestamp: user.timestamp,
+      username: user.username
+    })
+  }
+
 
   get messages() {
     return this._chatInfo?.messages

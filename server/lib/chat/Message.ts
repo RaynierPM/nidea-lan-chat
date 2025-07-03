@@ -25,7 +25,7 @@ export class Message implements MessageI {
     return this._timestamp
   }
 
-  constructor(userId:UserI['id'], content: string) {
+  constructor(userId:UserI['id'] | null, content: string) {
     this._content = content
     this._userId = userId
     this._timestamp = TimestampUtils.getTimestampFrom()
