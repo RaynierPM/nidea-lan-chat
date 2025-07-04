@@ -1,7 +1,7 @@
 import { ConnectionInfo } from "../common/interfaces/Chat.interface";
 import { Event } from "../common/interfaces/event.interface";
 import { MessageI } from "../common/interfaces/message.interface";
-import { UserI } from "../common/interfaces/User.interface";
+import { UserI, UserStatuses } from "../common/interfaces/User.interface";
 import { JoinEventPayload } from "../common/lib/Event/variants/JoinEvent";
 import { User } from "../common/lib/User/User";
 import { NetworkUtils } from "../common/utils/network";
@@ -65,6 +65,14 @@ export class App {
       timestamp: user.timestamp,
       username: user.username
     })
+  }
+
+  updateParticipant(id: UserI['id'], data: Partial<{username: string, status: UserStatuses}>) {
+    const participant = this._chatInfo?.participants.find(usr => usr.id === id)
+    if (participant) {
+      participant.username = data.username ?? participant.username
+      participant.status = data.status ?? participant.status
+    }
   }
   
   getParticipant(userId: UserI['id']) {

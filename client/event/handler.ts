@@ -1,5 +1,6 @@
 import { App } from "..";
 import { Event, EventActionTypes } from "../../common/interfaces/event.interface";
+import { UserStatuses } from "../../common/interfaces/User.interface";
 import { JoinEventPayload } from "../../common/lib/Event/variants/JoinEvent";
 import { MessageEventPayload } from "../../common/lib/Event/variants/MessageEvent";
 import { printMessage } from "../cli";
@@ -29,6 +30,12 @@ export class EventHandler {
       case EventActionTypes.JOIN:
         const joinPayload: JoinEventPayload = event.payload as JoinEventPayload
         this.app.addParticipant(joinPayload)
+        break;
+      case EventActionTypes.CONNECT:
+        this.app.updateParticipant(event.authorId!, {status: UserStatuses.ACTIVE})
+        break;
+      case EventActionTypes.DISCONNECT:
+        this.app.updateParticipant(event.authorId!, {status: UserStatuses.DISCONNECTED})
         break;
     }
   }

@@ -1,4 +1,3 @@
-import { UserStatuses } from "../../../common/interfaces/User.interface";
 import { GlobalAutoIcrement } from "../../../common/utils/autoIncrementManager";
 import { Participant } from "../User/Participant";
 import { Message } from "./Message";
@@ -74,7 +73,6 @@ export class Chat {
 
   disconnect(userId: string) {
     const user = this.getParticipant(userId)
-    console.log({userToDisconnect: user})
     if (user) {
       user.disconnect()
       this.notifyAll(new DisconnectEvent(user.id))
