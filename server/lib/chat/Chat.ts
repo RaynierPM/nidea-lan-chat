@@ -8,6 +8,8 @@ import { ConnectEvent } from "../../../common/lib/Event/variants/Connect.event";
 import { DisconnectEvent } from "../../../common/lib/Event/variants/Disconnect.event";
 import { ChatInfo } from "../../../client/interfaces/chat.interface";
 import { EventBase } from "../../../common/lib/Event/Event";
+import { AbanadonAction } from "./Action/variants/AbandonAction";
+import { AbandonEvent } from "../../../common/lib/Event/variants/Abandon.event";
 
 export class Chat {
   private _id: number;
@@ -99,6 +101,7 @@ export class Chat {
         content: `${participant.username} has abandoned this chat.`,
         roomId: this._id
       }))
+      this.notifyAll(new AbandonEvent({userId}))
     }
   }
 

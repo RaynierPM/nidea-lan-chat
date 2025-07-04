@@ -1,6 +1,7 @@
 import { App } from "..";
 import { Event, EventActionTypes } from "../../common/interfaces/event.interface";
 import { UserStatuses } from "../../common/interfaces/User.interface";
+import { AbandonEventPayload } from "../../common/lib/Event/variants/Abandon.event";
 import { JoinEventPayload } from "../../common/lib/Event/variants/JoinEvent";
 import { MessageEventPayload } from "../../common/lib/Event/variants/MessageEvent";
 import { printMessage } from "../cli";
@@ -32,6 +33,8 @@ export class EventHandler {
       case EventActionTypes.DISCONNECT:
         this.app.updateParticipant(event.authorId!, {status: UserStatuses.DISCONNECTED})
         break;
+      case EventActionTypes.ABANDON:
+        this.app.removeParticipant((event.payload as AbandonEventPayload).userId)
     }
   }
 }

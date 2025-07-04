@@ -72,6 +72,11 @@ export class App {
     })
   }
 
+  removeParticipant(userId: UserI['id']) {
+    if (this._chatInfo) 
+      this._chatInfo.participants = this._chatInfo?.participants.filter(part => part.id !== userId)
+  }
+
   updateParticipant(id: UserI['id'], data: Partial<{username: string, status: UserStatuses}>) {
     const participant = this._chatInfo?.participants.find(usr => usr.id === id)
     if (participant) {
