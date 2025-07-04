@@ -24,7 +24,7 @@ function printRoomName() {
 }
 
 export function printMessage(message: MessageI) {
-  const isMe = message.userId === app.owner?.id
+  const isMe = message.userId === app.user.id
   const username = !message.userId
     ? "System" : isMe 
     ? "Me" : app.getParticipant(message.userId)?.username || "Unknown"

@@ -37,14 +37,6 @@ export class Participant implements UserI {
     }
   }
 
-  get socketRemoteAddr() {
-    return this._socket?.remoteAddress
-  }
-
-  get socketLocalAddr() {
-    return this._socket?.localAddress
-  }
-
   private _timestamp: number
   
   get timestamp() {

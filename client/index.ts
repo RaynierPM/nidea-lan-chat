@@ -5,7 +5,6 @@ import { UserI, UserStatuses } from "../common/interfaces/User.interface";
 import { JoinEventPayload } from "../common/lib/Event/variants/JoinEvent";
 import { User } from "../common/lib/User/User";
 import { NetworkUtils } from "../common/utils/network";
-import { TimestampUtils } from "../common/utils/timestamp";
 import { configuration } from "../server/config/configuration";
 import { AbanadonAction } from "../server/lib/chat/Action/variants/AbandonAction";
 import { MessageAction } from "../server/lib/chat/Action/variants/MessageAction";
@@ -93,7 +92,11 @@ export class App {
     return this._chatInfo?.participants.find(user => user.id === userId)
   }
 
-  private user:UserI
+  private _user:UserI
+
+  get user() {
+    return this._user
+  }
 
   private socketManager: SocketManager
 
@@ -104,7 +107,7 @@ export class App {
   private roomScanner: RoomScanner
 
   constructor(username: string, id:UserI['id'] = NetworkUtils.getNetworkMacAddr()!) {
-    this.user = new User(id, username)
+    this._user = new User(id, username)
     this.roomScanner = new RoomScanner(this)
     this.socketManager = new SocketManager()
     this.loadListener()
@@ -129,18 +132,18 @@ export class App {
     this.socketManager.connect(
       addr, 
       port, 
-      {id: this.user.id, username: this.user.username}
+      {id: this._user.id, username: this._user.username}
     )
   }
   
   sendMessage(content: string) {
-    this.socketManager.emit(new MessageAction({content, userId: this.user.id}))
+    this.socketManager.emit(new MessageAction({content, userId: this._user.id}))
   }
   
   abandonRoom(chatId: number) {
     this.socketManager.emit(new AbanadonAction({
       chatId,
-      userId: this.user.id
+      userId: this._user.id
     }))
   }
 

@@ -39,9 +39,7 @@ export class SocketManager {
   }
 
   private handleMessages = (data: Buffer) => {
-    const messages = data.toString().split('\n')
-    // Event cleanup (removing '')
-    messages.pop()
+    const messages = data.toString().split('\n').filter(msg => msg.length)
     for (const message of messages) {
       try {
         const event = JSON.parse(message) as Event

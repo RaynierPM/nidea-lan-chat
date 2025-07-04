@@ -73,18 +73,19 @@ export class SocketManager {
   private handleConnection(socket: SocketWithId) {
     const scId = this.getSocketIdentifier(socket)
     if (scId) this.connections[scId] = socket
-    const participant = this.room?.participants
-      .find(usr => [usr.socketLocalAddr, usr.socketRemoteAddr]
-        .includes(socket.localAddress || socket.remoteAddress)
-      )
-    if (participant) {
-      this.room?.connect(participant.id, socket)
-    }
+
+    // const participant = this.room?.participants
+    //   .find(usr => [usr.socketRemoteAddr]
+    //     .includes(socket.remoteAddress)
+    //   )
+    // if (participant) {
+    //   this.room?.connect(participant.id, socket)
+    // }
   }
 
   private handleMessage = (socket: Socket, data: Buffer) => {
-    const messages = data.toString().split('\n')
-    // Event cleanup (removing '')
+    const messages = data.toString().split('\n').filter(msg => !!msg)
+    console.log(messages)
     messages.pop()
     for (const message of messages) {
       try {
@@ -99,8 +100,8 @@ export class SocketManager {
       } catch (err) {
         socket.write(JSON.stringify({
           response: "Error",
-          reason: err instanceof Error? err.message : err
-        }))
+          reason: err instanceof Error? err.message : "Unexpected error"
+        })+'\n')
         console.error("Not valid payload: \n", err)
       }
     }

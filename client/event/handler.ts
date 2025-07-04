@@ -4,7 +4,6 @@ import { UserStatuses } from "../../common/interfaces/User.interface";
 import { AbandonEventPayload } from "../../common/lib/Event/variants/Abandon.event";
 import { JoinEventPayload } from "../../common/lib/Event/variants/JoinEvent";
 import { MessageEventPayload } from "../../common/lib/Event/variants/MessageEvent";
-import { printMessage } from "../cli";
 import { RoomInfo } from "../interfaces/chat.interface";
 
 export class EventHandler {
@@ -35,6 +34,7 @@ export class EventHandler {
         break;
       case EventActionTypes.ABANDON:
         this.app.removeParticipant((event.payload as AbandonEventPayload).userId)
+        break;
     }
   }
 }
