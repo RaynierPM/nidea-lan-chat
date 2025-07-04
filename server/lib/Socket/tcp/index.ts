@@ -50,6 +50,7 @@ export class SocketManager {
     this.room = room
 
     this.server.listen({
+      host: NetworkUtils.getPrivateIp(),
       port: configuration.port,
       signal: this.abort_controller.signal
     }, () => {
