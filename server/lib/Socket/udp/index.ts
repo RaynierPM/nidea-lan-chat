@@ -75,7 +75,7 @@ export class RoomExposer {
   }
   
   expose_room() {
-    this.socket.bind(configuration.exposePort, NetworkUtils.getPrivateIp())
+    this.socket.bind(configuration.exposePort)
   }
 
   stop_exposure() {
