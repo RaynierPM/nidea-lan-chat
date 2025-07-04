@@ -64,10 +64,12 @@ export class Room extends Chat {
   }
 
   removeParticipant(userId: string): void {
+    const participant = this.getParticipant(userId)
     super.removeParticipant(userId)
     this.chats.forEach(chat => {
       chat.removeParticipant(userId)
     })
+    participant?.disconnect()
   }
 
   findChat(chatId: number) {

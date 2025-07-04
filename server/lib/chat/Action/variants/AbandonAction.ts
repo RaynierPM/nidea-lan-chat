@@ -20,7 +20,7 @@ export class AbanadonAction extends ActionBase {
   protected _payload: AbandonActionPayload;
   
   constructor(payload: AbandonActionPayload) {
-    super(EventActionTypes.JOIN)
+    super(EventActionTypes.ABANDON)
     this._payload = payload
     this.metadata = {
       timestamp: Number(new Date()),

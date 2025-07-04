@@ -36,8 +36,11 @@ export function printMessage(message: MessageI) {
   console.log(`${styleText('blueBright', `${isMe? "--" : "**"}${username}`)}: ${message.content} ${styleText('gray', `~~${dateString}~~`)}`)
 }
 
-function handleCommands(command: string) {
-  command = command.trim().toLowerCase()
+function handleCommands(entry: string) {
+  const actions = entry.trim().toLowerCase().split(" ")
+  const command = actions[0]
+  const args = actions.slice(1)
+
   switch (command) {
     case "party":
       console.clear()
@@ -56,6 +59,10 @@ function handleCommands(command: string) {
       printRoomName()
       console.log(` + =========== History =========== + `)
       app?.messages?.forEach(msg => printMessage(msg))
+      break;
+    case "abandon":
+      let roomId = !isNaN(Number(args[0]))? Number(args[0]) : app.chatInfo!.id 
+      app.abandonRoom(roomId)
       break;
     case "help":
       console.clear()

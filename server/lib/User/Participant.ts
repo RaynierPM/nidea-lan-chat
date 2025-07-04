@@ -65,6 +65,7 @@ export class Participant implements UserI {
 
   disconnect() {
     this._status = UserStatuses.DISCONNECTED
+    this._socket?.destroy()
     this._socket = null
   }
 

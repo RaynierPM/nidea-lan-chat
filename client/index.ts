@@ -7,6 +7,7 @@ import { User } from "../common/lib/User/User";
 import { NetworkUtils } from "../common/utils/network";
 import { TimestampUtils } from "../common/utils/timestamp";
 import { configuration } from "../server/config/configuration";
+import { AbanadonAction } from "../server/lib/chat/Action/variants/AbandonAction";
 import { MessageAction } from "../server/lib/chat/Action/variants/MessageAction";
 import { EventHandler } from "./event/handler";
 import { RoomInfo } from "./interfaces/chat.interface";
@@ -131,6 +132,13 @@ export class App {
     this.socketManager.emit(new MessageAction({content, userId: this.user.id}))
   }
   
+  abandonRoom(chatId: number) {
+    this.socketManager.emit(new AbanadonAction({
+      chatId,
+      userId: this.user.id
+    }))
+  }
+
   private handleEvent = (event:Event) => {
     this.eventHandler.handle(event)
   }
