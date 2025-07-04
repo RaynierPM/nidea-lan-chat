@@ -83,22 +83,26 @@ export class SocketManager {
   }
 
   private handleMessage = (socket: Socket, data: Buffer) => {
-    const str = data.toString()
-    try {
-      const action = ActionFactory.getEventHandler(JSON.parse(str))
-      const listeners = this.listeners[action.type]
-      if (listeners) {
-        listeners.forEach((listener) => {
-          listener(socket, action)
-        })
+    const messages = data.toString().split('\n')
+    // Event cleanup (removing '')
+    messages.pop()
+    for (const message of messages) {
+      try {
+        const action = ActionFactory.getEventHandler(JSON.parse(message))
+        const listeners = this.listeners[action.type]
+        if (listeners) {
+          listeners.forEach((listener) => {
+            listener(socket, action)
+          })
+        }
+        this.listeners["*"]?.forEach(listener => listener(socket, action))
+      } catch (err) {
+        socket.write(JSON.stringify({
+          response: "Error",
+          reason: err instanceof Error? err.message : err
+        }))
+        console.error("Not valid payload: \n", err)
       }
-      this.listeners["*"]?.forEach(listener => listener(socket, action))
-    } catch (err) {
-      socket.write(JSON.stringify({
-        response: "Error",
-        reason: err instanceof Error? err.message : err
-      }))
-      console.error("Not valid payload: \n", err)
     }
   }
 

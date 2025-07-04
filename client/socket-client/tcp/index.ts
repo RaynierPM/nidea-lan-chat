@@ -12,10 +12,6 @@ export class SocketManager {
 
   private listeners: Partial<Record<EventActionTypes | "*", TCPSocketListener[]>> = {} 
 
-  constructor() {
-
-  }
-
   connect(addr: string, port: number, user: UserI) {
     console.log("Trying to connect to: ", addr, port)
     this.connection = createConnection(port, addr, () => {
@@ -43,16 +39,21 @@ export class SocketManager {
   }
 
   private handleMessages = (data: Buffer) => {
-    try {
-      const event = JSON.parse(data.toString()) as Event
-      const listeners = this.listeners[event.type]
-      if (listeners) {
-        listeners.forEach(listener => listener(event))
+    const messages = data.toString().split('\n')
+    // Event cleanup (removing '')
+    messages.pop()
+    for (const message of messages) {
+      try {
+        const event = JSON.parse(message) as Event
+        const listeners = this.listeners[event.type]
+        if (listeners) {
+          listeners.forEach(listener => listener(event))
+        }
+        this.listeners['*']?.forEach(listener => listener(event))
+      } catch (err) {
+        console.log(err)
+        console.log(" +== Unprocesable event received ==+")
       }
-      this.listeners['*']?.forEach(listener => listener(event))
-    } catch (err) {
-      console.log(err)
-      console.log(" +== Unprocesable event received ==+")
     }
   }
 

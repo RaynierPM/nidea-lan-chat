@@ -22,6 +22,6 @@ export abstract class EventBase implements Event {
       payload: this.payload,
       timestamp: this.timestamp
     }
-    return JSON.stringify(mappedEvent)
+    return JSON.stringify(mappedEvent) + '\n'
   }
 }
