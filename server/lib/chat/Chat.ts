@@ -8,6 +8,7 @@ import { SocketWithId } from "../interfaces/socket.interface";
 import { ConnectEvent } from "../../../common/lib/Event/variants/Connect.event";
 import { DisconnectEvent } from "../../../common/lib/Event/variants/Disconnect.event";
 import { ChatInfo } from "../../../client/interfaces/chat.interface";
+import { EventBase } from "../../../common/lib/Event/Event";
 
 export class Chat {
   private _id: number;
@@ -30,12 +31,12 @@ export class Chat {
 
   addMessage(message: Message) {
     this._messages.push(message)
-    this._participants.forEach(usr => {
-      usr.notify(new MessageEvent({
+    this.notifyAll(
+      new MessageEvent({
         content: message.content,
         roomId: this._id
-      }, message.userId || undefined))
-    })
+      }, message.userId || undefined)
+    )
   }
   // Could in future delete OR edit messages
 
@@ -58,7 +59,7 @@ export class Chat {
 
   addParticipant(newUser: Participant) {
     this._participants.push(newUser)
-    this.participants.forEach(user => {
+    this.notifyAll(user => {
       user.notify(new JoinEvent(
         user.id, 
         {
@@ -73,11 +74,10 @@ export class Chat {
 
   disconnect(userId: string) {
     const user = this.getParticipant(userId)
+    console.log({userToDisconnect: user})
     if (user) {
       user.disconnect()
-      this.participants.forEach(participant => {
-        participant.notify(new DisconnectEvent(user.id))
-      })
+      this.notifyAll(new DisconnectEvent(user.id))
     }
   }
 
@@ -85,7 +85,7 @@ export class Chat {
     const user = this.getParticipant(userId)
     if (user) {
       user.connect(socket)
-      user.notify(new ConnectEvent(userId))
+      this.notifyAll(new ConnectEvent(userId))
     }
   }
 
@@ -105,6 +105,16 @@ export class Chat {
       name: this.name,
       messages: this.messages.map(msg => msg.getData()),
       participants: this.participants.map(participant => participant.getData())
+    }
+  }
+
+  notifyAll(event: EventBase | ((part: Participant) => void)) {
+    if (typeof event === 'function') {
+      this.participants.forEach(event)
+    } else {
+      this.participants.forEach(part => {
+        part.notify(event)
+      })
     }
   }
 }
