@@ -7,6 +7,8 @@ import { configuration } from "../../config/configuration";
 import { SocketManager } from "../Socket/tcp";
 import { ActionFactory } from "./Action/Action.factory";
 import { RoomInfo } from "../../../client/interfaces/chat.interface";
+import { Participant } from "../User/Participant";
+import { GetHistoryEvent } from "../../../common/lib/Event/variants/GetHistory.event";
 
 export class Room extends Chat {
   private _owner: UserI;
@@ -61,14 +63,11 @@ export class Room extends Chat {
     this._roomName = name ?? `${owner.username}'s Room`
   }
 
-  expulseParticipant(userId: string): void {
-    if (this.participants.some(u => u.id === userId)) {
-      this._participants = this._participants.filter(u => u.id !== userId)
-      // Notify participant expulsion
-      this.chats.forEach(chat => {
-        chat.expulseParticipant(userId)
-      })
-    }
+  removeParticipant(userId: string): void {
+    super.removeParticipant(userId)
+    this.chats.forEach(chat => {
+      chat.removeParticipant(userId)
+    })
   }
 
   findChat(chatId: number) {
@@ -87,5 +86,10 @@ export class Room extends Chat {
       chats: this.chats.map(chat => chat.getChatInfo()),
       owner: {id: this.owner.id, username: this.owner.username}
     }
+  }
+
+  addParticipant(newUser: Participant): void {
+    newUser.notify(new GetHistoryEvent(this.getRoomInfo()))
+    super.addParticipant(newUser)
   }
 }

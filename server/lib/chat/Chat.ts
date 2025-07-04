@@ -87,9 +87,18 @@ export class Chat {
     }
   }
 
-  expulseParticipant(userId: string) {
-    if (this.participants.some(u => u.id === userId)) {
+  removeParticipant(userId: string) {
+    const participant = this.participants.find(part => part.id === userId)
+    if (participant) {
       this._participants = this._participants.filter(u => u.id !== userId)
+      participant.notify(new MessageEvent({
+        content: "You abandoned chat.",
+        roomId: this._id
+      }))
+      this.notifyAll(new MessageEvent({
+        content: `${participant.username} has abandoned this chat.`,
+        roomId: this._id
+      }))
     }
   }
 

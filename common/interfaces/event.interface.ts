@@ -9,7 +9,7 @@ export enum EventActionTypes {
   CONNECT = "CONNECT_EVENT",
   GET_HISTORY = "GET_HISTORY_EVENT",
   // On future
-  EXIT = "EXIT_EVENT",
+  ABANDON = "ABANDON_EVENT",
   EXPULSE = "EXPULSION_EVENT",
 }
 
