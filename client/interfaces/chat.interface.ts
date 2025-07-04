@@ -1,4 +1,4 @@
-import { UserStatuses } from "../../common/interfaces/User.interface";
+import { UserI, UserStatuses } from "../../common/interfaces/User.interface";
 
 export type ChatInfo = {
   id: number;
@@ -17,5 +17,6 @@ export type ChatInfo = {
 }
 
 export interface RoomInfo extends ChatInfo {
+  owner: UserI
   chats: ChatInfo[]
 }

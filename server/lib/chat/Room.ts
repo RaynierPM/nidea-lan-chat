@@ -84,7 +84,8 @@ export class Room extends Chat {
   getRoomInfo():RoomInfo {
     return {
       ...this.getChatInfo(),
-      chats: this.chats.map(chat => chat.getChatInfo())
+      chats: this.chats.map(chat => chat.getChatInfo()),
+      owner: {id: this.owner.id, username: this.owner.username}
     }
   }
 }

@@ -4,6 +4,11 @@ import { configuration } from '../server/config/configuration';
 import { getStatusText } from './utils/userStatus';
 import { printMany } from './utils/cli';
 import { lanChatReadme } from './cli-text';
+import { styleText } from 'node:util';
+import { ConnectionInfo } from '../common/interfaces/Chat.interface';
+import { FakeUsernameUtil } from './utils/usernameFaker';
+import { MessageI } from '../common/interfaces/message.interface';
+import { TimestampUtils } from '../common/utils/timestamp';
 
 // App ~~ ON USE ~~
 const rl = readline.createInterface({
@@ -12,14 +17,30 @@ const rl = readline.createInterface({
 })
 let app: App;
 
+function printRoomName() {
+  console.log(`Chat: ${styleText(['bgBlack', 'whiteBright'], app!.chatInfo?.name || "No defined")}`)
+}
+
+export function printMessage(message: MessageI) {
+  const isMe = message.userId === app.owner?.id
+  const username = !message.userId
+    ? "System" 
+    : isMe 
+    ? "Me" 
+    : app.getParticipant(message.userId)?.username || "Unknown"
+
+  const date = TimestampUtils.getDateFrom(message.timestamp).toLocaleDateString()
+  console.log(`${styleText('blueBright', `${isMe? "--" : "**"}${username}`)}: ${message.content} ${styleText('gray', `~~date:${date}~~`)}`)
+}
+
 function handleCommands(command: string) {
   command = command.trim().toLowerCase()
   switch (command) {
     case "party":
       console.clear()
       const participantsList = getParticipantsList()
-      app?.printRoomName()
-      console.log(` + ==== Party ==== + ${participantsList}`)
+      printRoomName()
+      console.log(` + =========== Party =========== + ${participantsList}`)
       break;
     case "exit":
       console.log("Goodbye!!")
@@ -29,13 +50,13 @@ function handleCommands(command: string) {
       break;
     case "history":
       console.clear()
-      app?.printRoomName()
-      console.log(` + ==== History ==== + `)
-      app?.messages?.forEach(msg => app.printMessage(msg))
+      printRoomName()
+      console.log(` + =========== History =========== + `)
+      app?.messages?.forEach(msg => printMessage(msg))
       break;
     case "help":
       console.clear()
-      app.printRoomName()
+      printRoomName()
       console.log(lanChatReadme)
       break;
     default:
@@ -44,9 +65,20 @@ function handleCommands(command: string) {
   }
 }
 
+function printRooms(rooms: ConnectionInfo[]) {
+  rooms.forEach((connInfo, idx) => {
+    console.log(`${idx+1} → ${styleText(['blackBright'], `[`)}` + 
+    `${styleText('cyan', connInfo.room.name)}${styleText('blackBright', ']')} ` + 
+    `${styleText(['blackBright'], '(')}` + 
+    `${styleText('green', "Owner")}: ${connInfo.room.user.username}` +
+    `${styleText(['blackBright'], ')')}` 
+  )
+  })
+}
+
 function getParticipantsList() {
   return app!.participants
-    ?.map(part => `\n ${part.username} (${getStatusText(part.status)})`)
+    ?.map(part => `\n ${part.username} ${styleText('gray', '(')}${getStatusText(part.status)}${styleText('gray', ')')}`)
     .join('')
 }
 
@@ -54,10 +86,20 @@ async function startApp() {
   let resolver: () => void
   let promise = new Promise<void>(res => resolver = res)
   
-  rl.question("Insert a username (If empty you will Papotico ~~ We love papotico ~~) -> ", name => {
-    if (!name) name = "Papotico"
+  rl.question("Insert a username (If empty name you will have a random characters)-> ", name => {
+    if (!name) name = FakeUsernameUtil.generate()
     app = new App(name)
-    app.search().then(() => {resolver?.()})
+    console.log(`Hi, ${styleText('redBright', name)}.`)
+    console.log("Scanning rooms...")
+    app.search().then(() => {
+      console.log("\nScanning finished!")
+      if (app.publicRooms.length) {
+        printRooms(app.publicRooms)
+      } else {
+        console.log("\nOh no! There aren't public rooms in your network. 🥲")
+      }
+      resolver?.()
+    })
   })
   return promise
 }
@@ -67,12 +109,28 @@ async function requestConnection() {
   let promise = new Promise<void>(res => resolver = res)
   
   console.log(`
-${printMany("=", 30)}
-Check the list above and insert room's address (If empty will connecto to yourself). 
-(if u want to specify a port different from default {${configuration.port}} add ':')
-example: 192.168.0.231:1234`)
+${printMany("=", 80)}
+How to connect to a room.
+
+→ ${styleText(['red'], 'Enter')} the ${styleText(['redBright'], 'number')} of a room to join from the list.
+→ ${styleText(['red'], 'Or')} enter a full address manually (e.g., ${styleText(["redBright"], "192.168.0.100")} or ${styleText(["redBright"], "192.168.0.100:4567")}).
+→ ${styleText(['red'], 'Leave')} it empty to try connecting to localhost ${styleText(['greenBright'], "(if you're hosting a room)")}.
+
+${styleText(['gray', 'italic'], `Notes:
+- If no port is provided, the default (${configuration.port}) will be used.`)}
+${printMany("=", 80)}
+`)
 
   rl.question("->", connString => {
+    if (Number(connString)) {
+      const selectedRoom = app.publicRooms[Number(connString)-1]
+      if (selectedRoom) {
+        connString = `${selectedRoom.addr}:${selectedRoom.port}`
+      } else {
+        console.log(styleText("red", "Not valid option: closing app..."))
+        return rl.close()
+      }
+    }
     if (!connString) {
       connString = 'localhost'
     }
