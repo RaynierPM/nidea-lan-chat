@@ -9,6 +9,8 @@ import { ConnectionInfo } from '../common/interfaces/Chat.interface';
 import { FakeUsernameUtil } from './utils/usernameFaker';
 import { MessageI } from '../common/interfaces/message.interface';
 import { TimestampUtils } from '../common/utils/timestamp';
+import { EventActionTypes } from '../common/interfaces/event.interface';
+import { MessageEventPayload } from '../common/lib/Event/variants/MessageEvent';
 
 // App ~~ ON USE ~~
 const rl = readline.createInterface({
@@ -18,19 +20,20 @@ const rl = readline.createInterface({
 let app: App;
 
 function printRoomName() {
-  console.log(`Chat: ${styleText(['bgBlack', 'whiteBright'], app!.chatInfo?.name || "No defined")}`)
+  console.log(`${styleText(['bgWhite', 'black', 'bold'], 'Chat: ')} ${app!.chatInfo?.name || "No defined"}`)
 }
 
 export function printMessage(message: MessageI) {
   const isMe = message.userId === app.owner?.id
   const username = !message.userId
-    ? "System" 
-    : isMe 
-    ? "Me" 
-    : app.getParticipant(message.userId)?.username || "Unknown"
+    ? "System" : isMe 
+    ? "Me" : app.getParticipant(message.userId)?.username || "Unknown"
 
-  const date = TimestampUtils.getDateFrom(message.timestamp).toLocaleDateString()
-  console.log(`${styleText('blueBright', `${isMe? "--" : "**"}${username}`)}: ${message.content} ${styleText('gray', `~~date:${date}~~`)}`)
+  const isToday = TimestampUtils.isToday(message.timestamp)
+  const dateString = isToday
+    ? TimestampUtils.getTimeFrom(message.timestamp) 
+    : TimestampUtils.getStringDateFrom(Number(message.timestamp))
+  console.log(`${styleText('blueBright', `${isMe? "--" : "**"}${username}`)}: ${message.content} ${styleText('gray', `~~${dateString}~~`)}`)
 }
 
 function handleCommands(command: string) {
@@ -78,8 +81,10 @@ function printRooms(rooms: ConnectionInfo[]) {
 
 function getParticipantsList() {
   return app!.participants
-    ?.map(part => `\n ${part.username} ${styleText('gray', '(')}${getStatusText(part.status)}${styleText('gray', ')')}`)
-    .join('')
+    ?.map((part, idx) => {
+      const isOwner = app.chatInfo?.owner.id === part.id
+      return `\n #${idx+1}→ ${part.username} ${styleText('gray', '(')}${getStatusText(part.status)}${styleText('gray', ')')} ${isOwner? styleText('red', '~~Owner~~') : ''}`   
+    }).join('')
 }
 
 async function startApp() {
@@ -146,6 +151,14 @@ startApp()
 .then(() => {
   requestConnection()
   .then(() => {
+    app.on(EventActionTypes.MESSAGE, (event) => {
+      const messagePayload = event.payload as MessageEventPayload
+      printMessage({
+        content: messagePayload.content,
+        timestamp: event.timestamp,
+        userId: event.authorId ?? null
+      })
+    })
     rl.on("line", (input) => {
       if (!input) return 
       const isCommand = input.startsWith('/')

@@ -21,11 +21,6 @@ export class EventHandler {
           timestamp: event.timestamp,
           userId: event.authorId ?? null
         })
-        printMessage({
-          content: messagePayload.content,
-          timestamp: event.timestamp,
-          userId: event.authorId ?? null
-        })
         break;
       case EventActionTypes.JOIN:
         const joinPayload: JoinEventPayload = event.payload as JoinEventPayload

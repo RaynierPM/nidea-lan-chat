@@ -1,5 +1,5 @@
 import { ConnectionInfo } from "../common/interfaces/Chat.interface";
-import { Event } from "../common/interfaces/event.interface";
+import { Event, EventActionTypes } from "../common/interfaces/event.interface";
 import { MessageI } from "../common/interfaces/message.interface";
 import { UserI, UserStatuses } from "../common/interfaces/User.interface";
 import { JoinEventPayload } from "../common/lib/Event/variants/JoinEvent";
@@ -55,7 +55,11 @@ export class App {
   
 
   get participants() {
-    return this._chatInfo?.participants.map(part => ({username: part.username, status: part.status}))
+    return this._chatInfo?.participants.map(part => ({
+      id: part.id,
+      username: part.username, 
+      status: part.status,
+    }))
   }
 
   addParticipant(user: JoinEventPayload) {
@@ -109,6 +113,10 @@ export class App {
     this.socketManager.on("*", (event) => {
       this.handleEvent(event)
     })
+  }
+
+  on(type: EventActionTypes, listener: (event: Event) => void) {
+    this.socketManager.on(type, listener)
   }
   
   connectToServer(addr: string, port: number = configuration.port) {
