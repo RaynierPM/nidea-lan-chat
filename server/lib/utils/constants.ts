@@ -1,2 +1,2 @@
-export const DEFAULT_PORT = 88888
-export const DEFAULT_EXPOSE_PORT = 99999
+export const DEFAULT_PORT = 12908
+export const DEFAULT_EXPOSE_PORT = 43900
