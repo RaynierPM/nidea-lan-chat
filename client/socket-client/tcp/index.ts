@@ -35,7 +35,7 @@ export class SocketManager {
   emit(action: ActionBase) {
     // @@ Connection needed error
     if (!this.connection) throw new ConnectionRequiredError()
-    this.connection.write(action.toJson())
+    this.connection.write(action.toJson()+'\n')
   }
 
   private handleMessages = (data: Buffer) => {

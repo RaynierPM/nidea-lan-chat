@@ -40,6 +40,7 @@ export class SocketManager {
       (socket as SocketWithId)._id = this.socketSequence.getNext()
       this.handleConnection(socket as SocketWithId)
       socket.on("end", () => this.handleDisconnect(socket as SocketWithId))
+      socket.on("close", () => this.handleDisconnect(socket as SocketWithId))
       socket.on("data", (data) => this.handleMessage(socket, data))
       socket.on("error", (err) => this.handleError(err))
     })
