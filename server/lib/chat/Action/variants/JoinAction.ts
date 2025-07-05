@@ -7,6 +7,7 @@ import { Participant } from "../../../User/Participant";
 import { SocketWithId } from "../../../interfaces/socket.interface";
 import { GetHistoryEvent } from "../../../../../common/lib/Event/variants/GetHistory.event";
 import { Message } from "../../Message";
+import { styleText } from "node:util";
 
 export type JoinActionPayload = {
   id: UserI['id']
@@ -39,7 +40,8 @@ export class JoinAction extends ActionBase {
       room.connect(id, socket)
     }else {
       room.addParticipant(new Participant(id, username, socket))
-      room.addMessage(new Message(null, `Has been joined: ${username}`))
+      room.addMessage(new Message(null, `-- ${username} -- Has been joined`))
+      room.addMessage(new Message(null, `@Everyone say hello.`))
     }
     socket.write(new GetHistoryEvent(room.getRoomInfo()).toJson())
   }

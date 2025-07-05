@@ -97,10 +97,7 @@ export class Chat {
         content: "You abandoned chat.",
         roomId: this._id
       }))
-      this.notifyAll(new MessageEvent({
-        content: `${participant.username} has abandoned this chat.`,
-        roomId: this._id
-      }))
+      this.addMessage(new Message(null, `${participant.username} has abandoned this chat.`))
       this.notifyAll(new AbandonEvent({userId}))
     }
   }

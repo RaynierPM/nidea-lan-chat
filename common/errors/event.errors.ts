@@ -12,7 +12,7 @@ export class SocketCloseByOtherInstance extends Error {
   private closedSocket: SocketWithId
   private newSocket: SocketWithId
   constructor(closedSSocket: SocketWithId, newSocket: SocketWithId) {
-    super("The actual socket was ~~closed~~ by othe instance on the same PC/Account")
+    super(`The socket id ${closedSSocket._id} was ~~closed~~ by othe instance on the same PC/Account`)
     this.closedSocket = closedSSocket
     this.newSocket = newSocket
   }

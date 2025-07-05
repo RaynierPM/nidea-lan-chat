@@ -50,7 +50,6 @@ export class SocketManager {
     this.room = room
 
     this.server.listen({
-      host: NetworkUtils.getPrivateIp(),
       port: configuration.port,
       signal: this.abort_controller.signal
     }, () => {
@@ -75,19 +74,17 @@ export class SocketManager {
     const scId = this.getSocketIdentifier(socket)
     if (scId) this.connections[scId] = socket
 
-    // const participant = this.room?.participants
-    //   .find(usr => [usr.socketRemoteAddr]
-    //     .includes(socket.remoteAddress)
-    //   )
-    // if (participant) {
-    //   this.room?.connect(participant.id, socket)
-    // }
+    const participant = this.room?.participants
+      .find(usr => [usr.socket?.remoteAddress]
+        .includes(socket.remoteAddress)
+    )
+    if (participant) {
+      this.room?.connect(participant.id, socket)
+    }
   }
 
   private handleMessage = (socket: Socket, data: Buffer) => {
     const messages = data.toString().split('\n').filter(msg => !!msg)
-    console.log(messages)
-    messages.pop()
     for (const message of messages) {
       try {
         const action = ActionFactory.getEventHandler(JSON.parse(message))
@@ -122,6 +119,6 @@ export class SocketManager {
   }
 
   private getSocketIdentifier(socket:Socket) {
-    return socket.remoteAddress ?? socket.localAddress
+    return socket.remoteAddress
   }
 }

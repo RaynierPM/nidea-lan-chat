@@ -24,6 +24,10 @@ export class RoomExposer {
     
     this.socket.on("listening", this.handleListening)
     this.socket.on("message", this.handleRequest)
+    this.socket.on("error", err => {
+      console.log(err)
+      this.socket.close()
+    })
   }
   
   private handleListening() {
