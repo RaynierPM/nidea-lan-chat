@@ -60,7 +60,7 @@ function handleCommands(entry: string) {
       console.log(` + =========== History =========== + `)
       app?.messages?.forEach(msg => printMessage(msg))
       break;
-    case "abandon":
+    case "leave":
       let roomId = !isNaN(Number(args[0]))? Number(args[0]) : app.chatInfo!.id 
       app.abandonRoom(roomId)
       break;
