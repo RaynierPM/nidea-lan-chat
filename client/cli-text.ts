@@ -15,7 +15,7 @@ ${styleText(['greenBright'], '/party')}     → Show users in the room.
 ${styleText(['greenBright'], '/history')}   → Show message history again.
 ${styleText(['greenBright'], '/clear')}     → Clear the terminal screen.
 ${styleText(['greenBright'], '/exit')}      → Leave the chat silently.
-${styleText(['greenBright'], '/leave')}   → Leave and notify others.
+${styleText(['greenBright'], '/leave')}     → Leave and notify others.
 
 ${styleText(['greenBright'], '/help')}      → Show this helper message again.
 `;

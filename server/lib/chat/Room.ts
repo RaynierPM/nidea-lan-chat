@@ -42,7 +42,7 @@ export class Room extends Chat {
     }
   }
   
-  verifyPassword(password: string):boolean {
+  verifyPassword(password: string = ""):boolean {
     return this._password === password
   }
 

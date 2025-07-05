@@ -7,11 +7,11 @@ import { Participant } from "../../../User/Participant";
 import { SocketWithId } from "../../../interfaces/socket.interface";
 import { GetHistoryEvent } from "../../../../../common/lib/Event/variants/GetHistory.event";
 import { Message } from "../../Message";
-import { styleText } from "node:util";
 
 export type JoinActionPayload = {
   id: UserI['id']
   username: string
+  password?: string
 }
 
 export class JoinAction extends ActionBase {
@@ -30,9 +30,15 @@ export class JoinAction extends ActionBase {
   }
 
   handle(socket: SocketWithId, room: Room): void {
-    // @@ Replace by valid error
-    if (room.participants.some(participant => participant.socketId === socket._id)) throw new Error('No valid re-join from same PC')
     const {id, username} = this._payload
+    if (room.withPassword) {
+      const isValid = room.verifyPassword(this._payload.password)
+      if (!isValid) {
+        const error = new Error("Not valid password")
+        socket.destroy(error)
+        throw error
+      }
+    }
     const existsOnRoom = room
       .participants
       .some(part => part.id === id)

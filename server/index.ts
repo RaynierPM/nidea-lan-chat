@@ -10,6 +10,7 @@ const owner = new User(NetworkUtils.getNetworkMacAddr()!, 'Papotico')
 
 const testingRoom = new Room({
   owner: owner,
+  password: "hola",
 })
 if (!testingRoom.isHidden) new RoomExposer(testingRoom).expose_room()
 SocketManager.instance.startServer(testingRoom)

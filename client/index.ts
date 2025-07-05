@@ -128,11 +128,15 @@ export class App {
     this.socketManager.on(type, listener)
   }
   
-  connectToServer(addr: string, port: number = configuration.port) {
+  connectToServer(addr: string, port: number = configuration.port, password?: string) {
     this.socketManager.connect(
       addr, 
       port, 
-      {id: this._user.id, username: this._user.username}
+      {
+        id: this._user.id, 
+        username: this._user.username,
+        password
+      }
     )
   }
   

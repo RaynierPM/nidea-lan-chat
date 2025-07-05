@@ -36,6 +36,12 @@ export function printMessage(message: MessageI) {
   console.log(`${styleText('blueBright', `${isMe? "--" : "**"}${username}`)}: ${message.content} ${styleText('gray', `~~${dateString}~~`)}`)
 }
 
+function printHelp() {
+  console.clear()
+  printRoomName()
+  console.log(lanChatReadme)
+}
+
 function handleCommands(entry: string) {
   const actions = entry.trim().toLowerCase().split(" ")
   const command = actions[0]
@@ -65,9 +71,7 @@ function handleCommands(entry: string) {
       app.abandonRoom(roomId)
       break;
     case "help":
-      console.clear()
-      printRoomName()
-      console.log(lanChatReadme)
+      printHelp()
       break;
     default:
       console.log(" === Unknown command === ")
@@ -147,9 +151,15 @@ ${printMany("=", 80)}
       connString = 'localhost'
     }
     const [addr, port] = connString.split(':')
-    app.connectToServer(addr, Number(port) || configuration.port)
-    console.log("Connecting...")
-    resolver?.()
+    rl.question("Insert passord (Empty if there is not required):", password => {
+      app.connectToServer(
+        addr, 
+        Number(port) || configuration.port, 
+        password
+      )
+      console.log("Connecting...")
+      resolver?.()
+    })
   })
   return promise
 }
@@ -165,6 +175,9 @@ startApp()
         timestamp: event.timestamp,
         userId: event.authorId ?? null
       })
+    })
+    app.on(EventActionTypes.CONNECT, () => {
+      printHelp()
     })
     rl.on("line", (input) => {
       if (!input) return 

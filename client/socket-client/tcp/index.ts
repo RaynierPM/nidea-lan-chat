@@ -5,19 +5,16 @@ import { ConnectionRequiredError } from '../../errors/socket'
 import { JoinAction } from '../../../server/lib/chat/Action/variants/JoinAction'
 import { UserI } from '../../../common/interfaces/User.interface'
 import { ActionBase } from '../../../server/lib/chat/Action/Action'
-import { lanChatReadme } from '../../cli-text'
 
 export class SocketManager {
   private connection?: Socket
 
   private listeners: Partial<Record<EventActionTypes | "*", TCPSocketListener[]>> = {} 
 
-  connect(addr: string, port: number, user: UserI) {
+  connect(addr: string, port: number, payload: UserI & {password?: string}) {
     console.log("Trying to connect to: ", addr, port)
     this.connection = createConnection(port, addr, () => {
-      console.clear()
-      console.log(lanChatReadme)
-      this.emit(new JoinAction(user))
+      this.emit(new JoinAction(payload))
     })
     this.connection.on("data", this.handleMessages)
     this.connection.on("close", this.onClose)

@@ -60,6 +60,7 @@ export class Chat {
 
   addParticipant(newUser: Participant) {
     this._participants.push(newUser)
+    newUser.notify(new ConnectEvent(newUser.id))
     this.notifyAll(user => {
       user.notify(new JoinEvent(
         user.id, 
