@@ -54,11 +54,12 @@ export class SocketManager {
     for (const message of messages) {
       try {
         const event = JSON.parse(message) as Event
+        this.listeners['*']?.forEach(listener => listener(event))
+        
         const listeners = this.listeners[event.type]
         if (listeners) {
           listeners.forEach(listener => listener(event))
         }
-        this.listeners['*']?.forEach(listener => listener(event))
       } catch (err) {
         console.log(err)
         console.log(" +== Unprocesable event received ==+")

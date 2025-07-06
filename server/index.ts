@@ -6,11 +6,12 @@ import { User } from '../common/lib/User/User'
 
 if (!NetworkUtils.getPrivateIp()) throw new Error('Required has connected to some Network to HOST a room')
 
-const owner = new User(NetworkUtils.getNetworkMacAddr()!, 'Papotico')
+const owner = new User(NetworkUtils.getNetworkMacAddr()!, process.env.username || 'Testing user')
 
 const testingRoom = new Room({
   owner: owner,
-  password: "hola",
+  password: process.env.password,
+  name: process.env.name
 })
 if (!testingRoom.isHidden) new RoomExposer(testingRoom).expose_room()
 SocketManager.instance.startServer(testingRoom)

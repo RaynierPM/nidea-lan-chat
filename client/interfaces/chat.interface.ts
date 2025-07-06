@@ -18,5 +18,6 @@ export type ChatInfo = {
 
 export interface RoomInfo extends ChatInfo {
   owner: UserI
+  roomName: string
   chats: ChatInfo[]
 }

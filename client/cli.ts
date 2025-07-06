@@ -19,8 +19,9 @@ const rl = readline.createInterface({
 })
 let app: App;
 
-function printRoomName() {
-  console.log(`${styleText(['bgWhite', 'black', 'bold'], 'Chat: ')} ${app!.chatInfo?.name || "No defined"}`)
+function printRoomNav() {
+  console.log(`${styleText(['bgGreen', 'black', 'bold'], 'Room:')} ${app!.chatInfo?.roomName || "No defined"}`+
+    ` -> ${styleText(['bgWhite', 'black', 'bold'], 'Chat:')} ${app!.chatInfo?.name || "No defined"}`)
 }
 
 export function printMessage(message: MessageI) {
@@ -39,19 +40,19 @@ export function printMessage(message: MessageI) {
 function printParty() {
   console.clear()
   const participantsList = getParticipantsList()
-  printRoomName()
+  printRoomNav()
   console.log(` + =========== Party =========== + ${participantsList}`)
 }
 
 function printHelp() {
   console.clear()
-  printRoomName()
+  printRoomNav()
   console.log(lanChatReadme)
 }
 
 function printHistory() {
   console.clear()
-  printRoomName()
+  printRoomNav()
   console.log(` + =========== History =========== + `)
   app?.messages?.forEach(msg => printMessage(msg))
 }
@@ -118,8 +119,20 @@ async function startApp() {
   rl.question("Insert a username (If empty name you will have a random characters)-> ", name => {
     if (!name) name = FakeUsernameUtil.generate()
     app = new App(name)
-    app.onConnect(() => {
+    app.on(EventActionTypes.GET_HISTORY, () => {
       printHelp()
+    })
+    app.on(EventActionTypes.MESSAGE, (event) => {
+      const messagePayload = event.payload as MessageEventPayload
+      if (isMyEvent(event)) {
+        printHistory()
+      }else {
+        printMessage({
+          content: messagePayload.content,
+          timestamp: event.timestamp,
+          userId: event.authorId ?? null
+        })
+      }
     })
     console.log(`Hi, ${styleText('redBright', name)}.`)
     console.log("Scanning rooms...")
@@ -184,17 +197,6 @@ startApp()
 .then(() => {
   requestConnection()
   .then(() => {
-    app.on(EventActionTypes.MESSAGE, (event) => {
-      const messagePayload = event.payload as MessageEventPayload
-      if (isMyEvent(event)) {
-        printHistory()
-      }
-      printMessage({
-        content: messagePayload.content,
-        timestamp: event.timestamp,
-        userId: event.authorId ?? null
-      })
-    })
     rl.on("line", (input) => {
       if (!input) return 
       const isCommand = input.startsWith('/')
