@@ -137,7 +137,7 @@ export class App {
       addr, 
       port, 
       {
-        id: this._user.id, 
+        userId: this._user.id, 
         username: this._user.username,
         password
       }
@@ -145,13 +145,12 @@ export class App {
   }
   
   sendMessage(content: string) {
-    this.socketManager.emit(new MessageAction({content, userId: this._user.id}))
+    this.socketManager.emit(new MessageAction({content}))
   }
   
   abandonRoom(chatId: number) {
     this.socketManager.emit(new AbanadonAction({
       chatId,
-      userId: this._user.id
     }))
   }
 }
