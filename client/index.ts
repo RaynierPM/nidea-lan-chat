@@ -120,13 +120,17 @@ export class App {
 
   loadListener() {
     this.socketManager.on("*", (event) => {
-      this.handleEvent(event)
+      this.eventHandler.handle(event)
     })
   }
 
   on(type: EventActionTypes, listener: (event: Event) => void) {
     this.socketManager.on(type, listener)
   }
+
+  onConnect(listener: () => void) {
+    this.socketManager.onConnect(listener)
+  } 
   
   connectToServer(addr: string, port: number = configuration.port, password?: string) {
     this.socketManager.connect(
@@ -149,9 +153,5 @@ export class App {
       chatId,
       userId: this._user.id
     }))
-  }
-
-  private handleEvent = (event:Event) => {
-    this.eventHandler.handle(event)
   }
 }

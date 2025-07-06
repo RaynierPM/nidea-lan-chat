@@ -11,22 +11,31 @@ export class SocketManager {
 
   private listeners: Partial<Record<EventActionTypes | "*", TCPSocketListener[]>> = {} 
 
+  private _connectCallbacks:(() => void)[] = []
+
   connect(addr: string, port: number, payload: UserI & {password?: string}) {
     console.log("Trying to connect to: ", addr, port)
     this.connection = createConnection(port, addr, () => {
       this.emit(new JoinAction(payload))
+      this._connectCallbacks.forEach(cb => {
+        cb()
+      })
     })
     this.connection.on("data", this.handleMessages)
     this.connection.on("close", this.onClose)
     this.connection.on("error", (err) => console.log(err))
   }
 
-  on(type: EventActionTypes | "*", listener: TCPSocketListener) {
+  on(type: EventActionTypes | "*" , listener: TCPSocketListener) {
     if (this.listeners[type]) {
       this.listeners[type].push(listener)
     }else {
       this.listeners[type] = [listener]
     }
+  }
+
+  onConnect(callback: () => void) {
+    this._connectCallbacks.push(callback)
   }
 
   emit(action: ActionBase) {
@@ -35,8 +44,14 @@ export class SocketManager {
     this.connection.write(action.toJson()+'\n')
   }
 
+  private _pendingBuffer = ''
+
   private handleMessages = (data: Buffer) => {
-    const messages = data.toString().split('\n').filter(msg => msg.length)
+    this._pendingBuffer += data.toString()
+    const messages = this._pendingBuffer.split('\n')
+
+    this._pendingBuffer = messages.pop()!
+
     for (const message of messages) {
       try {
         const event = JSON.parse(message) as Event

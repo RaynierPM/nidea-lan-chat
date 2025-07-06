@@ -83,8 +83,14 @@ export class SocketManager {
     }
   }
 
+  private _pendingBuffer = ''
+
   private handleMessage = (socket: Socket, data: Buffer) => {
-    const messages = data.toString().split('\n').filter(msg => !!msg)
+    this._pendingBuffer += data.toString()
+    const messages = this._pendingBuffer.split('\n')
+    
+    this._pendingBuffer = messages.pop()!
+    
     for (const message of messages) {
       try {
         const action = ActionFactory.getEventHandler(JSON.parse(message))
