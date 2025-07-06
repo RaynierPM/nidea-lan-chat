@@ -36,10 +36,24 @@ export function printMessage(message: MessageI) {
   console.log(`${styleText('blueBright', `${isMe? "--" : "**"}${username}`)}: ${message.content} ${styleText('gray', `~~${dateString}~~`)}`)
 }
 
+function printParty() {
+  console.clear()
+  const participantsList = getParticipantsList()
+  printRoomName()
+  console.log(` + =========== Party =========== + ${participantsList}`)
+}
+
 function printHelp() {
   console.clear()
   printRoomName()
   console.log(lanChatReadme)
+}
+
+function printHistory() {
+  console.clear()
+  printRoomName()
+  console.log(` + =========== History =========== + `)
+  app?.messages?.forEach(msg => printMessage(msg))
 }
 
 function handleCommands(entry: string) {
@@ -49,10 +63,7 @@ function handleCommands(entry: string) {
 
   switch (command) {
     case "party":
-      console.clear()
-      const participantsList = getParticipantsList()
-      printRoomName()
-      console.log(` + =========== Party =========== + ${participantsList}`)
+      printParty()
       break;
     case "exit":
       console.log("Goodbye!!")
@@ -61,10 +72,7 @@ function handleCommands(entry: string) {
       console.clear()
       break;
     case "history":
-      console.clear()
-      printRoomName()
-      console.log(` + =========== History =========== + `)
-      app?.messages?.forEach(msg => printMessage(msg))
+      printHistory()
       break;
     case "leave":
       let roomId = !isNaN(Number(args[0]))? Number(args[0]) : app.chatInfo!.id 
@@ -170,14 +178,15 @@ startApp()
   .then(() => {
     app.on(EventActionTypes.MESSAGE, (event) => {
       const messagePayload = event.payload as MessageEventPayload
+      printHistory()
       printMessage({
         content: messagePayload.content,
         timestamp: event.timestamp,
         userId: event.authorId ?? null
       })
     })
-    app.on(EventActionTypes.CONNECT, () => {
-      printHelp()
+    app.on(EventActionTypes.CONNECT, (event) => {
+      if (event.authorId === app.user.id) printHelp()
     })
     rl.on("line", (input) => {
       if (!input) return 
