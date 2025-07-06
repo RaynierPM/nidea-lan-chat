@@ -9,7 +9,7 @@ import { ConnectionInfo } from '../common/interfaces/Chat.interface';
 import { FakeUsernameUtil } from './utils/usernameFaker';
 import { MessageI } from '../common/interfaces/message.interface';
 import { TimestampUtils } from '../common/utils/timestamp';
-import { EventActionTypes } from '../common/interfaces/event.interface';
+import { Event, EventActionTypes } from '../common/interfaces/event.interface';
 import { MessageEventPayload } from '../common/lib/Event/variants/MessageEvent';
 
 // App ~~ ON USE ~~
@@ -54,6 +54,10 @@ function printHistory() {
   printRoomName()
   console.log(` + =========== History =========== + `)
   app?.messages?.forEach(msg => printMessage(msg))
+}
+
+function isMyEvent(event:Event) {
+  return event.authorId && event.authorId === app.user.id
 }
 
 function handleCommands(entry: string) {
@@ -113,6 +117,9 @@ async function startApp() {
   rl.question("Insert a username (If empty name you will have a random characters)-> ", name => {
     if (!name) name = FakeUsernameUtil.generate()
     app = new App(name)
+    app.onConnect(() => {
+      printHelp()
+    })
     console.log(`Hi, ${styleText('redBright', name)}.`)
     console.log("Scanning rooms...")
     app.search().then(() => {
@@ -178,15 +185,14 @@ startApp()
   .then(() => {
     app.on(EventActionTypes.MESSAGE, (event) => {
       const messagePayload = event.payload as MessageEventPayload
-      printHistory()
+      if (isMyEvent(event)) {
+        printHistory()
+      }
       printMessage({
         content: messagePayload.content,
         timestamp: event.timestamp,
         userId: event.authorId ?? null
       })
-    })
-    app.on(EventActionTypes.CONNECT, (event) => {
-      if (event.authorId === app.user.id) printHelp()
     })
     rl.on("line", (input) => {
       if (!input) return 
