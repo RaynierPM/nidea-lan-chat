@@ -9,7 +9,7 @@ import { GetHistoryEvent } from "../../../../../common/lib/Event/variants/GetHis
 import { Message } from "../../Message";
 
 export type JoinActionPayload = {
-  id: UserI['id']
+  userId: UserI['id']
   username: string
   password?: string
 }
@@ -25,12 +25,12 @@ export class JoinAction extends ActionBase {
     this._payload = payload
     this.metadata = {
       timestamp: Number(new Date()),
-      user: payload.id,
+      user: payload.userId,
     }
   }
 
   handle(socket: SocketWithId, room: Room): void {
-    const {id, username} = this._payload
+    const {userId, username} = this._payload
     if (room.withPassword) {
       const isValid = room.verifyPassword(this._payload.password)
       if (!isValid) {
@@ -41,11 +41,11 @@ export class JoinAction extends ActionBase {
     }
     const existsOnRoom = room
       .participants
-      .some(part => part.id === id)
+      .some(part => part.id === userId)
     if (existsOnRoom) {
-      room.connect(id, socket)
+      room.connect(userId, socket)
     }else {
-      room.addParticipant(new Participant(id, username, socket))
+      room.addParticipant(new Participant(userId, username, socket))
       room.addMessage(new Message(null, `-- ${username} -- Has been joined`))
       room.addMessage(new Message(null, `@Everyone say hello.`))
     }

@@ -107,6 +107,10 @@ export class Chat {
     return this.participants.find(u => u.id === userId)
   }
 
+  getParticipantBySocket(socket: SocketWithId) {
+    return this._participants.find(part => part.socketId === socket._id)
+  }
+
   getChatInfo():ChatInfo {
     return {
       id: this.id,

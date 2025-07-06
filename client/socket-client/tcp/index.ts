@@ -2,8 +2,7 @@ import {createConnection, Socket} from 'net'
 import { Event, EventActionTypes } from '../../../common/interfaces/event.interface'
 import { TCPSocketListener } from '../../interfaces/app.interface'
 import { ConnectionRequiredError } from '../../errors/socket'
-import { JoinAction } from '../../../server/lib/chat/Action/variants/JoinAction'
-import { UserI } from '../../../common/interfaces/User.interface'
+import { JoinAction, JoinActionPayload } from '../../../server/lib/chat/Action/variants/JoinAction'
 import { ActionBase } from '../../../server/lib/chat/Action/Action'
 
 export class SocketManager {
@@ -13,7 +12,7 @@ export class SocketManager {
 
   private _connectCallbacks:(() => void)[] = []
 
-  connect(addr: string, port: number, payload: UserI & {password?: string}) {
+  connect(addr: string, port: number, payload: JoinActionPayload) {
     console.log("Trying to connect to: ", addr, port)
     this.connection = createConnection(port, addr, () => {
       this.emit(new JoinAction(payload))

@@ -5,9 +5,9 @@ import { ActionMetadataI } from "../Action.interface";
 import { Room } from "../../Room";
 import { SocketWithId } from "../../../interfaces/socket.interface";
 import { Message } from "../../Message";
+import { TimestampUtils } from "../../../../../common/utils/timestamp";
 
 export type MessageActionPayload = {
-  userId: UserI['id']
   content: string
   roomId?: number
 }
@@ -22,14 +22,14 @@ export class MessageAction extends ActionBase {
     super(EventActionTypes.MESSAGE)
     this._payload = payload
     this.metadata = {
-      timestamp: Number(new Date()),
-      user: payload.userId,
+      timestamp: TimestampUtils.getTimestampFrom(),
       room: payload.roomId
     }
   }
 
-  handle(_: SocketWithId, room: Room): void {
-    const {userId, content} = this._payload
-    room.addMessage(new Message(userId, content))
+  handle(socket: SocketWithId, room: Room): void {
+    const {content} = this._payload
+    const participant = room.getParticipantBySocket(socket)
+    if (participant) room.addMessage(new Message(participant?.id, content))
   }
 }
