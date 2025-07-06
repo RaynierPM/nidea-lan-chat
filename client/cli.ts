@@ -94,11 +94,12 @@ function handleCommands(entry: string) {
 function printRooms(rooms: ConnectionInfo[]) {
   rooms.forEach((connInfo, idx) => {
     console.log(`${idx+1} → ${styleText(['blackBright'], `[`)}` + 
-    `${styleText('cyan', connInfo.room.name)}${styleText('blackBright', ']')} ` + 
-    `${styleText(['blackBright'], '(')}` + 
-    `${styleText('green', "Owner")}: ${connInfo.room.user.username}` +
-    `${styleText(['blackBright'], ')')}` 
-  )
+      `${styleText('cyan', connInfo.room.name)}${styleText('blackBright', ']')} ` + 
+      styleText(['blackBright'], '(') + 
+      `${styleText('green', "Owner")}: ${connInfo.room.user.username}` +
+      styleText(['blackBright'], ')') +
+      `${connInfo.room.withPassword? styleText('gray', ' ~~with-password~~') : ""}`
+    )
   })
 }
 
