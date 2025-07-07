@@ -43,17 +43,15 @@ export class JoinAction extends ActionBase {
       .participants
       .find(part => part.id === userId))
       
-      if (participant) {
-        room.connect(participant.id, socket)
-        const historyEvent = new GetHistoryEvent(room.getRoomInfo())
-        participant.notify(historyEvent)
-      }else {
-        participant = new Participant(userId, username, socket)
-        room.addParticipant(participant)
-        room.addMessage(new Message(null, `-- ${username} -- Has been joined`))
-        room.addMessage(new Message(null, `@Everyone say hello.`))
-        const historyEvent = new GetHistoryEvent(room.getRoomInfo())
-        participant.notify(historyEvent)
-      }
+    if (participant) {
+      room.connect(participant.id, socket)
+      participant.notify(new GetHistoryEvent(room.getRoomInfo()))
+    }else {
+      participant = new Participant(userId, username, socket)
+      room.addParticipant(participant)
+      participant.notify(new GetHistoryEvent(room.getRoomInfo()))
+      room.addMessage(new Message(null, `@Everyone say hello.`))
+      room.addMessage(new Message(null, `-- ${username} -- Has been joined`))
+    }
   }
 }

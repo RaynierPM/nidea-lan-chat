@@ -90,9 +90,4 @@ export class Room extends Chat {
       owner: {id: this.owner.id, username: this.owner.username}
     }
   }
-
-  addParticipant(newUser: Participant): void {
-    newUser.notify(new GetHistoryEvent(this.getRoomInfo()))
-    super.addParticipant(newUser)
-  }
 }
