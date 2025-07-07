@@ -39,19 +39,20 @@ export class JoinAction extends ActionBase {
         throw error
       }
     }
-    const participant = room
+    let participant = (room
       .participants
-      .find(part => part.id === userId)
+      .find(part => part.id === userId))
     const historyEvent = new GetHistoryEvent(room.getRoomInfo())
+
     if (participant) {
       room.connect(participant.id, socket)
-      participant.notify(historyEvent)
     }else {
-      const participant = new Participant(userId, username, socket)
+      participant = new Participant(userId, username, socket)
       room.addParticipant(participant)
       participant.notify(historyEvent)
       room.addMessage(new Message(null, `-- ${username} -- Has been joined`))
       room.addMessage(new Message(null, `@Everyone say hello.`))
     }
+    participant.notify(historyEvent)
   }
 }
