@@ -108,7 +108,9 @@ function getParticipantsList() {
   return app!.participants
     ?.map((part, idx) => {
       const isOwner = app.chatInfo?.owner.id === part.id
-      return `\n #${idx+1}→ ${part.username} ${styleText('gray', '(')}${getStatusText(part.status)}${styleText('gray', ')')} ${isOwner? styleText('red', '~~Owner~~') : ''}`   
+      return `\n #${idx+1}→ ${styleText(app.user.id === part.id? 'cyanBright' : 'reset', part.username)}`
+      + ` ${styleText('gray', '(')}${getStatusText(part.status)}${styleText('gray', ')')}` 
+      + ` ${isOwner? styleText('red', '~~Owner~~') : ''}`   
     }).join('')
 }
 
