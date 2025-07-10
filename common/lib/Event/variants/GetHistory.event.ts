@@ -1,7 +1,6 @@
 import { RoomInfo } from "../../../../client/interfaces/chat.interface";
 import { NotValidEventPayload } from "../../../errors/event.errors";
 import { EventActionTypes } from "../../../interfaces/event.interface";
-import { UserI } from "../../../interfaces/User.interface";
 import { EventBase } from "../Event";
 
 export class GetHistoryEvent extends EventBase {

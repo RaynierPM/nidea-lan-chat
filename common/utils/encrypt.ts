@@ -1,8 +1,8 @@
-export abstract class Encrypter {
-  static encrypt(value: string) {
-  }
+// export abstract class Encrypter {
+//   static encrypt(value: string) {
+//   }
 
-  static verify() {
+//   static verify() {
 
-  }
-}
+//   }
+// }

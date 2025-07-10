@@ -7,8 +7,6 @@ import { configuration } from "../../config/configuration";
 import { SocketManager } from "../Socket/tcp";
 import { ActionFactory } from "./Action/Action.factory";
 import { RoomInfo } from "../../../client/interfaces/chat.interface";
-import { Participant } from "../User/Participant";
-import { GetHistoryEvent } from "../../../common/lib/Event/variants/GetHistory.event";
 
 export class Room extends Chat {
   private _owner: UserI;

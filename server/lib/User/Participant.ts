@@ -1,4 +1,3 @@
-import { Socket } from "net";
 import { UserI, UserStatuses } from "../../../common/interfaces/User.interface";
 import { EventBase } from "../../../common/lib/Event/Event";
 import { SocketWithId } from "../interfaces/socket.interface";

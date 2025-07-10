@@ -1,5 +1,5 @@
 import { NotValidEventPayload } from "../../../errors/event.errors"
-import { EventActionTypes, EventEssential } from "../../../interfaces/event.interface"
+import { EventActionTypes } from "../../../interfaces/event.interface"
 import { UserI } from "../../../interfaces/User.interface"
 import { EventBase } from "../Event"
 
