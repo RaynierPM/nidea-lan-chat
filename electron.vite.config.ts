@@ -2,9 +2,6 @@ import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import react from '@vitejs/plugin-react'
 
-console.log('Renderer root:', resolve(__dirname, 'electron/renderer'));
-console.log('Renderer input:', 'index.html');
-
 export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin()],

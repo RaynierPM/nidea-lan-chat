@@ -1,5 +1,5 @@
 import {app, BrowserWindow} from 'electron'
-import {join} from 'node:path'
+import {join, resolve} from 'node:path'
 import {is} from '@electron-toolkit/utils'
 
 function createWindow() {
@@ -7,7 +7,7 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: join(__dirname, '../preload/main.js'),
+      preload: resolve(__dirname, '../preload/main.js'),
       sandbox: false
     }
   })
@@ -20,6 +20,15 @@ function createWindow() {
     console.log({isDev: is.dev})
     win.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  console.log(join(__dirname, '../preload/main.js'))
+  debugger
 }
 
 app.whenReady().then(createWindow)
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})

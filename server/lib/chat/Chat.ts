@@ -6,9 +6,9 @@ import { MessageEvent } from "../../../common/lib/Event/variants/MessageEvent";
 import { SocketWithId } from "../interfaces/socket.interface";
 import { ConnectEvent } from "../../../common/lib/Event/variants/Connect.event";
 import { DisconnectEvent } from "../../../common/lib/Event/variants/Disconnect.event";
-import { ChatInfo } from "../../../client/interfaces/chat.interface";
 import { EventBase } from "../../../common/lib/Event/Event";
 import { AbandonEvent } from "../../../common/lib/Event/variants/Abandon.event";
+import { ChatInfo } from "../../../common/interfaces/Chat.interface";
 
 export class Chat {
   private _id: number;

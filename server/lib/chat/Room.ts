@@ -6,7 +6,7 @@ import { NetworkUtils } from "../../../common/utils/network";
 import { configuration } from "../../config/configuration";
 import { SocketManager } from "../Socket/tcp";
 import { ActionFactory } from "./Action/Action.factory";
-import { RoomInfo } from "../../../client/interfaces/chat.interface";
+import { RoomInfo } from "../../../common/interfaces/Chat.interface";
 
 export class Room extends Chat {
   private _owner: UserI;

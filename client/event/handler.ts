@@ -1,10 +1,10 @@
 import { App } from "..";
+import { RoomInfo } from "../../common/interfaces/Chat.interface";
 import { Event, EventActionTypes } from "../../common/interfaces/event.interface";
 import { UserStatuses } from "../../common/interfaces/User.interface";
 import { AbandonEventPayload } from "../../common/lib/Event/variants/Abandon.event";
 import { JoinEventPayload } from "../../common/lib/Event/variants/JoinEvent";
 import { MessageEventPayload } from "../../common/lib/Event/variants/MessageEvent";
-import { RoomInfo } from "../interfaces/chat.interface";
 
 export class EventHandler {
   constructor(private readonly app: App) {}

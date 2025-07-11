@@ -1,5 +1,5 @@
-import { RoomInfo } from "../../../../client/interfaces/chat.interface";
 import { NotValidEventPayload } from "../../../errors/event.errors";
+import { RoomInfo } from "../../../interfaces/Chat.interface";
 import { EventActionTypes } from "../../../interfaces/event.interface";
 import { EventBase } from "../Event";
 

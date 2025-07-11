@@ -1,4 +1,4 @@
-import { ConnectionInfo } from "../common/interfaces/Chat.interface";
+import { ConnectionInfo, RoomInfo } from "../common/interfaces/Chat.interface";
 import { Event, EventActionTypes } from "../common/interfaces/event.interface";
 import { MessageI } from "../common/interfaces/message.interface";
 import { UserI, UserStatuses } from "../common/interfaces/User.interface";
@@ -9,7 +9,6 @@ import { configuration } from "../server/config/configuration";
 import { AbanadonAction } from "../server/lib/chat/Action/variants/AbandonAction";
 import { MessageAction } from "../server/lib/chat/Action/variants/MessageAction";
 import { EventHandler } from "./event/handler";
-import { RoomInfo } from "./interfaces/chat.interface";
 import { SocketManager } from "./socket-client/tcp";
 import { RoomScanner } from "./socket-client/udp";
 
