@@ -7,25 +7,25 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: resolve(__dirname, '../preload/main.js'),
-      sandbox: false
-    }
+      preload: resolve(__dirname, '../preload/main.mjs'),
+      sandbox: false,
+      contextIsolation: true,
+    },
   })
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    console.log({isDev: is.dev})
-    console.log({URL: process.env['ELECTRON_RENDERER_URL']})
     win.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
-    console.log({isDev: is.dev})
     win.loadFile(join(__dirname, '../renderer/index.html'))
   }
-
-  console.log(join(__dirname, '../preload/main.js'))
-  debugger
+  
+  if (!app.isPackaged) {
+    win.webContents.openDevTools()
+  }
 }
 
-app.whenReady().then(createWindow)
+app.whenReady()
+  .then(createWindow)
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

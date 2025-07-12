@@ -1,5 +1,7 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { contextBridge } from "electron";
+
+console.log("PRELOAD FILE")
 
 contextBridge.exposeInMainWorld('core', {
-  ping: () => {ipcRenderer.invoke('ping')}
+  ping: () => {console.log("PONG")}
 })
