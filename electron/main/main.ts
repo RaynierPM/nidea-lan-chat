@@ -9,7 +9,6 @@ function createWindow() {
     webPreferences: {
       preload: resolve(__dirname, '../preload/main.mjs'),
       sandbox: false,
-      contextIsolation: true,
     },
   })
 

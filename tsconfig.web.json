@@ -16,6 +16,9 @@
       ],
       "@common/*": [
         "common/*"
+      ],
+      "@client/*": [
+        "client/*"
       ]
     }
   }
