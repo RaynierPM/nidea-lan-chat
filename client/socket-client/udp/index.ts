@@ -13,6 +13,7 @@ export class RoomScanner {
   private socket: Socket
 
   constructor(store: ConnInfoStore) {
+    console.log("")
     this.connectionStore = store
     this.abortController = new AbortController()
     this.socket = createSocket({

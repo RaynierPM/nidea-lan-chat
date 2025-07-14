@@ -1,7 +1,6 @@
-import { contextBridge } from "electron";
-
-console.log("PRELOAD FILE")
+import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld('core', {
-  ping: () => {console.log("PONG")}
+  init: (username: string) => ipcRenderer.invoke('init', {username}),
+  searchRooms: () => ipcRenderer.invoke('search:rooms')
 })

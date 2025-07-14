@@ -138,7 +138,7 @@ async function startApp() {
     })
     console.log(`Hi, ${styleText('redBright', name)}.`)
     console.log("Scanning rooms...")
-    app.search().then(() => {
+    app.searchRooms().then(() => {
       console.log("\nScanning finished!")
       if (app.publicRooms.length) {
         printRooms(app.publicRooms)

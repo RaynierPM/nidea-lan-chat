@@ -48,6 +48,7 @@
   "dependencies": {
     "@electron-toolkit/utils": "^4.0.0",
     "antd": "^5.26.4",
-    "react-router-dom": "^7.6.3"
+    "react-router-dom": "^7.6.3",
+    "zustand": "^5.0.6"
   }
 }

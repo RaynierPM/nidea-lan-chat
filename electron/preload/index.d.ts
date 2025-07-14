@@ -1,8 +1,10 @@
 import '@electron-toolkit'
+import { ConnectionInfo } from '../../common/interfaces/Chat.interface'
 declare global {
   interface Window {
     core: {
-      ping: () => void
+      searchRooms: () => Promise<ConnectionInfo[]>,
+      init: (username: string) => void,
     }
   }
 }

@@ -9,10 +9,11 @@ import { configuration } from "../server/config/configuration";
 import { AbanadonAction } from "../server/lib/chat/Action/variants/AbandonAction";
 import { MessageAction } from "../server/lib/chat/Action/variants/MessageAction";
 import { EventHandler } from "./event/handler";
+import { ConnInfoStore } from "./interfaces/app.interface";
 import { SocketManager } from "./socket-client/tcp";
 import { RoomScanner } from "./socket-client/udp";
 
-export class App {
+export class App implements ConnInfoStore {
   private availableRooms: ConnectionInfo[] = []
 
   get publicRooms() {
@@ -29,6 +30,12 @@ export class App {
 
   get messages() {
     return this._chatInfo?.messages
+  }
+
+  private _user:UserI
+
+  get user() {
+    return this._user
   }
 
   addMessage(chatId: number, message: MessageI) {
@@ -91,12 +98,6 @@ export class App {
     return this._chatInfo?.participants.find(user => user.id === userId)
   }
 
-  private _user:UserI
-
-  get user() {
-    return this._user
-  }
-
   private socketManager: SocketManager
 
   addConnInfo(conn: ConnectionInfo) {
@@ -112,12 +113,12 @@ export class App {
     this.loadListener()
   }
 
-  search() {
+  searchRooms() {
     this.availableRooms = []
     return this.roomScanner.scan()
   }
 
-  loadListener() {
+  private loadListener() {
     this.socketManager.on("*", (event) => {
       this.eventHandler.handle(event)
     })

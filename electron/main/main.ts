@@ -1,6 +1,8 @@
-import {app, BrowserWindow} from 'electron'
+import {app, BrowserWindow, IpcMain} from 'electron/main'
 import {join, resolve} from 'node:path'
 import {is} from '@electron-toolkit/utils'
+import { loadHandlers } from './handler'
+import { ipcMain } from 'electron'
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -24,7 +26,10 @@ function createWindow() {
 }
 
 app.whenReady()
-  .then(createWindow)
+.then(() => {
+  loadHandlers(ipcMain)
+  createWindow()
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
