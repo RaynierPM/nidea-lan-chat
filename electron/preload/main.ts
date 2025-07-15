@@ -10,4 +10,5 @@ contextBridge.exposeInMainWorld('core', {
     port,
     password
   }),
+  getUser: () => ipcRenderer.invoke("get:user"),
 })

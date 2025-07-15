@@ -1,6 +1,7 @@
 import { ConnectPayload, InitPayload, InitServerPayload } from "."
 import { ValidationError } from "../../client/errors/core.error"
 import { FakeUsernameUtil } from "../../client/utils/usernameFaker"
+import { UserI } from "../../common/interfaces/User.interface"
 import { MainState } from "./main.state"
 
 function getMainState() {
@@ -35,5 +36,12 @@ export function loadHandlers(IpcMain: Electron.IpcMain) {
   IpcMain.handle("connect", async (_, {password, host, port}: ConnectPayload) => {
     const mainState = getMainState()
     await mainState.app.connectToServer(host, port, password)
+  })
+  IpcMain.handle("get:user", async ():Promise<UserI | null> => {
+    try {
+      return getMainState().app.user
+    } catch {
+      return null
+    }
   })
 }
