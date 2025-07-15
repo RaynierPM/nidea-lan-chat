@@ -8,14 +8,19 @@ import { NetworkUtils } from '../../../common/utils/network'
 export class RoomScanner {
   private connectionStore: ConnInfoStore
 
-  private abortController: AbortController
+  private abortController: AbortController = new AbortController()
 
-  private socket: Socket
+  private socket: Socket = createSocket({
+    type: 'udp4',
+    signal: this.abortController!.signal
+  })
 
   constructor(store: ConnInfoStore) {
-    console.log("")
     this.connectionStore = store
-    this.abortController = new AbortController()
+    this.configurateSocket()
+  }
+
+  private configurateSocket() {
     this.socket = createSocket({
       type:'udp4',
       signal: this.abortController.signal
@@ -34,6 +39,7 @@ export class RoomScanner {
 
     setTimeout(() => {
       this.socket.close()
+      this.configurateSocket()
       resolver()
     }, 1e3)
 

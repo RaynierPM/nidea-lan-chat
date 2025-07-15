@@ -29,6 +29,14 @@ export function HomePage() {
     }
   }
 
+  function handleConnect(room: ConnectionInfo) {
+    try {
+      window.core.connectRoom(room.addr, room.port)
+    } catch (err) {
+      alert((err as ValidationError))
+    }
+  }
+
   return (
     <div>
        <Form
@@ -67,7 +75,12 @@ export function HomePage() {
             <li>No founded rooms on the networks</li>
             :
             foundedRooms.map(room => (
-              <li>{room.room.name}:{room.room.user?.username}</li>
+              <li>
+                <p>
+                  <h2 style={{fontSize: '20px', color: '#f50'}}>{room.room.name}</h2> (Owner: {room.room.user?.username}) {room.room.withPassword && <p>~~ With password ~~</p>}
+                  <Button onClick={() => {handleConnect(room)}}>Connect</Button>
+                </p>
+              </li>
             ))
           }
         </ul>

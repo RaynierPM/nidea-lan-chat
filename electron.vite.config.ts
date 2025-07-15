@@ -23,9 +23,9 @@ export default defineConfig({
     root: resolve(__dirname, 'electron/renderer'),
     resolve: {
       alias: {
-        '@renderer': resolve('electron/renderer/src'),
-        '@common': resolve('common/'),
-        '@client': resolve('client/')
+        '@renderer': resolve(__dirname, 'electron/renderer/src'),
+        '@common': resolve(__dirname, 'common/'),
+        '@client': resolve(__dirname, 'client/')
       }
     },
     plugins: [react()],

@@ -1,8 +1,7 @@
-import {app, BrowserWindow, IpcMain} from 'electron/main'
+import {app, BrowserWindow, ipcMain} from 'electron/main'
 import {join, resolve} from 'node:path'
 import {is} from '@electron-toolkit/utils'
 import { loadHandlers } from './handler'
-import { ipcMain } from 'electron'
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -14,14 +13,12 @@ function createWindow() {
     },
   })
 
+
+
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     win.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
     win.loadFile(join(__dirname, '../renderer/index.html'))
-  }
-  
-  if (!app.isPackaged) {
-    win.webContents.openDevTools()
   }
 }
 

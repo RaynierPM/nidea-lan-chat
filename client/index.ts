@@ -124,7 +124,7 @@ export class App implements ConnInfoStore {
     })
   }
 
-  on(type: EventActionTypes, listener: (event: Event) => void) {
+  on(type: EventActionTypes | "*", listener: (event: Event) => void) {
     this.socketManager.on(type, listener)
   }
 

@@ -5,6 +5,7 @@ declare global {
     core: {
       searchRooms: () => Promise<ConnectionInfo[]>,
       init: (username: string) => void,
+      connectRoom: (host: string, port: number, password?: string) => void,
     }
   }
 }

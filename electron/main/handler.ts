@@ -1,4 +1,4 @@
-import { InitPayload } from "."
+import { ConnectPayload, InitPayload } from "."
 import { ValidationError } from "../../client/errors/core.error"
 import { FakeUsernameUtil } from "../../client/utils/usernameFaker"
 import { MainState } from "./main.state"
@@ -25,7 +25,11 @@ export function loadHandlers(IpcMain: Electron.IpcMain) {
   })
   IpcMain.handle("search:rooms", async () => {
     const mainState = getMainState()
-    mainState.app.searchRooms()
+    await mainState.app.searchRooms()
     return mainState.app.publicRooms
+  })
+  IpcMain.handle("connect", async (_, {password, host, port}: ConnectPayload) => {
+    const mainState = getMainState()
+    await mainState.app.connectToServer(host, port, password)
   })
 }
