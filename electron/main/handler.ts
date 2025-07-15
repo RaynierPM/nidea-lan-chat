@@ -1,4 +1,4 @@
-import { ConnectPayload, InitPayload } from "."
+import { ConnectPayload, InitPayload, InitServerPayload } from "."
 import { ValidationError } from "../../client/errors/core.error"
 import { FakeUsernameUtil } from "../../client/utils/usernameFaker"
 import { MainState } from "./main.state"
@@ -22,6 +22,10 @@ export function loadHandlers(IpcMain: Electron.IpcMain) {
   // })
   IpcMain.handle("init", (_, {username}:InitPayload) => {
     MainState.Init(username || FakeUsernameUtil.generate())
+  })
+  IpcMain.handle("init:server", async (_, payload: InitServerPayload) => {
+    const mainState = getMainState()
+    return await mainState.initServer(payload)
   })
   IpcMain.handle("search:rooms", async () => {
     const mainState = getMainState()

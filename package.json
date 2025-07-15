@@ -11,7 +11,7 @@
     "dev": "electron-vite dev",
     "start": "electron-vite .",
     "build": "npm run typecheck && electron-vite build",
-    "dev:server": "tsx server/index.ts",
+    "dev:server": "tsx server/test.server.ts",
     "dev:cli": "tsx client/cli.ts"
   },
   "repository": {

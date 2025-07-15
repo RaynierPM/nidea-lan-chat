@@ -2,16 +2,38 @@ import { NetworkUtils } from '../common/utils/network'
 import { SocketManager } from './lib/Socket/tcp'
 import { Room } from './lib/chat/Room'
 import { RoomExposer } from './lib/Socket/udp'
-import { User } from '../common/lib/User/User'
 
-if (!NetworkUtils.getPrivateIp()) throw new Error('Required has connected to some Network to HOST a room')
 
-const owner = new User(NetworkUtils.getNetworkMacAddr()!, process.env.username || 'Testing user')
+export class Server {
+  private _socketManager: SocketManager;
 
-const testingRoom = new Room({
-  owner: owner,
-  password: process.env.password,
-  name: process.env.name
-})
-if (!testingRoom.isHidden) new RoomExposer(testingRoom).expose_room()
-SocketManager.instance.startServer(testingRoom)
+  private _exposureServer: RoomExposer
+
+  constructor(private _room: Room) {
+    this._socketManager = SocketManager.instance
+    this._exposureServer = new RoomExposer(this._room)
+  }
+
+  async startServer() {
+    try {
+      NetworkUtils.checkConnectivity()
+      if (!this._room.isHidden) await this._exposureServer.expose_room()
+      await this._socketManager.startServer(this._room)
+      return true
+    } catch (err) {
+      console.log("LOG: Error initiating server")
+      console.log(err)
+      return false
+    }
+  }
+
+  stopExposure() {
+    this._exposureServer.stop_exposure()
+  }
+
+  stopServer() {
+    this.stopExposure()
+    this._socketManager.stopServer()
+  }
+  
+}

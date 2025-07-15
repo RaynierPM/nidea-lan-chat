@@ -10,3 +10,9 @@ export type ConnectPayload = {
   host: string
   port?: number
 }
+
+export type InitServerPayload = {
+  name?: string
+  password?: string
+  isHidden?: boolean
+}

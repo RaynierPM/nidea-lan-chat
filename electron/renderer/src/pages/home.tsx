@@ -10,32 +10,33 @@ type InitFormType = {
 }
 
 export function HomePage() {
-  const [foundedRooms, setFoundedRooms] = useState<ConnectionInfo[]>([])
+  
+  // const [foundedRooms, setFoundedRooms] = useState<ConnectionInfo[]>([])
 
-  const  handleInit: FormProps<InitFormType>['onFinish'] = (values) => {
-    try {
-      window.core.init(values.username)
-    } catch (err) {
-      alert((err as ValidationError))
-    }
-  }
+  // const  handleInit: FormProps<InitFormType>['onFinish'] = (values) => {
+  //   try {
+  //     window.core.init(values.username)
+  //   } catch (err) {
+  //     alert((err as ValidationError))
+  //   }
+  // }
 
-  async function handleSearch() {
-    try {
-      const rooms = await window.core.searchRooms()
-      setFoundedRooms(rooms)
-    } catch (err) {
-      alert((err as ValidationError))
-    }
-  }
+  // async function handleSearch() {
+  //   try {
+  //     const rooms = await window.core.searchRooms()
+  //     setFoundedRooms(rooms)
+  //   } catch (err) {
+  //     alert((err as ValidationError))
+  //   }
+  // }
 
-  function handleConnect(room: ConnectionInfo) {
-    try {
-      window.core.connectRoom(room.addr, room.port)
-    } catch (err) {
-      alert((err as ValidationError))
-    }
-  }
+  // function handleConnect(room: ConnectionInfo) {
+  //   try {
+  //     window.core.connectRoom(room.addr, room.port)
+  //   } catch (err) {
+  //     alert((err as ValidationError))
+  //   }
+  // }
 
   return (
     <div>
@@ -44,7 +45,7 @@ export function HomePage() {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
-        onFinish={handleInit}
+        // onFinish={handleInit}
         autoComplete="off"
       >
         <FormItem<InitFormType>
@@ -65,26 +66,6 @@ export function HomePage() {
           </Button>
         </FormItem>
       </Form>
-
-      <div>
-        <div style={{display: "flex", gap: "5px"}}>
-          <h2>Available rooms:</h2> <Button onClick={handleSearch}>Search</Button>
-        </div>
-        <ul>
-          {!foundedRooms.length? 
-            <li>No founded rooms on the networks</li>
-            :
-            foundedRooms.map(room => (
-              <li>
-                <p>
-                  <h2 style={{fontSize: '20px', color: '#f50'}}>{room.room.name}</h2> (Owner: {room.room.user?.username}) {room.room.withPassword && <p>~~ With password ~~</p>}
-                  <Button onClick={() => {handleConnect(room)}}>Connect</Button>
-                </p>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
     </div>
   )
 }

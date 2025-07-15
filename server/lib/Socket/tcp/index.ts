@@ -45,17 +45,22 @@ export class SocketManager {
     })
   }
 
-  public startServer(room: Room) {
+  public async startServer(room: Room): Promise<boolean>{
     if (!room) throw new RoomRequired()
+    let res:(value: boolean) => void;
     this.room = room
 
+    const promise = new Promise<boolean>(resolve => res = resolve)
+    
     this.server.listen({
       port: configuration.port,
-      signal: this.abort_controller.signal
+      signal: this.abort_controller.signal,
     }, () => {
       console.log(`Just listening: ${NetworkUtils.getPrivateIp()}:${configuration.port}`)
-      room.loadListeners(this)   
+      room.loadListeners(this)
+      res(true)
     })
+    return promise
   }
 
   public stopServer() {

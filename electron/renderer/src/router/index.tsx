@@ -7,6 +7,7 @@ export const router = createHashRouter(
     <>
       <Route path="/" element={<RootLayout />}>
         <Route index element={<HomePage />} />
+        <Route path="*" element={<>404 Not Fouded</>} />
       </Route>
     </>
   )

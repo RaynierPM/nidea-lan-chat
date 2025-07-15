@@ -56,7 +56,7 @@ export class Room extends Chat {
     }
     super("general")
     this._owner = owner
-    this._password = password
+    this._password = password?.trim() || undefined
     this._isHidden = isHidden ?? this._isHidden
     this._roomName = name ?? `${owner.username}'s Room`
   }

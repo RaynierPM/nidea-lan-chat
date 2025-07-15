@@ -25,6 +25,10 @@ export abstract class NetworkUtils {
     return this.getNetworkInterface()?.netmask
   }
 
+  public static checkConnectivity() {
+    if (!this.getPrivateIp()) throw new Error('Required has connected to some Network to HOST a room')
+  }
+
   public static getBroadcastableAddr() {
     const netMask = this.getNetworkMask()
     const splittedIpv4 = this.getPrivateIp()?.split('.')
