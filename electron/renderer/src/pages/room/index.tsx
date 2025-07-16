@@ -19,7 +19,7 @@ export function RoomPage() {
         flexDirection: "column",
         gap: "10px",
         alignItems: "center",
-        minHeight: "100vh",
+        height: "100vh",
         padding: "10px 25px"
       }}
     >

@@ -12,7 +12,7 @@ export function Message({message}:MessageProps) {
     .find(part => part.id === message.userId)
   const isMee = useAppStore(state => state.user)?.id === author?.id 
   return (
-    <p style={{textAlign: isMee? "end" : "start"}}>
+    <p style={{textAlign: isMee? "end" : "start", padding: "5px 2px"}}>
       {isMee? "Me" : author?.username || "System"}: {message.content}
     </p>
   )
