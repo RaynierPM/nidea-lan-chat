@@ -1,7 +1,7 @@
+import { WebContents } from "electron/main";
 import { InitServerPayload } from ".";
 import { App } from "../../client";
 import { ValidationError } from "../../client/errors/core.error";
-import { NetworkUtils } from "../../common/utils/network";
 import { Server } from "../../server";
 import { Room } from "../../server/lib/chat/Room";
 
@@ -29,11 +29,12 @@ export class MainState {
     this._app = new App(username)
   }
 
-  public static Init(username: string) {
+  public static Init(username: string, webContents: WebContents) {
     if (this._instance) {
       throw new ValidationError("App has been initiated!")
     }
     this._instance = new MainState(username)
+    this._instance.resendEvents(webContents)
   }
 
   async initServer({
@@ -50,5 +51,9 @@ export class MainState {
     })
     this._server = new Server(room)
     return await this._server.startServer()
+  }
+
+  private resendEvents(wc: WebContents) {
+    this._app?.on("*", (event) => { wc.send(event.type, event)})
   }
 }

@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { InitServerPayload } from "../main";
 import { MessageActionPayload } from "../../server/lib/chat/Action/variants/MessageAction";
+import { Event, EventActionTypes } from "../../common/interfaces/event.interface";
 
 contextBridge.exposeInMainWorld('core', {
   init: (username: string) => ipcRenderer.invoke('init', {username}),
@@ -12,5 +13,7 @@ contextBridge.exposeInMainWorld('core', {
     password
   }),
   getUser: () => ipcRenderer.invoke("get:user"),
-  sendMessage: (payload:MessageActionPayload) => ipcRenderer.invoke("action:message", payload)
+  getRoom: () => ipcRenderer.invoke("get:room"),
+  sendMessage: (payload:MessageActionPayload) => ipcRenderer.invoke("action:message", payload),
+  on: (type:EventActionTypes, callback: (event: Event) => void) => ipcRenderer.on(type, (_, event) => callback(event)),
 })

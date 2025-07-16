@@ -1,6 +1,7 @@
 import { ConnectPayload, InitPayload, InitServerPayload } from "."
 import { ValidationError } from "../../client/errors/core.error"
 import { FakeUsernameUtil } from "../../client/utils/usernameFaker"
+import { RoomInfo } from "../../common/interfaces/Chat.interface"
 import { UserI } from "../../common/interfaces/User.interface"
 import { MessageActionPayload } from "../../server/lib/chat/Action/variants/MessageAction"
 import { MainState } from "./main.state"
@@ -22,8 +23,13 @@ export function loadHandlers(IpcMain: Electron.IpcMain) {
   //     return (error as Error).message
   //   }
   // })
-  IpcMain.handle("init", (_, {username}:InitPayload) => {
-    MainState.Init(username || FakeUsernameUtil.generate())
+  IpcMain.handle("init", (event, {username}:InitPayload): UserI => {
+    MainState.Init(username || FakeUsernameUtil.generate(), event.sender)
+    const user = MainState.instance?.app.user
+    return {
+      id: user!.id,
+      username: user!.username
+    }
   })
   IpcMain.handle("init:server", async (_, payload: InitServerPayload) => {
     const mainState = getMainState()
@@ -41,6 +47,13 @@ export function loadHandlers(IpcMain: Electron.IpcMain) {
   IpcMain.handle("get:user", async ():Promise<UserI | null> => {
     try {
       return getMainState().app.user
+    } catch {
+      return null
+    }
+  })
+  IpcMain.handle("get:room", async ():Promise<RoomInfo | null> => {
+    try {
+      return getMainState().app.chatInfo
     } catch {
       return null
     }

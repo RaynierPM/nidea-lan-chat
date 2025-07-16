@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { useAppStore } from "../../store/app"
 
 export function InitPage() {
   const [username, setUsername] = useState("")
   const navigate = useNavigate()
-
+  const setUser = useAppStore((state) => state.setUser)
   async function handleInit() {
     if (username.trim()) {
       try {
-        await window.core.init(username)
+        setUser(await window.core.init(username))
         navigate("/")
       } catch (err) {
         alert((err as Error)?.message || "Unexpected error")

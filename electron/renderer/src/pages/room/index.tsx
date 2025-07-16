@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { useAppStore } from "../../store/user"
+import { useAppStore } from "../../store/app"
+import { Message } from "./Message"
 
 export function RoomPage() {
   const {room} = useAppStore()
@@ -32,9 +33,13 @@ export function RoomPage() {
           borderRadius: "25px",
           padding: "10px",
           border: "1px white solid",
-          width: "100%"
+          width: "100%",
+          overflowY: "auto",
         }}
       >
+        {room?.messages?.map( message => (
+          <Message message={message} />
+        ))}
       </div>
       <form
         style={{
