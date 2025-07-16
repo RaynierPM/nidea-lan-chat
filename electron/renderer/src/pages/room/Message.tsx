@@ -6,7 +6,7 @@ type MessageProps = {
   chatId?: number
 }
 
-export function Message({message, chatId}:MessageProps) {
+export function Message({message}:MessageProps) {
   const author = useAppStore(state => state.room)
     ?.participants
     .find(part => part.id === message.userId)

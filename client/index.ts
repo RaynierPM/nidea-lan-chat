@@ -35,7 +35,10 @@ export class App implements ConnInfoStore {
   private _user:UserI
 
   get user() {
-    return this._user
+    return {
+      id: this._user.id,
+      username: this._user.username
+    }
   }
 
   addMessage(chatId: number, message: MessageI) {
