@@ -132,8 +132,8 @@ export class App implements ConnInfoStore {
     this.socketManager.onConnect(listener)
   } 
   
-  connectToServer(addr: string, port: number = configuration.port, password?: string) {
-    this.socketManager.connect(
+  async connectToServer(addr: string, port: number = configuration.port, password?: string) {
+    return await this.socketManager.connect(
       addr, 
       port, 
       {
@@ -144,8 +144,8 @@ export class App implements ConnInfoStore {
     )
   }
   
-  sendMessage(content: string) {
-    this.socketManager.emit(new MessageAction({content}))
+  sendMessage(content: string, roomId?: number) {
+    this.socketManager.emit(new MessageAction({content, roomId}))
   }
   
   abandonRoom(chatId: number) {

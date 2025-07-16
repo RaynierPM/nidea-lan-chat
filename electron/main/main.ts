@@ -20,6 +20,10 @@ function createWindow() {
   } else {
     win.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  if (!app.isPackaged) {
+    win.webContents.openDevTools()
+  }
 }
 
 app.whenReady()

@@ -2,6 +2,7 @@ import { ConnectPayload, InitPayload, InitServerPayload } from "."
 import { ValidationError } from "../../client/errors/core.error"
 import { FakeUsernameUtil } from "../../client/utils/usernameFaker"
 import { UserI } from "../../common/interfaces/User.interface"
+import { MessageActionPayload } from "../../server/lib/chat/Action/variants/MessageAction"
 import { MainState } from "./main.state"
 
 function getMainState() {
@@ -43,5 +44,9 @@ export function loadHandlers(IpcMain: Electron.IpcMain) {
     } catch {
       return null
     }
+  })
+  IpcMain.handle("action:message", (_, {content, roomId}:MessageActionPayload) => {
+    const mainState = getMainState()
+    mainState.app.sendMessage(content, roomId)
   })
 }

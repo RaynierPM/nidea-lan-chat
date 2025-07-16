@@ -13,16 +13,19 @@ export class SocketManager {
   private _connectCallbacks:(() => void)[] = []
 
   connect(addr: string, port: number, payload: JoinActionPayload) {
-    console.log("Trying to connect to: ", addr, port)
-    this.connection = createConnection(port, addr, () => {
-      this.emit(new JoinAction(payload))
-      this._connectCallbacks.forEach(cb => {
-        cb()
+    return new Promise<void>((res, rej) => {
+      console.log("Trying to connect to: ", addr, port)
+      this.connection = createConnection(port, addr, () => {
+        this.emit(new JoinAction(payload))
+        this._connectCallbacks.forEach(cb => {
+          cb()
+        })
       })
+      this.connection.on("data", this.handleMessages)
+      this.connection.on("close", this.onClose)
+      this.connection.on("error", (err) => rej(err))
+      this.connection.on("connect", () => res())
     })
-    this.connection.on("data", this.handleMessages)
-    this.connection.on("close", this.onClose)
-    this.connection.on("error", (err) => console.log(err))
   }
 
   on(type: EventActionTypes | "*" , listener: TCPSocketListener) {

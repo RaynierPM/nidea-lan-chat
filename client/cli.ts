@@ -183,13 +183,12 @@ ${printMany("=", 80)}
     }
     const [addr, port] = connString.split(':')
     rl.question("Insert passord (Empty if there is not required):", password => {
+      console.log("Connecting...")
       app.connectToServer(
         addr, 
         Number(port) || configuration.port, 
         password
-      )
-      console.log("Connecting...")
-      resolver?.()
+      ).then(() => resolver?.())
     })
   })
   return promise

@@ -18,12 +18,6 @@ export class MainState {
   get app() {
     return this._app
   }
-  
-  private _username: string | null = null
-  
-  get username() {
-    return this._username
-  }
 
   private _server: Server | null = null;
 
@@ -47,13 +41,10 @@ export class MainState {
     name,
     password
   }: InitServerPayload) {
-    if (!this.username) throw new ValidationError("App not initiated!") 
+    if (!this._app) throw new ValidationError("Not allowed to init server")
     const room = new Room({
       name,
-      owner: {
-        username: this.username, 
-        id: NetworkUtils.getNetworkMacAddr()!,
-      },
+      owner: this._app.user,
       isHidden,
       password
     })

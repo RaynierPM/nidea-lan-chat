@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 export function InitPage() {
@@ -15,6 +15,16 @@ export function InitPage() {
       }
     } 
   }
+
+  useEffect(() => {
+    window.core.getUser()
+    .then(user => {
+      if (user) {
+        navigate("/")
+      }
+    })
+  }, [])
+
   return <div style={{
     display: "flex",
     justifyContent: "center",

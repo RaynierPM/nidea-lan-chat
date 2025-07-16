@@ -1,16 +1,23 @@
 import { createHashRouter, createRoutesFromElements, Route } from "react-router-dom";
 import { RootLayout } from "../layouts/root";
 import { HomePage } from "../pages/home";
-import { InitPage } from "../pages/Init";
+import { InitPage } from "../pages/Auth/Init";
+import { SearchRoomsPage } from "../pages/home/search-room";
+import { RoomPage } from "../pages/room";
 
 export const router = createHashRouter(
   createRoutesFromElements(
     <>
+      <Route path="auth">
+        <Route index element={<InitPage />} />
+      </Route>
       <Route path="/" element={<RootLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="auth" element={<InitPage />} />
-        <Route path="search-room" element={<InitPage />} />
-        <Route path="host-room" element={<InitPage />} />
+        <Route path="search-room" element={<SearchRoomsPage />} />
+        <Route path="room">
+          <Route index element={<RoomPage />} />
+        </Route>
+        <Route path="host-room" element={<></>} />
         <Route path="*" element={<>404 Not Fouded</>} />
       </Route>
     </>

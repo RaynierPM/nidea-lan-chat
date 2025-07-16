@@ -7,6 +7,7 @@ import { SocketWithId, TCPSocketListener } from "../../interfaces/socket.interfa
 import { EventActionTypes } from "../../../../common/interfaces/event.interface";
 import { ActionFactory } from "../../chat/Action/Action.factory";
 import { AutoIncrementSequence } from "../../../../common/utils/autoIncrementManager";
+import { ValidationError } from "../../../../client/errors/core.error";
 
 export class SocketManager {
   
@@ -46,7 +47,8 @@ export class SocketManager {
   }
 
   public async startServer(room: Room): Promise<boolean>{
-    if (!room) throw new RoomRequired()
+    if (!room) return Promise.reject(new RoomRequired())
+    if (this.server.listening) return Promise.reject(new ValidationError("Server is already running..."))
     let res:(value: boolean) => void;
     this.room = room
 

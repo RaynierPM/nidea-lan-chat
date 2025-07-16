@@ -8,6 +8,7 @@ export function HomePage() {
         width: "100%",
         display: "flex",
         height: "100vh",
+        flexDirection: "column"
       }}
     >
       <h1>Welcome </h1>  
@@ -22,14 +23,14 @@ export function HomePage() {
       >
         <button
           onClick={() => {
-            navigate('search-room')
+            navigate('/search-room')
           }}
         >
           Search a room
         </button>
         <button
           onClick={() => {
-            navigate('host-room')
+            navigate('/host-room')
           }}
         >
           Host a room

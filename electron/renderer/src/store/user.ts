@@ -6,7 +6,7 @@ type AppStore = {
   room: RoomInfo | null
 }
 
-export const useStore = create<AppStore>((set) => ({
+export const useAppStore = create<AppStore>((set) => ({
   username: "",
   room: null,
   setRoom: (room: RoomInfo) => {

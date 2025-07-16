@@ -17,8 +17,8 @@ export class Server {
   async startServer() {
     try {
       NetworkUtils.checkConnectivity()
-      if (!this._room.isHidden) await this._exposureServer.expose_room()
       await this._socketManager.startServer(this._room)
+      if (!this._room.isHidden) await this._exposureServer.expose_room()
       return true
     } catch (err) {
       console.log("LOG: Error initiating server")
