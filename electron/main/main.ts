@@ -2,18 +2,17 @@ import {app, BrowserWindow, ipcMain} from 'electron/main'
 import {join, resolve} from 'node:path'
 import {is} from '@electron-toolkit/utils'
 import { loadHandlers } from './handler'
+import { MainState } from './main.state2'
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 800,
     webPreferences: {
       preload: resolve(__dirname, '../preload/main.mjs'),
       sandbox: false,
     },
   })
-
-
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     win.loadURL(process.env['ELECTRON_RENDERER_URL'])
@@ -24,6 +23,8 @@ function createWindow() {
   if (!app.isPackaged) {
     win.webContents.openDevTools()
   }
+
+  MainState.instance.redirectEvents(win.webContents)
 }
 
 app.whenReady()

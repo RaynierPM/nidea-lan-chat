@@ -12,6 +12,10 @@ export class SocketManager {
 
   private _connectCallbacks:(() => void)[] = []
 
+  get isConnected() {
+    return Boolean(this.connection?.closed)
+  }
+
   connect(addr: string, port: number, payload: JoinActionPayload) {
     return new Promise<void>((res, rej) => {
       console.log("Trying to connect to: ", addr, port)

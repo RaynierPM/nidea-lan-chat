@@ -1,4 +1,4 @@
-import { ConnectionInfo, RoomInfo } from "../common/interfaces/Chat.interface";
+import { RoomInfo } from "../common/interfaces/Chat.interface";
 import { Event, EventActionTypes } from "../common/interfaces/event.interface";
 import { MessageI } from "../common/interfaces/message.interface";
 import { UserI, UserStatuses } from "../common/interfaces/User.interface";
@@ -9,17 +9,10 @@ import { configuration } from "../server/config/configuration";
 import { AbanadonAction } from "../server/lib/chat/Action/variants/AbandonAction";
 import { MessageAction } from "../server/lib/chat/Action/variants/MessageAction";
 import { EventHandler } from "./event/handler";
-import { ConnInfoStore } from "./interfaces/app.interface";
 import { SocketManager } from "./socket-client/tcp";
 import { RoomScanner } from "./socket-client/udp";
 
-export class App implements ConnInfoStore {
-  private availableRooms: ConnectionInfo[] = []
-
-  get publicRooms() {
-    return this.availableRooms
-  }
-
+export class App {
   private _chatInfo: RoomInfo | null = null
 
   private eventHandler = new EventHandler(this)
@@ -103,21 +96,16 @@ export class App implements ConnInfoStore {
 
   private socketManager: SocketManager
 
-  addConnInfo(conn: ConnectionInfo) {
-    this.availableRooms.push(conn)
-  }
-
   private roomScanner: RoomScanner
 
   constructor(username: string, id:UserI['id'] = NetworkUtils.getNetworkMacAddr()!) {
     this._user = new User(id, username)
-    this.roomScanner = new RoomScanner(this)
+    this.roomScanner = new RoomScanner()
     this.socketManager = new SocketManager()
     this.loadListener()
   }
 
   searchRooms() {
-    this.availableRooms = []
     return this.roomScanner.scan()
   }
 
@@ -148,7 +136,7 @@ export class App implements ConnInfoStore {
   }
   
   sendMessage(content: string, roomId?: number) {
-    this.socketManager.emit(new MessageAction({content, roomId}))
+    this.socketManager.emit(new MessageAction({content, chatId: roomId}))
   }
   
   abandonRoom(chatId: number) {

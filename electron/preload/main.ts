@@ -16,4 +16,4 @@ contextBridge.exposeInMainWorld('core', {
   getRoom: () => ipcRenderer.invoke("get:room"),
   sendMessage: (payload:MessageActionPayload) => ipcRenderer.invoke("action:message", payload),
   on: (type:EventActionTypes, callback: (event: Event) => void) => ipcRenderer.on(type, (_, event) => callback(event)),
-})
+})  

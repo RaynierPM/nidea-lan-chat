@@ -8,7 +8,7 @@ import { TimestampUtils } from "../../../../../common/utils/timestamp";
 
 export type MessageActionPayload = {
   content: string
-  roomId?: number
+  chatId?: number
 }
 
 export class MessageAction extends ActionBase {
@@ -22,7 +22,7 @@ export class MessageAction extends ActionBase {
     this._payload = payload
     this.metadata = {
       timestamp: TimestampUtils.getTimestampFrom(),
-      room: payload.roomId
+      room: payload.chatId
     }
   }
 

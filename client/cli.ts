@@ -114,6 +114,8 @@ function getParticipantsList() {
     }).join('')
 }
 
+let publicRooms:ConnectionInfo[] = []
+
 async function startApp() {
   let resolver: () => void
   let promise = new Promise<void>(res => resolver = res)
@@ -138,10 +140,11 @@ async function startApp() {
     })
     console.log(`Hi, ${styleText('redBright', name)}.`)
     console.log("Scanning rooms...")
-    app.searchRooms().then(() => {
+    app.searchRooms().then((rooms) => {
+      publicRooms = rooms
       console.log("\nScanning finished!")
-      if (app.publicRooms.length) {
-        printRooms(app.publicRooms)
+      if (publicRooms.length) {
+        printRooms(publicRooms)
       } else {
         console.log("\nOh no! There aren't public rooms in your network. 🥲")
       }
@@ -170,7 +173,7 @@ ${printMany("=", 80)}
 
   rl.question("->", connString => {
     if (Number(connString)) {
-      const selectedRoom = app.publicRooms[Number(connString)-1]
+      const selectedRoom = publicRooms[Number(connString)-1]
       if (selectedRoom) {
         connString = `${selectedRoom.addr}:${selectedRoom.port}`
       } else {

@@ -4,7 +4,7 @@ import { FakeUsernameUtil } from "../../client/utils/usernameFaker"
 import { RoomInfo } from "../../common/interfaces/Chat.interface"
 import { UserI } from "../../common/interfaces/User.interface"
 import { MessageActionPayload } from "../../server/lib/chat/Action/variants/MessageAction"
-import { MainState } from "./main.state"
+import { MainState } from "./main.state2"
 
 function getMainState() {
   const mainState = MainState.instance
@@ -23,43 +23,37 @@ export function loadHandlers(IpcMain: Electron.IpcMain) {
   //     return (error as Error).message
   //   }
   // })
-  IpcMain.handle("init", (event, {username}:InitPayload): UserI => {
-    MainState.Init(username || FakeUsernameUtil.generate(), event.sender)
-    const user = MainState.instance?.app.user
-    return {
-      id: user!.id,
-      username: user!.username
-    }
+  IpcMain.handle("init", (_, {username}:InitPayload): UserI => {
+    return MainState.instance.auth(username || FakeUsernameUtil.generate())
   })
   IpcMain.handle("init:server", async (_, payload: InitServerPayload) => {
     const mainState = getMainState()
-    return await mainState.initServer(payload)
+    return await mainState.hostServer(payload)
   })
   IpcMain.handle("search:rooms", async () => {
     const mainState = getMainState()
-    await mainState.app.searchRooms()
-    return mainState.app.publicRooms
+    return await mainState.searchRooms()
   })
   IpcMain.handle("connect", async (_, {password, host, port}: ConnectPayload) => {
     const mainState = getMainState()
-    await mainState.app.connectToServer(host, port, password)
+    await mainState.connectToServer(host, port, password)
   })
   IpcMain.handle("get:user", async ():Promise<UserI | null> => {
     try {
-      return getMainState().app.user
+      return getMainState().user
     } catch {
       return null
     }
   })
   IpcMain.handle("get:room", async ():Promise<RoomInfo | null> => {
     try {
-      return getMainState().app.chatInfo
+      return null
     } catch {
       return null
     }
   })
-  IpcMain.handle("action:message", (_, {content, roomId}:MessageActionPayload) => {
+  IpcMain.handle("action:message", (_, {content, chatId}:MessageActionPayload) => {
     const mainState = getMainState()
-    mainState.app.sendMessage(content, roomId)
+    mainState.sendMessage({content, chatId})
   })
 }

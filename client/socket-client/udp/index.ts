@@ -1,22 +1,21 @@
 import {createSocket, Socket} from 'node:dgram'
-import { ConnInfoStore } from '../../interfaces/app.interface'
 import { configuration } from '../../../server/config/configuration'
 import { ConnectionInfo } from '../../../common/interfaces/Chat.interface'
 import { CLIENT_BROADCAST_REQUEST } from '../../../common/utils/socket'
 import { NetworkUtils } from '../../../common/utils/network'
 
 export class RoomScanner {
-  private connectionStore: ConnInfoStore
 
   private abortController: AbortController = new AbortController()
+
+  private _publicRooms: ConnectionInfo[] = []
 
   private socket: Socket = createSocket({
     type: 'udp4',
     signal: this.abortController!.signal
   })
 
-  constructor(store: ConnInfoStore) {
-    this.connectionStore = store
+  constructor() {
     this.configurateSocket()
   }
 
@@ -32,16 +31,16 @@ export class RoomScanner {
     })
   }
 
-  scan():Promise<void> {
-    let resolver: () => void;
-    const promise = new Promise<void>((res) => {resolver=res;})
+  scan():Promise<ConnectionInfo[]> {
+    let resolver: (conns: ConnectionInfo[]) => void;
+    const promise = new Promise<ConnectionInfo[]>((res) => {resolver=res;})
     this.socket.bind(7777)
 
     setTimeout(() => {
       this.socket.close()
       this.configurateSocket()
-      resolver()
-    }, 1e3)
+      resolver(this._publicRooms)
+    }, 2e3)
 
     return promise
   }
@@ -50,7 +49,7 @@ export class RoomScanner {
     try {
       const connInfo = JSON.parse(msg.toString()) as ConnectionInfo
       //@@ Validate room info
-      this.connectionStore.addConnInfo(connInfo)
+      this._publicRooms.push(connInfo)
     } catch (err) {
       console.error(err)
     }
