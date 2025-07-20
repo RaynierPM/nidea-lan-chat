@@ -43,7 +43,7 @@ export function RoomPage() {
           overflowY: "auto",
         }}
       >
-        {room?.messages?.map( (message, messageIdx)=> (☺
+        {room?.messages?.map( (message, messageIdx)=> (
           <Message key={`${message.timestamp}${message?.userId}${messageIdx}`} message={message} />
         ))}
         <div ref={scrollRef}/>
