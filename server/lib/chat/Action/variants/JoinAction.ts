@@ -7,6 +7,7 @@ import { Participant } from "../../../User/Participant";
 import { SocketWithId } from "../../../interfaces/socket.interface";
 import { GetHistoryEvent } from "../../../../../common/lib/Event/variants/GetHistory.event";
 import { Message } from "../../Message";
+import { TimestampUtils } from "../../../../../common/utils/timestamp";
 
 export type JoinActionPayload = {
   userId: UserI['id']
@@ -24,7 +25,7 @@ export class JoinAction extends ActionBase {
     super(EventActionTypes.JOIN)
     this._payload = payload
     this.metadata = {
-      timestamp: Number(new Date()),
+      timestamp: TimestampUtils.getTimestampFrom(),
       user: payload.userId,
     }
   }

@@ -2,7 +2,7 @@ import {app, BrowserWindow, ipcMain} from 'electron/main'
 import {join, resolve} from 'node:path'
 import {is} from '@electron-toolkit/utils'
 import { loadHandlers } from './handler'
-import { MainState } from './main.state2'
+import { MainState } from './main.state'
 
 function createWindow() {
   const win = new BrowserWindow({

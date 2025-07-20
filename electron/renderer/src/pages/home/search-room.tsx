@@ -3,6 +3,7 @@ import { ValidationError } from "../../../../../client/errors/core.error"
 import { ConnectionInfo } from "../../../../../common/interfaces/Chat.interface"
 import { useLoading } from "../../hooks/useLoading"
 import { useNavigate } from "react-router-dom"
+import { AlreadyConnectedError } from "../../../../../client/errors/socket"
 
 export function SearchRoomsPage() {
   
@@ -37,15 +38,15 @@ export function SearchRoomsPage() {
     searchRooms(window.core.searchRooms)
   }
 
-  
-
   function handleConnect(connInfo: ConnectionInfo) {
     return () => {
       if (!connInfo) return
       setShowPassword(false)
       connect(window.core.connectRoom, connInfo.addr, connInfo.port, password)
       .then(() => {navigate("/room")})
-      .catch(() => {})
+      .catch((err) => {
+        if (err instanceof AlreadyConnectedError) navigate('/room')
+      })
     }
   }
 
@@ -66,6 +67,8 @@ export function SearchRoomsPage() {
     style={{
       display: "flex",
       flexDirection: "column",
+      padding: "5px",
+      gap: "4px"
     }}
   >
     <div style={{display: "flex", gap: "5px"}}>
@@ -78,7 +81,7 @@ export function SearchRoomsPage() {
       </button>
     </div>
     
-    {connectionError && <h3>Has been ocurred an error trying to connect to a room</h3>}
+    {connectionError && <h3 style={{padding: "10px 5px", border: "dashed 1px #f99", borderRadius: "10px"}}>Has been ocurred an error trying to connect to a room</h3>}
 
     <div
       style={{

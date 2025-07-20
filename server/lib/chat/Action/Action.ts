@@ -1,7 +1,7 @@
-import { Socket } from "net";
 import { EventActionTypes } from "../../../../common/interfaces/event.interface";
 import { ActionI, ActionMetadataI } from "./Action.interface";
 import { Room } from "../Room";
+import { SocketWithId } from "../../interfaces/socket.interface";
 
 export abstract class ActionBase implements ActionI {
   private _type: EventActionTypes
@@ -22,7 +22,7 @@ export abstract class ActionBase implements ActionI {
     this._type = type
   }
 
-  abstract handle(socket:Socket, room: Room): void 
+  abstract handle(socket:SocketWithId, room: Room): void 
 
   toJson() {
     return JSON.stringify({

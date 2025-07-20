@@ -1,59 +1,119 @@
 import { WebContents } from "electron/main";
-import { InitServerPayload } from ".";
-import { App } from "../../client";
 import { ValidationError } from "../../client/errors/core.error";
-import { Server } from "../../server";
+import { SocketManager } from "../../client/socket-client/tcp";
+import { RoomScanner } from "../../client/socket-client/udp";
+import { ConnectionInfo } from "../../common/interfaces/Chat.interface";
+import { UserI } from "../../common/interfaces/User.interface";
+import { NetworkUtils } from "../../common/utils/network";
+import { configuration } from "../../server/config/configuration";
+import { MessageAction, MessageActionPayload } from "../../server/lib/chat/Action/variants/MessageAction";
+import { InitServerPayload } from ".";
 import { Room } from "../../server/lib/chat/Room";
+import { Server } from "../../server";
+import { AbanadonAction } from "../../server/lib/chat/Action/variants/AbandonAction";
+import { GetHistoryAction } from "../../server/lib/chat/Action/variants/GetHistory";
 
 export class MainState {
 
-  private static _instance: MainState | null
+  private static _instance?: MainState;
+  
+  private _user: UserI | null = null
+
+  private _server: Server | null = null
+
+  get user() {
+    return this._user
+  }
 
   static get instance() {
+    if (!this._instance) {
+      this._instance = new MainState()
+    }
     return this._instance
   }
 
-  private _app: App
+  private _socketManager: SocketManager = new SocketManager();
 
-  get app() {
-    return this._app
+  private _roomScanner: RoomScanner = new RoomScanner()
+  
+  private constructor() {}
+
+  private _searching = false
+  
+  async searchRooms() {
+    if (this._searching) throw new ValidationError("Room Scanner already searching...")
+    return new Promise<ConnectionInfo[]>((res) => {
+      this._searching = true
+      this._roomScanner.scan()
+      .then(rooms => res(rooms))
+      .finally(() => this._searching = false)
+    })
   }
 
-  private _server: Server | null = null;
-
-  get hasServer() {
-    return !!this._server
+  get isConnected() {
+    return this._socketManager.isConnected
   }
 
-  private constructor(username: string) {
-    this._app = new App(username)
+  async connectToServer(addr: string, port: number = configuration.port, password?: string) {
+    if (!this._user) throw new ValidationError("User has not made login on app.")
+    this._socketManager.connect(
+      addr,
+      port,
+      {
+        userId: this._user.id,
+        username: this._user.username,
+        password
+      }
+    )
   }
 
-  public static Init(username: string, webContents: WebContents) {
-    if (this._instance) {
-      throw new ValidationError("App has been initiated!")
-    }
-    this._instance = new MainState(username)
-    this._instance.resendEvents(webContents)
+  disconnect() {
+    if (!this.isConnected) throw new ValidationError("User is not in any room!")
+    this._socketManager.disconnect()
   }
 
-  async initServer({
-    isHidden = false,
-    name,
-    password
-  }: InitServerPayload) {
-    if (!this._app) throw new ValidationError("Not allowed to init server")
+  leaveChat(chatId: number) {
+    if (!this.isConnected) throw new ValidationError("User is not in any room!")
+    this._socketManager.emit(new AbanadonAction({chatId}))
+  }
+
+  getHistory() {
+    this._socketManager?.emit(new GetHistoryAction())
+  }
+
+  async hostServer({name, isHidden, password}:InitServerPayload) {
+    NetworkUtils.checkConnectivity()
+    if (!this._user) throw new ValidationError("Not allowed to init server")
     const room = new Room({
       name,
-      owner: this._app.user,
+      owner: this._user,
       isHidden,
       password
     })
     this._server = new Server(room)
     return await this._server.startServer()
+  
   }
 
-  private resendEvents(wc: WebContents) {
-    this._app?.on("*", (event) => { wc.send(event.type, event)})
+  auth(username:string) {
+    NetworkUtils.checkConnectivity()
+    this._user = {
+      username,
+      id: NetworkUtils.getNetworkMacAddr()!
+    }
+    return {
+      id: this._user.id,
+      username: this._user.username
+    }
+  }
+
+  sendMessage({content, chatId}:MessageActionPayload) {
+    this._socketManager.emit(new MessageAction({content, chatId}))
+  }
+
+  redirectEvents(wb: WebContents) {
+    this._socketManager.on("*", (event) => {
+      wb.send(event.type, event)
+    })
   }
 }

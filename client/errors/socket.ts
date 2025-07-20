@@ -3,3 +3,9 @@ export class ConnectionRequiredError extends Error {
     super("Invalid action emitted, first start the socket connection.")
   }
 }
+
+export class AlreadyConnectedError extends Error {
+  constructor() {
+    super("Already has a connection")
+  }
+}

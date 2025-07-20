@@ -5,7 +5,6 @@ import { Room } from "../../chat/Room";
 import { RoomRequired } from "../../../errors/chat/Room.errors";
 import { SocketWithId, TCPSocketListener } from "../../interfaces/socket.interface";
 import { EventActionTypes } from "../../../../common/interfaces/event.interface";
-import { ActionFactory } from "../../chat/Action/Action.factory";
 import { AutoIncrementSequence } from "../../../../common/utils/autoIncrementManager";
 import { ValidationError } from "../../../../client/errors/core.error";
 
@@ -100,7 +99,7 @@ export class SocketManager {
     
     for (const message of messages) {
       try {
-        const action = ActionFactory.getEventHandler(JSON.parse(message))
+        const action = JSON.parse(message)
         const listeners = this.listeners[action.type]
         if (listeners) {
           listeners.forEach((listener) => {

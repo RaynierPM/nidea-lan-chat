@@ -27,8 +27,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
   addMessage: (message: MessageI, roomId?: number) => {
     const room = get().room
-    console.log(room)
-    console.log({message})
     if (!room) throw new ValidationError("Not allowed action")
     if (roomId && roomId !== room.id) {
       // Not added feature

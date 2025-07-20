@@ -35,7 +35,7 @@ export class RoomScanner {
     let resolver: (conns: ConnectionInfo[]) => void;
     const promise = new Promise<ConnectionInfo[]>((res) => {resolver=res;})
     this.socket.bind(7777)
-
+    this._publicRooms = []
     setTimeout(() => {
       this.socket.close()
       this.configurateSocket()

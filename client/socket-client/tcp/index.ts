@@ -1,9 +1,11 @@
 import {createConnection, Socket} from 'net'
 import { Event, EventActionTypes } from '../../../common/interfaces/event.interface'
 import { TCPSocketListener } from '../../interfaces/app.interface'
-import { ConnectionRequiredError } from '../../errors/socket'
+import { AlreadyConnectedError, ConnectionRequiredError } from '../../errors/socket'
 import { JoinAction, JoinActionPayload } from '../../../server/lib/chat/Action/variants/JoinAction'
 import { ActionBase } from '../../../server/lib/chat/Action/Action'
+
+const alreadyConnectedError = new AlreadyConnectedError()
 
 export class SocketManager {
   private connection?: Socket
@@ -13,11 +15,13 @@ export class SocketManager {
   private _connectCallbacks:(() => void)[] = []
 
   get isConnected() {
-    return Boolean(this.connection?.closed)
+    return this.connection && !this.connection?.closed
   }
 
   connect(addr: string, port: number, payload: JoinActionPayload) {
     return new Promise<void>((res, rej) => {
+      if (this.isConnected) rej(alreadyConnectedError)
+      
       console.log("Trying to connect to: ", addr, port)
       this.connection = createConnection(port, addr, () => {
         this.emit(new JoinAction(payload))
@@ -30,6 +34,13 @@ export class SocketManager {
       this.connection.on("error", (err) => rej(err))
       this.connection.on("connect", () => res())
     })
+  }
+
+  disconnect() {
+    if (this.isConnected) {
+      this.connection!.destroy()
+      this.connection = undefined
+    }
   }
 
   on(type: EventActionTypes | "*" , listener: TCPSocketListener) {
@@ -79,6 +90,6 @@ export class SocketManager {
       console.log("Unexpected error registered")
     }
     console.log("Closing app by server desconnection")
-    process.exit(0)
+    this.connection = undefined
   }
 }

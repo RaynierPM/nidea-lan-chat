@@ -1,16 +1,22 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useAppStore } from "../../store/app"
 import { Message } from "./Message"
 
 export function RoomPage() {
-  const {room} = useAppStore()
+  const {room, user: me} = useAppStore()
   const [content, setContent] = useState("")
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   function sendMessage() {
     if (!content.trim().length) return
     window.core.sendMessage({content})
     setContent("")
   }
+
+  useEffect(() => {
+    const lastMessage = room?.messages[room.messages.length-1]
+    if (lastMessage?.userId === me?.id) scrollRef.current?.scrollIntoView({behavior: "smooth"})
+  }, [room?.messages])
 
   return (
     <div
@@ -37,9 +43,10 @@ export function RoomPage() {
           overflowY: "auto",
         }}
       >
-        {room?.messages?.map( message => (
-          <Message message={message} />
+        {room?.messages?.map( (message, messageIdx)=> (☺
+          <Message key={`${message.timestamp}${message?.userId}${messageIdx}`} message={message} />
         ))}
+        <div ref={scrollRef}/>
       </div>
       <form
         style={{

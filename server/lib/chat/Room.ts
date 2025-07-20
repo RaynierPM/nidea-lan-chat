@@ -7,6 +7,7 @@ import { configuration } from "../../config/configuration";
 import { SocketManager } from "../Socket/tcp";
 import { ActionFactory } from "./Action/Action.factory";
 import { RoomInfo } from "../../../common/interfaces/Chat.interface";
+import { SocketWithId } from "../interfaces/socket.interface";
 
 export class Room extends Chat {
   private _owner: UserI;
@@ -76,7 +77,7 @@ export class Room extends Chat {
 
   loadListeners(socketManager: SocketManager) {
     socketManager.on("*", (socket, action) => {
-      ActionFactory.getEventHandler(action).handle(socket, this)
+      ActionFactory.getActionHandler(action).handle(socket as SocketWithId, this)
     })
   }
 

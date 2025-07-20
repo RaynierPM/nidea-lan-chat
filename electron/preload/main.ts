@@ -13,7 +13,16 @@ contextBridge.exposeInMainWorld('core', {
     password
   }),
   getUser: () => ipcRenderer.invoke("get:user"),
-  getRoom: () => ipcRenderer.invoke("get:room"),
+  getRoom: () => ipcRenderer.invoke("action:getHistory"),
   sendMessage: (payload:MessageActionPayload) => ipcRenderer.invoke("action:message", payload),
-  on: (type:EventActionTypes, callback: (event: Event) => void) => ipcRenderer.on(type, (_, event) => callback(event)),
+  disconnect: () => ipcRenderer.invoke("disconnect"),
+  leave: (chatId: number) => ipcRenderer.invoke("action:leave", {chatId}),
+  // on: (type:EventActionTypes, callback: (event: Event) => void) => ipcRenderer.on(type, (_, event) => callback(event)),
+  on: (type: EventActionTypes | "*", callback: (event: Event) => void) => {
+    const wrappedCb = (_, event) => callback(event)
+    ipcRenderer.on(type, wrappedCb)
+    return () => {
+      ipcRenderer.off(type, wrappedCb)
+    }
+  }
 })  

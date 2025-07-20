@@ -3,11 +3,13 @@ import { InvalidEventType } from "../../../errors/event/InvalidEventType";
 import { ActionBase } from "./Action";
 import { ActionI } from "./Action.interface";
 import { AbanadonAction, AbandonActionPayload } from "./variants/AbandonAction";
+import { GetHistoryAction } from "./variants/GetHistory";
 import { JoinAction, JoinActionPayload } from "./variants/JoinAction";
 import { MessageAction, MessageActionPayload } from "./variants/MessageAction";
 
 export abstract class ActionFactory {
-  static getEventHandler(event: ActionI): ActionBase {
+  static getActionHandler(event: ActionI): ActionBase {
+    console.log({actionToHandle: event.type})
     switch(event.type) {
       case EventActionTypes.JOIN:
         return new JoinAction(event.payload as JoinActionPayload)
@@ -15,8 +17,8 @@ export abstract class ActionFactory {
         return new MessageAction(event.payload as MessageActionPayload)
       case EventActionTypes.ABANDON:
         return new AbanadonAction(event.payload as AbandonActionPayload)
-      case EventActionTypes.EXPULSE:
-        
+      case EventActionTypes.GET_HISTORY:
+        return new GetHistoryAction()
       default:
         throw new InvalidEventType(event.type)
     }
