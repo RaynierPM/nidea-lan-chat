@@ -4,11 +4,13 @@ import { Message } from "./Message"
 import { UsersInRoom } from "./UsersInRoom"
 import { EventActionTypes } from "../../../../../common/interfaces/event.interface"
 import { UserStatuses } from "../../../../../common/interfaces/User.interface"
+import { EmojiPicker } from "./EmojiPicker"
 
 export function RoomPage() {
   const {room, user: me} = useAppStore()
   const setRoom = useAppStore(state => state.setRoom)
   const [content, setContent] = useState("")
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -64,6 +66,21 @@ export function RoomPage() {
     }
   }
 
+  // Insert emoji at cursor position
+  function handleEmojiSelect(emoji: string) {
+    if (!textareaRef.current) return
+    const textarea = textareaRef.current
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    const newValue = content.slice(0, start) + emoji + content.slice(end)
+    setContent(newValue)
+    // Do NOT close the emoji picker here
+    setTimeout(() => {
+      textarea.focus()
+      textarea.selectionStart = textarea.selectionEnd = start + emoji.length
+    }, 0)
+  }
+
   return (
     <div className="flex flex-col md:flex-row items-center justify-center min-h-screen gap-6" style={{background: 'none'}}>
       <div className="card w-full max-w-2xl flex flex-col h-[80vh]">
@@ -81,12 +98,21 @@ export function RoomPage() {
           <div ref={scrollRef}/>
         </div>
         <form
-          className="flex gap-2 w-full mt-2"
+          className="flex gap-2 w-full mt-2 items-end"
           onSubmit={e => {
             e.preventDefault()
             sendMessage()
           }}
         >
+          <button
+            type="button"
+            className="text-2xl px-2 py-1 rounded hover:bg-indigo-100 focus:outline-none"
+            onClick={() => setShowEmojiPicker(v => !v)}
+            tabIndex={-1}
+            title="Show emoji picker"
+          >
+            😊
+          </button>
           <textarea
             ref={textareaRef}
             className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none min-h-[40px] max-h-40"
@@ -102,6 +128,7 @@ export function RoomPage() {
             title="Send (Enter)"
           >Send &gt;</button>
         </form>
+        {showEmojiPicker && <EmojiPicker onSelect={handleEmojiSelect} />}
       </div>
       <UsersInRoom />
     </div>
