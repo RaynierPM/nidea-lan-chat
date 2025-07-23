@@ -1,10 +1,52 @@
-*, *::before, *::after {
-  margin: 0; 
-  padding: 0;
-  box-sizing: border-box;
-}
+@import "tailwindcss";
 
 body {
-  background-color: #342e3c;
-  color: white;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  color: #222;
+}
+
+/* Card style */
+.card {
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px 0 rgba(108, 99, 255, 0.08);
+  padding: 2rem;
+}
+
+/* Accent colors */
+.accent-primary {
+  background: #6C63FF;
+  color: #fff;
+}
+.accent-secondary {
+  background: #00BFAE;
+  color: #fff;
+}
+
+/* Chat bubbles */
+.bubble-me {
+  background: #6C63FF;
+  color: #fff;
+  border-radius: 1.2rem 1.2rem 0.2rem 1.2rem;
+  padding: 0.75rem 1.2rem;
+  margin-left: auto;
+  margin-bottom: 0.5rem;
+  max-width: 70%;
+  word-break: break-word;
+}
+.bubble-other {
+  background: #e0e7ef; /* Changed from #f1f3fa to a more saturated, darker blue-gray for better contrast */
+  color: #222;
+  border-radius: 1.2rem 1.2rem 1.2rem 0.2rem;
+  padding: 0.75rem 1.2rem;
+  margin-right: auto;
+  margin-bottom: 0.5rem;
+  max-width: 70%;
+  word-break: break-word;
+}
+
+input, button {
+  font-family: inherit;
 }

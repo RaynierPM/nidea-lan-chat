@@ -9,7 +9,6 @@ import { MessageAction, MessageActionPayload } from "./variants/MessageAction";
 
 export abstract class ActionFactory {
   static getActionHandler(event: ActionI): ActionBase {
-    console.log({actionToHandle: event.type})
     switch(event.type) {
       case EventActionTypes.JOIN:
         return new JoinAction(event.payload as JoinActionPayload)
