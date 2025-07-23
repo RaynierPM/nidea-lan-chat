@@ -11,6 +11,12 @@ export function SearchRoomsPage() {
   const [selectedRoom, setSelectedRoom] = useState<ConnectionInfo | null>(null)
   const navigate = useNavigate()
 
+  // Manual connect state
+  const [manualAddr, setManualAddr] = useState("");
+  const [manualPort, setManualPort] = useState("");
+  const [manualPassword, setManualPassword] = useState("");
+  const manualConnect = useLoading();
+
   const {
     clear: clearRooms,
     data: rooms,
@@ -41,7 +47,11 @@ export function SearchRoomsPage() {
     return () => {
       if (!connInfo) return
       setShowPassword(false)
-      connect(window.core.connectRoom, connInfo.addr, connInfo.port, password)
+      connect(window.core.connectRoom, {
+        host: connInfo.addr,
+        port: connInfo.port,
+        password
+      })
       .then(() => {navigate("/room")})
       .catch((err) => {
         if (err instanceof AlreadyConnectedError) navigate('/room')
@@ -56,12 +66,36 @@ export function SearchRoomsPage() {
     }
   }
 
+  async function handleManualConnect(e: React.FormEvent) {
+    e.preventDefault();
+    manualConnect.clear();
+    try {
+      await manualConnect.execute(
+        window.core.connectRoom,
+        {
+          host: manualAddr,
+          port: manualPort ? Number(manualPort) : undefined,
+          password: manualPassword || undefined
+        }
+      );
+      navigate("/room");
+    } catch (err) {
+      // error handled by useLoading
+    }
+  }
+
   if (connecting) {
     return <h2 className="text-2xl font-bold text-center mt-10 text-indigo-600">Connecting...</h2>
   }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen" style={{background: 'none'}}>
+      <button
+        className="self-start mb-4 ml-2 px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-semibold hover:bg-indigo-200 transition"
+        onClick={() => navigate("/")}
+      >
+        ← Back to Home
+      </button>
       <div className="card w-full max-w-2xl">
         <div className="flex items-center gap-2 mb-6">
           <h2 className="text-2xl font-bold text-indigo-700">Search room</h2>
@@ -138,6 +172,52 @@ export function SearchRoomsPage() {
             </div>
           )}
         </div>
+      </div>
+      {/* Manual connect section moved to bottom */}
+      <div className="card w-full max-w-2xl mt-6">
+        <h2 className="text-lg font-bold text-indigo-700 mb-4">Manual Connect</h2>
+        <form className="flex flex-col gap-3" onSubmit={handleManualConnect}>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+            <input
+              type="text"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              value={manualAddr}
+              onChange={e => setManualAddr(e.target.value)}
+              required
+              placeholder="e.g. 192.168.1.10"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Port (optional)</label>
+            <input
+              type="number"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              value={manualPort}
+              onChange={e => setManualPort(e.target.value)}
+              placeholder="If not provided, the default port will be used"
+              min={1}
+              max={65535}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password (optional)</label>
+            <input
+              type="password"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              value={manualPassword}
+              onChange={e => setManualPassword(e.target.value)}
+            />
+          </div>
+          <button
+            type="submit"
+            className="accent-primary w-full py-2 rounded-xl font-semibold shadow-lg hover:scale-105 transition-transform duration-200 text-lg mt-2"
+            disabled={manualConnect.loading}
+          >
+            {manualConnect.loading ? "Connecting..." : "Connect"}
+          </button>
+          {manualConnect.error && <div className="text-red-600 text-center">{(manualConnect.error as Error).message}</div>}
+        </form>
       </div>
     </div>
   );

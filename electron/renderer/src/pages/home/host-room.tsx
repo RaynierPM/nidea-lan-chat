@@ -42,6 +42,12 @@ export function HostRoomPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen" style={{background: 'none'}}>
+      <button
+        className="self-start mb-4 ml-2 px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-semibold hover:bg-indigo-200 transition"
+        onClick={() => navigate("/")}
+      >
+        ← Back to Home
+      </button>
       <div className="card w-full max-w-md flex flex-col items-center">
         <h2 className="text-2xl font-bold text-indigo-700 mb-6">Host a Room</h2>
         <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
