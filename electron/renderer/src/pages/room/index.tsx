@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useAppStore } from "../../store/app"
 import { Message } from "./Message"
+import { UsersInRoom } from "./UsersInRoom"
 
 export function RoomPage() {
   const {room, user: me} = useAppStore()
@@ -25,7 +26,6 @@ export function RoomPage() {
       e.preventDefault()
       sendMessage()
     }
-    // Shift+Enter will insert a line break by default
   }
 
   function handleInput(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -37,7 +37,7 @@ export function RoomPage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen" style={{background: 'none'}}>
+    <div className="flex flex-col md:flex-row items-center justify-center min-h-screen gap-6" style={{background: 'none'}}>
       <div className="card w-full max-w-2xl flex flex-col h-[80vh]">
         <div className="mb-2">
           <h2 className="text-xl font-bold text-indigo-700">Room: {room?.roomName || "Loading..."}</h2>
@@ -75,6 +75,7 @@ export function RoomPage() {
           >Send &gt;</button>
         </form>
       </div>
+      <UsersInRoom />
     </div>
   )
 }
