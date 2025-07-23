@@ -1,6 +1,6 @@
 import { createHashRouter, createRoutesFromElements, Route } from "react-router-dom";
 import { RootLayout } from "../layouts/root";
-import { HomePage } from "../pages/home";
+import { HomePage, HostRoomPage } from "../pages/home";
 import { InitPage } from "../pages/Auth/Init";
 import { SearchRoomsPage } from "../pages/home/search-room";
 import { RoomPage } from "../pages/room";
@@ -18,7 +18,7 @@ export const router = createHashRouter(
         <Route path="room" element={<RoomLayout />}>
           <Route index element={<RoomPage />} />
         </Route>
-        <Route path="host-room" element={<></>} />
+        <Route path="host-room" element={<HostRoomPage />} />
         <Route path="*" element={<>404 Not Fouded</>} />
       </Route>
     </>

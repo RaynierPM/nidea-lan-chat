@@ -2,16 +2,13 @@ import { contextBridge, ipcRenderer } from "electron";
 import { InitServerPayload } from "../main";
 import { MessageActionPayload } from "../../server/lib/chat/Action/variants/MessageAction";
 import { Event, EventActionTypes } from "../../common/interfaces/event.interface";
+import { configuration } from "../../server/config/configuration";
 
 contextBridge.exposeInMainWorld('core', {
   init: (username: string) => ipcRenderer.invoke('init', {username}),
-  initServer: (payload: InitServerPayload) => ipcRenderer.invoke("init:server", payload),
+  createServer: (payload: InitServerPayload) => ipcRenderer.invoke("init:server", payload),
   searchRooms: () => ipcRenderer.invoke('search:rooms'),
-  connectRoom: (host: string, port: number, password?: string) => ipcRenderer.invoke("connect", {
-    host,
-    port,
-    password
-  }),
+  connectRoom: ({host, port = configuration.port, password}:{host: string, port?: number, password?: string}) => ipcRenderer.invoke("connect", {host, port, password}),
   getUser: () => ipcRenderer.invoke("get:user"),
   getRoom: () => ipcRenderer.invoke("action:getHistory"),
   sendMessage: (payload:MessageActionPayload) => ipcRenderer.invoke("action:message", payload),

@@ -12,7 +12,7 @@ declare global {
       getRoom: () => Promise<void>,
       searchRooms: () => Promise<ConnectionInfo[]>,
       init: (username: string) => UserI,
-      connectRoom: (host: string, port: number, password?: string) => Promise<void>,
+      connectRoom: ({host, port, password}:{host: string, port?: number, password?: string}) => Promise<void>,
       createServer: (payload: InitServerPayload) => Promise<boolean>,
       sendMessage: (payload: MessageActionPayload) => Promise<void>,
       disconnect: () => Promise<void>,

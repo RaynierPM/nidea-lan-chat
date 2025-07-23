@@ -25,3 +25,5 @@ export function HomePage() {
     </div>
   );
 }
+
+export { HostRoomPage } from "./host-room";
