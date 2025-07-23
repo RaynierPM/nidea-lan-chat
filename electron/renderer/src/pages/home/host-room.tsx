@@ -1,40 +1,44 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLoading } from "../../hooks/useLoading";
 
 export function HostRoomPage() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [isHidden, setIsHidden] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
+  const createServerLoading = useLoading();
+  const connectRoomLoading = useLoading();
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    createServerLoading.clear();
+    connectRoomLoading.clear();
     setSuccess(false);
     try {
-      await window.core.createServer({
-        name,
-        password: password || undefined,
-        isHidden,
-      });
+      await createServerLoading.execute(
+        window.core.createServer,
+        { name, password: password || undefined, isHidden }
+      );
       setSuccess(true);
       try {
-        await window.core.connectRoom({host: "127.0.0.1", password});
+        await connectRoomLoading.execute(
+          window.core.connectRoom,
+          { host: "127.0.0.1", password: password || undefined }
+        );
         navigate("/room");
-      } catch (connErr: any) {
-        setError(connErr?.message || "Room created, but failed to connect to your own room.");
+      } catch (connErr) {
         setSuccess(false);
       }
-    } catch (err: any) {
-      setError(err?.message || "Failed to host room");
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      // error handled by useLoading
     }
   }
+
+  const loading = createServerLoading.loading || connectRoomLoading.loading;
+  const error = createServerLoading.error || connectRoomLoading.error;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen" style={{background: 'none'}}>
@@ -76,7 +80,7 @@ export function HostRoomPage() {
           >
             {loading ? "Hosting..." : "Host Room"}
           </button>
-          {error && <div className="text-red-600 text-center">{error}</div>}
+          {error && <div className="text-red-600 text-center">{(error as Error).message}</div>}
           {success && <div className="text-green-600 text-center">Room hosted! Connecting...</div>}
         </form>
       </div>

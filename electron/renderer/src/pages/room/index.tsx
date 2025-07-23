@@ -116,7 +116,7 @@ export function RoomPage() {
           <textarea
             ref={textareaRef}
             className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none min-h-[40px] max-h-40"
-            placeholder="Type your message... (Enter to send, Shift+Enter for new line)"
+            placeholder="Type your message..."
             value={content}
             onChange={handleInput}
             onKeyDown={handleKeyDown}
