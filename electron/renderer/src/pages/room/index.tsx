@@ -2,12 +2,40 @@ import { useEffect, useRef, useState } from "react"
 import { useAppStore } from "../../store/app"
 import { Message } from "./Message"
 import { UsersInRoom } from "./UsersInRoom"
+import { EventActionTypes } from "../../../../../common/interfaces/event.interface"
+import { UserStatuses } from "../../../../../common/interfaces/User.interface"
 
 export function RoomPage() {
   const {room, user: me} = useAppStore()
+  const setRoom = useAppStore(state => state.setRoom)
   const [content, setContent] = useState("")
   const scrollRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Helper to update a participant's status in the room
+  function updateParticipantStatus(userId: string, status: number) {
+    if (!room) return
+    setRoom({
+      ...room,
+      participants: room.participants.map(p =>
+        p.id === userId ? { ...p, status } : p
+      )
+    })
+  }
+
+  useEffect(() => {
+    // Listen for CONNECT and DISCONNECT events
+    const cleanConnect = window.core.on(EventActionTypes.CONNECT, (event) => {
+      updateParticipantStatus(event.authorId, UserStatuses.ACTIVE) // 0 = ACTIVE
+    })
+    const cleanDisconnect = window.core.on(EventActionTypes.DISCONNECT, (event) => {
+      updateParticipantStatus(event.authorId, UserStatuses.DISCONNECTED) // 2 = DISCONNECTED
+    })
+    return () => {
+      cleanConnect && cleanConnect()
+      cleanDisconnect && cleanDisconnect()
+    }
+  }, [room])
 
   function sendMessage() {
     if (!content.trim().length) return
