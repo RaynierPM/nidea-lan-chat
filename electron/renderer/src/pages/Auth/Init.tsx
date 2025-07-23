@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAppStore } from "../../store/app"
+import { FakeUsernameUtil } from "../../../../../client/utils/usernameFaker"
 
 export function InitPage() {
   const [username, setUsername] = useState("")
@@ -26,6 +27,10 @@ export function InitPage() {
     })
   }, [])
 
+  function handleGenerateRandom() {
+    setUsername(FakeUsernameUtil.generate())
+  }
+
   return (
     <div className="flex justify-center items-center min-h-screen" style={{background: 'none'}}>
       <div className="card w-full max-w-sm flex flex-col items-center">
@@ -41,8 +46,14 @@ export function InitPage() {
           />
         </div>
         <button
-          onClick={handleInit}
+          onClick={handleGenerateRandom}
           className="accent-primary w-full py-2 rounded-xl font-semibold shadow-lg hover:scale-105 transition-transform duration-200 text-lg mt-4"
+        >
+          Generate Random
+        </button>
+        <button
+          onClick={handleInit}
+          className="mt-2 w-full py-2 rounded-xl font-semibold shadow-lg border border-indigo-200 text-indigo-700 hover:bg-indigo-50 transition-transform duration-200 text-lg"
         >
           Login
         </button>
