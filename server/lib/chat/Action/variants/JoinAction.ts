@@ -6,7 +6,6 @@ import { Room } from "../../Room";
 import { Participant } from "../../../User/Participant";
 import { SocketWithId } from "../../../interfaces/socket.interface";
 import { GetHistoryEvent } from "../../../../../common/lib/Event/variants/GetHistory.event";
-import { Message } from "../../Message";
 import { TimestampUtils } from "../../../../../common/utils/timestamp";
 
 export type JoinActionPayload = {
@@ -51,8 +50,6 @@ export class JoinAction extends ActionBase {
       participant = new Participant(userId, username, socket)
       room.addParticipant(participant)
       participant.notify(new GetHistoryEvent(room.getRoomInfo()))
-      room.addMessage(new Message(null, `@Everyone say hello.`))
-      room.addMessage(new Message(null, `-- ${username} -- Has been joined`))
     }
   }
 }

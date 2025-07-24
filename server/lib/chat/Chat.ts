@@ -71,6 +71,8 @@ export class Chat {
         }
       ))
     })
+    this.addMessage(new Message(null, `<font color="#432dd7">@Everyone</font> say hello.`))
+    this.addMessage(new Message(null, `--<font color="#432dd7">**${newUser.username}**</font>-- Has been joined`))
   }
 
   disconnect(userId: string) {
@@ -94,10 +96,10 @@ export class Chat {
     if (participant) {
       this._participants = this._participants.filter(u => u.id !== userId)
       participant.notify(new MessageEvent({
-        content: "You abandoned chat.",
+        content: "**You** abandoned chat.",
         roomId: this._id
       }))
-      this.addMessage(new Message(null, `${participant.username} has abandoned this chat.`))
+      this.addMessage(new Message(null, `<font color="#432dd7">**${participant.username}**</font> has abandoned this chat.`))
       this.notifyAll(new AbandonEvent({userId}))
     }
   }
