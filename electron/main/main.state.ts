@@ -127,16 +127,20 @@ export class MainState {
     })
   }
 
+  private _lastNotificationTime: number = 0;
+  
   private loadWindowEvents() {
     this._socketManager.on(EventActionTypes.MESSAGE, (event) => {
-      const {
-        content
-      } = event.payload as MessageEventPayload
+      const { content } = event.payload as MessageEventPayload
       if (!this._window?.isFocused()) {
-        new Notification({
-          title: "New message!",
-          body: content
-        }).show()
+        const now = Date.now();
+        if (now - this._lastNotificationTime > 2000) {
+          new Notification({
+            title: "New message!",
+            body: content
+          }).show();
+          this._lastNotificationTime = now;
+        }
       }
     })
   }
