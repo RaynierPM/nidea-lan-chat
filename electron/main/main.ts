@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain} from 'electron/main'
+import {app, BrowserWindow, ipcMain } from 'electron/main'
 import {join, resolve} from 'node:path'
 import {is} from '@electron-toolkit/utils'
 import { loadHandlers } from './handler'
@@ -24,7 +24,7 @@ function createWindow() {
     win.webContents.openDevTools()
   }
 
-  MainState.instance.redirectEvents(win.webContents)
+  MainState.instance.setWindow(win)
 }
 
 app.whenReady()

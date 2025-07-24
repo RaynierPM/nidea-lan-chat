@@ -1,4 +1,4 @@
-import { WebContents } from "electron/main";
+import { BrowserWindow, Notification, WebContents } from "electron/main";
 import { ValidationError } from "../../client/errors/core.error";
 import { SocketManager } from "../../client/socket-client/tcp";
 import { RoomScanner } from "../../client/socket-client/udp";
@@ -12,6 +12,8 @@ import { Room } from "../../server/lib/chat/Room";
 import { Server } from "../../server";
 import { AbanadonAction } from "../../server/lib/chat/Action/variants/AbandonAction";
 import { GetHistoryAction } from "../../server/lib/chat/Action/variants/GetHistory";
+import { EventActionTypes } from "../../common/interfaces/event.interface";
+import { MessageEventPayload } from "../../common/lib/Event/variants/MessageEvent";
 
 export class MainState {
 
@@ -20,6 +22,8 @@ export class MainState {
   private _user: UserI | null = null
 
   private _server: Server | null = null
+
+  private _window: BrowserWindow | null = null
 
   get user() {
     return this._user
@@ -111,9 +115,29 @@ export class MainState {
     this._socketManager.emit(new MessageAction({content, chatId}))
   }
 
+  setWindow(window: BrowserWindow) {
+    this._window = window
+    this.redirectEvents(window.webContents)
+    this.loadWindowEvents()
+  }
+
   redirectEvents(wb: WebContents) {
     this._socketManager.on("*", (event) => {
       wb.send(event.type, event)
+    })
+  }
+
+  private loadWindowEvents() {
+    this._socketManager.on(EventActionTypes.MESSAGE, (event) => {
+      const {
+        content
+      } = event.payload as MessageEventPayload
+      if (!this._window?.isFocused()) {
+        new Notification({
+          title: "New message!",
+          body: content
+        }).show()
+      }
     })
   }
 }
