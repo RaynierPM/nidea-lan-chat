@@ -6,6 +6,7 @@ import { RoomInfo } from "../../../../common/interfaces/Chat.interface";
 import { MessageEvent, MessageEventPayload } from "../../../../common/lib/Event/variants/MessageEvent";
 import { MessageI } from "../../../../common/interfaces/message.interface";
 import { EventActionTypes } from "../../../../common/interfaces/event.interface";
+import { JoinEvent, JoinEventPayload } from "../../../../common/lib/Event/variants/JoinEvent";
 
 export function RootLayout() {
   const navigate = useNavigate()
@@ -13,6 +14,7 @@ export function RootLayout() {
     setUser,
     setRoom,
     addMessage,
+    addParticipant
   } = useAppStore()
 
   useEffect(() => {
@@ -30,9 +32,20 @@ export function RootLayout() {
       addMessage(message, payload.roomId)
     })
 
+    let joinCleanUp = window.core.on(EventActionTypes.JOIN, (event: JoinEvent) => {
+      const payload = event.payload as JoinEventPayload
+      addParticipant({
+        id: payload.userId,
+        username: payload.username,
+        status: payload.status,
+        timestamp: payload.timestamp,
+      })
+    })
+
     return () => {
       cleanUpHistory()
       messageCleanUp()
+      joinCleanUp()
     }
   }, [])
 

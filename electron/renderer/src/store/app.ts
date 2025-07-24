@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { RoomInfo } from "../../../../common/interfaces/Chat.interface";
+import { ParticipantInfo, RoomInfo } from "../../../../common/interfaces/Chat.interface";
 import { UserI } from "../../../../common/interfaces/User.interface";
 import { MessageI } from "../../../../common/interfaces/message.interface";
 import { ValidationError } from "../../../../client/errors/core.error";
@@ -9,7 +9,8 @@ type AppStore = {
   room: RoomInfo | null,
   setRoom: (room: RoomInfo) => void,
   setUser: (username: UserI) => void,
-  addMessage: (message: MessageI, roomId?: number) => void
+  addMessage: (message: MessageI, roomId?: number) => void,
+  addParticipant: (participant: ParticipantInfo) => void
 }
 
 export const useAppStore = create<AppStore>((set, get) => ({
@@ -23,6 +24,16 @@ export const useAppStore = create<AppStore>((set, get) => ({
   setUser: (user: UserI) => {
     set(() => ({
       user: user,
+    }))
+  },
+  addParticipant: (participant: ParticipantInfo) => {
+    const room = get().room
+    if (!room) throw new ValidationError("Not allowed action")
+    set((state) => ({
+      room: {
+        ...state.room!,
+        participants: [...state.room!.participants, participant],
+      },
     }))
   },
   addMessage: (message: MessageI, roomId?: number) => {

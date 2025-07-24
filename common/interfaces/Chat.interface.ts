@@ -13,6 +13,11 @@ export type PublicRoomInfo = {
   user: Pick<UserI, 'id'> & Pick<UserI, 'username'>
 }
 
+export type ParticipantInfo = UserI & {
+  status: UserStatuses
+  timestamp: number
+}
+
 export type ChatInfo = {
   id: number;
   name: string;
@@ -21,12 +26,7 @@ export type ChatInfo = {
       userId: string | null;
       timestamp: number;
   }[];
-  participants: {
-      id: string;
-      username: string;
-      status: UserStatuses;
-      timestamp: number;
-  }[]
+  participants: ParticipantInfo[]
 }
 
 export interface RoomInfo extends ChatInfo {
