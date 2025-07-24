@@ -141,7 +141,7 @@ export class MainState {
       const { content } = event.payload as MessageEventPayload
       if (!this._window?.isFocused()) {
         const now = Date.now();
-        if (now - this._lastNotificationTime > 2000) {
+        if (now - this._lastNotificationTime > 5e3) {
           new Notification({
             title: "New message!",
             body: content
