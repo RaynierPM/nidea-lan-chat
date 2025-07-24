@@ -13,6 +13,7 @@ export class SocketManager {
   private listeners: Partial<Record<EventActionTypes | "*", TCPSocketListener[]>> = {} 
 
   private _connectCallbacks:(() => void)[] = []
+  private _disconnectCallbacks: (() => void)[] = []
 
   get isConnected() {
     return this.connection && !this.connection?.closed
@@ -55,6 +56,10 @@ export class SocketManager {
     this._connectCallbacks.push(callback)
   }
 
+  onDisconnect(callback: () => void) {
+    this._disconnectCallbacks.push(callback)
+  }
+
   emit(action: ActionBase) {
     // @@ Connection needed error
     if (!this.connection) throw new ConnectionRequiredError()
@@ -85,11 +90,12 @@ export class SocketManager {
     }
   }
 
-  private onClose(error: boolean) {
+  private onClose = (error: boolean) => {
     if (error) {
       console.log("Unexpected error registered")
     }
     console.log("Closing app by server desconnection")
     this.connection = undefined
+    this._disconnectCallbacks.forEach(cb => cb())
   }
 }

@@ -18,6 +18,7 @@ declare global {
       disconnect: () => Promise<void>,
       leave:(chatId: number) => Promise<void>,
       on: (type: EventActionTypes, cb: (payload) => void) => () => void,
+      onDisconnect: (cb: () => void) => () => void,
     }
   }
 }

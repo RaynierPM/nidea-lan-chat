@@ -115,10 +115,17 @@ export class MainState {
     this._socketManager.emit(new MessageAction({content, chatId}))
   }
 
+  onDisconnect(callback: () => void) {
+    this._socketManager.onDisconnect(callback)
+  }
+
   setWindow(window: BrowserWindow) {
     this._window = window
     this.redirectEvents(window.webContents)
     this.loadWindowEvents()
+    this._socketManager.onDisconnect(() => {
+      window.webContents.send('disconnect')
+    })
   }
 
   redirectEvents(wb: WebContents) {

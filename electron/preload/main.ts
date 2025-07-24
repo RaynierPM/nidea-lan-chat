@@ -21,5 +21,12 @@ contextBridge.exposeInMainWorld('core', {
     return () => {
       ipcRenderer.off(type, wrappedCb)
     }
+  },
+  onDisconnect: (callback: () => void) => {
+    const wrappedCb = () => callback();
+    ipcRenderer.on('disconnect', wrappedCb);
+    return () => {
+      ipcRenderer.off('disconnect', wrappedCb);
+    };
   }
 })  
