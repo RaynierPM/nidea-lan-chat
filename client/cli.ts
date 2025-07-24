@@ -122,7 +122,7 @@ async function startApp() {
   
   rl.question("Insert a username (If empty name you will have a random characters)-> ", name => {
     if (!name) name = FakeUsernameUtil.generate()
-    app = new App(name)
+    app = new App(name, "Just testing")
     app.on(EventActionTypes.GET_HISTORY, () => {
       printHelp()
     })
