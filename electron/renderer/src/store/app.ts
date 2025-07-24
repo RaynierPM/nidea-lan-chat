@@ -7,7 +7,7 @@ import { ValidationError } from "../../../../client/errors/core.error";
 type AppStore = {
   user: UserI | null,
   room: RoomInfo | null,
-  setRoom: (room: RoomInfo) => void,
+  setRoom: (room: RoomInfo | null) => void,
   setUser: (username: UserI) => void,
   addMessage: (message: MessageI, roomId?: number) => void,
   addParticipant: (participant: ParticipantInfo) => void,
@@ -17,7 +17,7 @@ type AppStore = {
 export const useAppStore = create<AppStore>((set, get) => ({
   user: null,
   room: null,
-  setRoom: (room: RoomInfo) => {
+  setRoom: (room: RoomInfo | null) => {
     set(() => ({
       room,
     }))

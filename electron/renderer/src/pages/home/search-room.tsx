@@ -4,6 +4,7 @@ import { ConnectionInfo } from "../../../../../common/interfaces/Chat.interface"
 import { useLoading } from "../../hooks/useLoading"
 import { useNavigate } from "react-router-dom"
 import { AlreadyConnectedError } from "../../../../../client/errors/socket"
+import { BackToHomeButton } from "../../components/BackToHomeButton"
 
 export function SearchRoomsPage() {
   const [password, setPassword] = useState("")
@@ -90,12 +91,7 @@ export function SearchRoomsPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen" style={{background: 'none'}}>
-      <button
-        className="self-start mb-4 ml-2 px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-semibold hover:bg-indigo-200 transition"
-        onClick={() => navigate("/")}
-      >
-        ← Back to Home
-      </button>
+      <BackToHomeButton />
       <div className="card w-full max-w-2xl">
         <div className="flex items-center gap-2 mb-6">
           <h2 className="text-2xl font-bold text-indigo-700">Search room</h2>

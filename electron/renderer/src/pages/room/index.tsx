@@ -7,6 +7,7 @@ import { UserStatuses } from "../../../../../common/interfaces/User.interface"
 import { EmojiPicker } from "../../components/EmojiPicker"
 import { DisconnectModal } from "./DisconnectModal"
 import { useNavigate } from "react-router-dom"
+import { BackToHomeButton } from "../../components/BackToHomeButton"
 
 export function RoomPage() {
   const {room, user: me} = useAppStore()
@@ -46,6 +47,7 @@ export function RoomPage() {
   useEffect(() => {
     const cleanup = window.core.onDisconnect(() => {
       setDisconnected(true)
+      setRoom(null)
     })
     return cleanup
   }, [])
@@ -104,6 +106,7 @@ export function RoomPage() {
       />
       <div className="flex flex-col md:flex-row items-center justify-center min-h-screen gap-6" style={{background: 'none'}}>
         <div className="card w-full max-w-2xl flex flex-col h-[80vh]">
+          <BackToHomeButton className="mb-2" />
           <div className="mb-2">
             <h2 className="text-xl font-bold text-indigo-700">Room: {room?.roomName || "Loading..."}</h2>
             <h3 className="text-md text-gray-600">Chat: {room?.name || "Loading..."}</h3>
