@@ -7,6 +7,7 @@ import { MessageEvent, MessageEventPayload } from "../../../../common/lib/Event/
 import { MessageI } from "../../../../common/interfaces/message.interface";
 import { EventActionTypes } from "../../../../common/interfaces/event.interface";
 import { JoinEvent, JoinEventPayload } from "../../../../common/lib/Event/variants/JoinEvent";
+import { AbandonEvent, AbandonEventPayload } from "../../../../common/lib/Event/variants/Abandon.event";
 
 export function RootLayout() {
   const navigate = useNavigate()
@@ -14,7 +15,8 @@ export function RootLayout() {
     setUser,
     setRoom,
     addMessage,
-    addParticipant
+    addParticipant,
+    removeParticipant
   } = useAppStore()
 
   useEffect(() => {
@@ -42,10 +44,16 @@ export function RootLayout() {
       })
     })
 
+    let abandonCleanUp = window.core.on(EventActionTypes.ABANDON, (event: AbandonEvent) => {
+      const payload = event.payload as AbandonEventPayload
+      removeParticipant(payload.userId)
+    })
+
     return () => {
       cleanUpHistory()
       messageCleanUp()
       joinCleanUp()
+      abandonCleanUp()
     }
   }, [])
 
