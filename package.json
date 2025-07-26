@@ -10,6 +10,7 @@
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "dev": "electron-vite dev",
     "start": "electron-vite .",
+    "preview": "electron-vite preview",
     "build": "npm run typecheck && electron-vite build",
     "dev:server": "tsx server/test.server.ts",
     "dev:cli": "tsx client/cli.ts"

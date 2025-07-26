@@ -8,15 +8,17 @@ import { EmojiPicker } from "../../components/EmojiPicker"
 import { DisconnectModal } from "./DisconnectModal"
 import { useNavigate } from "react-router-dom"
 import { BackToHomeButton } from "../../components/BackToHomeButton"
+import { Icon } from "@iconify/react/dist/iconify.js"
 
 export function RoomPage() {
-  const {room, user: me} = useAppStore()
+  const {room } = useAppStore()
   const setRoom = useAppStore(state => state.setRoom)
   const [content, setContent] = useState("")
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [disconnected, setDisconnected] = useState(false)
+  const [autoScrollOnMsg, setAutoScrollOnMsg] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const [disconnected, setDisconnected] = useState(false)
   const navigate = useNavigate()
 
   // Helper to update a participant's status in the room
@@ -59,9 +61,12 @@ export function RoomPage() {
     if (textareaRef.current) textareaRef.current.style.height = 'auto'
   }
 
+  function scrollToBottom() {
+    scrollRef.current?.scrollIntoView({behavior: "smooth"})
+  }
+
   useEffect(() => {
-    const lastMessage = room?.messages[room.messages.length-1]
-    if (lastMessage?.userId === me?.id) scrollRef.current?.scrollIntoView({behavior: "smooth"})
+    if (autoScrollOnMsg) scrollToBottom()
   }, [room?.messages])
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -94,6 +99,16 @@ export function RoomPage() {
     }, 0)
   }
 
+  function handleMessageScroll(e: React.UIEvent<HTMLDivElement>) {
+    const {scrollTop, scrollHeight, clientHeight} = e.currentTarget
+    const scrollPosY = (scrollHeight-scrollTop)-clientHeight
+    if (scrollPosY <= 150 ) {
+      setAutoScrollOnMsg(true)
+    }else {
+      setAutoScrollOnMsg(false)
+    }
+  }
+
   return (
     <div>
       <DisconnectModal
@@ -112,13 +127,20 @@ export function RoomPage() {
             <h3 className="text-md text-gray-600">Chat: {room?.name || "Loading..."}</h3>
           </div>
           <div 
-            className="flex-1 overflow-y-auto px-2 py-2 mb-2 bg-indigo-50 rounded-xl"
+            className="flex-1 overflow-y-auto px-2 py-2 mb-2 bg-indigo-50 rounded-xl relative"
             style={{minHeight: '0'}}
+            onScroll={handleMessageScroll}
           >
             {room?.messages?.map( (message, messageIdx)=> (
               <Message key={`${message.timestamp}${message?.userId}${messageIdx}`} message={message} />
             ))}
             <div ref={scrollRef}/>
+            {!autoScrollOnMsg && <div 
+              className="rounded-full size-10 ml-auto sticky bottom-1 !right-1 text-indigo-600 font-bold animate-bounce bg-white flex items-center justify-center cursor-pointer"
+              onClick={scrollToBottom}
+            >
+              <Icon icon="material-symbols:arrow-downward-rounded" className="text-2xl" />
+            </div>}
           </div>
           <form
             className="flex gap-2 w-full mt-2 items-end"
