@@ -16,6 +16,7 @@ function getStatusLabel(status: number | string) {
 
 export function UsersInRoom() {
   const room = useAppStore(state => state.room)
+  const me = useAppStore(state => state.user)
   const [open, setOpen] = useState(false)
 
   return (
@@ -63,7 +64,9 @@ export function UsersInRoom() {
         <ul className="flex flex-col gap-3 overflow-y-auto">
           {room?.participants?.map((participant) => (
             <li key={participant.id} className="flex items-center gap-2 p-2 rounded-lg bg-indigo-50">
-              <span className="font-semibold text-indigo-900">{participant.username}</span>
+              <span className="font-semibold text-indigo-900">{participant.username} {me?.id === participant.id && (
+                <span className="text-indigo-600">(Me)</span>
+              )}</span>
               <span className={`ml-auto text-xs font-bold ${statusColors[getStatusLabel(participant.status) as keyof typeof statusColors] || 'text-gray-500'}`}>{getStatusLabel(participant.status)}</span>
             </li>
           ))}

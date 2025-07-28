@@ -16,7 +16,7 @@ export function RoomPage() {
   const [content, setContent] = useState("")
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [disconnected, setDisconnected] = useState(false)
-  const [autoScrollOnMsg, setAutoScrollOnMsg] = useState(false)
+  const [autoScrollOnMsg, setAutoScrollOnMsg] = useState(true)
   const scrollRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const navigate = useNavigate()

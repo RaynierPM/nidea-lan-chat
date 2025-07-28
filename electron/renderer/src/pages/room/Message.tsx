@@ -46,13 +46,14 @@ if (typeof window !== 'undefined' && !document.getElementById('markdown-compact-
 }
 
 export function Message({message}:MessageProps) {
+  const isSystem = !message.userId
   const author = useAppStore(state => state.room)
     ?.participants
     .find(part => part.id === message.userId)
   const isMee = useAppStore(state => state.user)?.id === author?.id 
   return (
     <div className={isMee ? "bubble-me" : "bubble-other"}>
-      <span className="font-semibold mr-2">{isMee? "Me" : author?.username || "System"}:</span>
+      <span className="font-semibold mr-2">{isSystem? "System" : isMee? "Me" : author?.username}:</span>
       <span
         className="markdown-compact"
         style={{whiteSpace: 'pre-line'}}
