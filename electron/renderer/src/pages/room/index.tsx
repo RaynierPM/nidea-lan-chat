@@ -5,10 +5,10 @@ import { UsersInRoom } from "./UsersInRoom"
 import { EventActionTypes } from "../../../../../common/interfaces/event.interface"
 import { UserStatuses } from "../../../../../common/interfaces/User.interface"
 import { EmojiPicker } from "../../components/EmojiPicker"
-import { DisconnectModal } from "./DisconnectModal"
 import { useNavigate } from "react-router-dom"
 import { BackToHomeButton } from "../../components/BackToHomeButton"
 import { Icon } from "@iconify/react/dist/iconify.js"
+import { DisconnectModal } from "../../components/features/room/DisconnectModal"
 
 export function RoomPage() {
   const {room } = useAppStore()
