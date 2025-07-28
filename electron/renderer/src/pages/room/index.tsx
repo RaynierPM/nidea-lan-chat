@@ -20,6 +20,7 @@ export function RoomPage() {
   const [autoScrollOnMsg, setAutoScrollOnMsg] = useState(true)
   const scrollRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const textaeraDebounceRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const navigate = useNavigate()
 
   // Helper to update a participant's status in the room
@@ -93,6 +94,12 @@ export function RoomPage() {
     const end = textarea.selectionEnd
     const newValue = content.slice(0, start) + emoji + content.slice(end)
     setContent(newValue)
+    clearTimeout(textaeraDebounceRef.current)
+    textaeraDebounceRef.current = setTimeout(() => {
+        textareaRef.current?.focus()
+      },
+      500
+    )
   }
 
   function handleMessageScroll(e: React.UIEvent<HTMLDivElement>) {

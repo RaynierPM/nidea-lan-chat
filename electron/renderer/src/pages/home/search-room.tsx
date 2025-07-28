@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ValidationError } from "../../../../../client/errors/core.error"
 import { ConnectionInfo } from "../../../../../common/interfaces/Chat.interface"
 import { useLoading } from "../../hooks/useLoading"
@@ -39,6 +39,7 @@ export function SearchRoomsPage() {
   }
 
   function handleSearch() {
+    if (searchingRooms) return
     clearRooms()
     resetPasswordInput()
     searchRooms(window.core.searchRooms)
@@ -84,6 +85,10 @@ export function SearchRoomsPage() {
       // error handled by useLoading
     }
   }
+
+  useEffect(() => {
+    handleSearch()
+  }, [])
 
   if (connecting) {
     return <h2 className="text-2xl font-bold text-center mt-10 text-indigo-600">Connecting...</h2>
