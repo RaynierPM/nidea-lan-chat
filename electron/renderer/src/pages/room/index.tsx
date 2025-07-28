@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom"
 import { BackToHomeButton } from "../../components/BackToHomeButton"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { DisconnectModal } from "../../components/features/room/DisconnectModal"
+import { PopOver } from "../../components/common/pop-over"
 
 export function RoomPage() {
   const {room } = useAppStore()
@@ -92,11 +93,6 @@ export function RoomPage() {
     const end = textarea.selectionEnd
     const newValue = content.slice(0, start) + emoji + content.slice(end)
     setContent(newValue)
-    // Do NOT close the emoji picker here
-    setTimeout(() => {
-      textarea.focus()
-      textarea.selectionStart = textarea.selectionEnd = start + emoji.length
-    }, 0)
   }
 
   function handleMessageScroll(e: React.UIEvent<HTMLDivElement>) {
@@ -149,15 +145,25 @@ export function RoomPage() {
               sendMessage()
             }}
           >
-            <button
-              type="button"
-              className="text-2xl px-2 py-1 rounded hover:bg-indigo-100 focus:outline-none"
-              onClick={() => setShowEmojiPicker(v => !v)}
-              tabIndex={-1}
-              title="Show emoji picker"
+            <PopOver
+              triggerElement={
+                <button
+                  type="button"
+                  className="text-2xl px-2 py-1 rounded hover:bg-indigo-100 focus:outline-none"
+                  onClick={() => setShowEmojiPicker(v => !v)}
+                  tabIndex={-1}
+                  title="Show emoji picker"
+                >
+                  😊
+                </button>
+              }
+              position="top"
+              isOpen={showEmojiPicker}
+              onOpenChange={setShowEmojiPicker}
+              className="min-w-[400px]"
             >
-              😊
-            </button>
+              <EmojiPicker onSelect={handleEmojiSelect} className="max-h-[250px] overflow-y-auto" />
+            </PopOver>
             <textarea
               ref={textareaRef}
               className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none min-h-[40px] max-h-40"
@@ -173,7 +179,6 @@ export function RoomPage() {
               title="Send (Enter)"
             >Send &gt;</button>
           </form>
-          {showEmojiPicker && <EmojiPicker onSelect={handleEmojiSelect} />}
         </div>
         <UsersInRoom />
       </div>
