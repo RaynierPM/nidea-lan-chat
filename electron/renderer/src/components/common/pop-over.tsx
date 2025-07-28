@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { cn } from "../../utils/cn.util";
 
 type PopOverProps = {
@@ -27,11 +27,35 @@ export function PopOver({
   triggerElement
 }: PopOverProps) {
   const positionClass = positionClasses[position] || positionClasses.bottom;
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const popoverElement = document.querySelector('#popover-container');
+      if (popoverElement && !popoverElement.contains(event.target as Node)) {
+        onOpenChange?.(false);
+      }
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        onOpenChange?.(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [])
   
   return (
-    <div className={[
-      "relative",
-    ].join(" ")}>
+    <div 
+      className="relative"
+      id="popover-container"
+    >
       <div 
         onClick={() => {onOpenChange?.(!isOpen)}}
         onKeyDown={(e) => {

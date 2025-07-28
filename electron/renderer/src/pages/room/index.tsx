@@ -93,12 +93,15 @@ export function RoomPage() {
     const start = textarea.selectionStart
     const end = textarea.selectionEnd
     const newValue = content.slice(0, start) + emoji + content.slice(end)
+    const newCursorPos = start + emoji.length
     setContent(newValue)
     clearTimeout(textaeraDebounceRef.current)
     textaeraDebounceRef.current = setTimeout(() => {
-        textareaRef.current?.focus()
+      textareaRef.current?.focus()
+      textarea.selectionStart = newCursorPos
+      textarea.selectionEnd = newCursorPos
       },
-      500
+      0
     )
   }
 
