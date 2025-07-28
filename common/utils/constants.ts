@@ -1,0 +1,4 @@
+export enum Limits {
+  MAX_MESSAGE_LENGTH = 1500, 
+  GLOBAL_MESSAGE_LIMIT = 400,
+}

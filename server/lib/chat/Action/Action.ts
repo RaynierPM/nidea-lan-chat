@@ -24,6 +24,14 @@ export abstract class ActionBase implements ActionI {
 
   abstract handle(socket:SocketWithId, room: Room): void 
 
+  validate(): boolean {
+    return true
+  }
+
+  /**
+   * Serializes the action to a JSON string.
+   * @returns {string} The serialized action.
+   */
   toJson() {
     return JSON.stringify({
       type: this.type,
