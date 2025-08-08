@@ -115,6 +115,13 @@ export function RoomPage() {
     }
   }
 
+  function handleLeave() {
+    if (room?.id) {
+      window.core.leave(room.id)
+      navigate("/", { replace: true })
+    }
+  }
+
   return (
     <div>
       <DisconnectModal
@@ -127,7 +134,18 @@ export function RoomPage() {
       />
       <div className="flex flex-col md:flex-row items-center justify-center min-h-screen gap-6" style={{background: 'none'}}>
         <div className="card w-full max-w-2xl flex flex-col h-[80vh]">
-          <BackToHomeButton className="mb-2" />
+          <div className="flex justify-between items-center mb-2">
+            <BackToHomeButton className="mb-0" />
+            <button
+              className="px-4 py-2 rounded-lg bg-red-100 text-red-700 font-semibold hover:bg-red-200 transition flex items-center gap-2"
+              onClick={handleLeave}
+              type="button"
+              title="Leave Room"
+            >
+              <Icon icon="mdi:exit-to-app" className="w-4 h-4 inline-block" />
+              Leave Room
+            </button>
+          </div>
           <div className="mb-2">
             <h2 className="text-xl font-bold text-indigo-700">Room: {room?.roomName || "Loading..."}</h2>
             <h3 className="text-md text-gray-600">Chat: {room?.name || "Loading..."}</h3>

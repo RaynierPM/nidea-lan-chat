@@ -13,7 +13,7 @@ contextBridge.exposeInMainWorld('core', {
   getRoom: () => ipcRenderer.invoke("action:getHistory"),
   sendMessage: (payload:MessageActionPayload) => ipcRenderer.invoke("action:message", payload),
   disconnect: () => ipcRenderer.invoke("disconnect"),
-  leave: (chatId: number) => ipcRenderer.invoke("action:leave", {chatId}),
+  leave: (chatId: number) => ipcRenderer.invoke("action:leave", chatId),
   // on: (type:EventActionTypes, callback: (event: Event) => void) => ipcRenderer.on(type, (_, event) => callback(event)),
   on: (type: EventActionTypes | "*", callback: (event: Event) => void) => {
     const wrappedCb = (_, event) => callback(event)

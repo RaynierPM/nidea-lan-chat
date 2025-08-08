@@ -3,9 +3,10 @@ import { ActionBase } from "../Action";
 import { ActionMetadataI } from "../Action.interface";
 import { Room } from "../../Room";
 import { SocketWithId } from "../../../interfaces/socket.interface";
+import { ValidationError } from "../../../../../client/errors/core.error";
 
 export type AbandonActionPayload = {
-  chatId: number
+  chatId?: number
 }
 
 export class AbanadonAction extends ActionBase {
@@ -24,14 +25,18 @@ export class AbanadonAction extends ActionBase {
 
   handle(socket: SocketWithId, room: Room): void {
     // @@ Replace by valid error
+
     const { chatId } = this._payload
-    const userId = room.getParticipantBySocket(socket)?.id
-    if (userId) {
-      if (room.id === chatId) room.removeParticipant(userId)
+    const user = room.getParticipantBySocket(socket)
+    if (user) {
+      if (room.id === chatId || !chatId) {
+        room.removeParticipant(user.id)
+      }
       else {
         const chat = room.findChat(chatId)
+        if (!chat) throw new ValidationError("Chat not found")
         if (chat) {
-          chat.removeParticipant(userId)
+          chat.removeParticipant(user.id)
         }
       }
     }
