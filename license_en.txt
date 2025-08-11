@@ -1,0 +1,59 @@
+NIDEA LAN CHAT - END USER LICENSE AGREEMENT
+
+This End User License Agreement ("EULA") is a legal agreement between you (either an individual or a single entity) and the developers of Nidea LAN Chat ("Software") for the software product identified above, which includes computer software and may include associated media, printed materials, and "online" or electronic documentation ("Software Product").
+
+BY INSTALLING, COPYING, OR OTHERWISE USING THE SOFTWARE PRODUCT, YOU AGREE TO BE BOUND BY THE TERMS OF THIS EULA. IF YOU DO NOT AGREE TO THE TERMS OF THIS EULA, DO NOT INSTALL OR USE THE SOFTWARE PRODUCT.
+
+1. GRANT OF LICENSE
+Subject to the terms and conditions of this EULA, you are hereby granted a non-exclusive, non-transferable license to use the Software Product for personal or commercial purposes.
+
+2. COPYRIGHT
+All title and copyrights in and to the Software Product and any copies thereof are owned by the developers of Nidea LAN Chat. The Software Product is protected by copyright laws and international treaty provisions.
+
+3. RESTRICTIONS
+You may not:
+   a) Rent, lease, or lend the Software Product
+   b) Reverse engineer, decompile, or disassemble the Software Product
+   c) Create derivative works based on the Software Product
+   d) Remove or modify any proprietary notices or labels on the Software Product
+   e) Use the Software Product for any illegal or unauthorized purpose
+
+4. NETWORK FEATURES
+The Software Product includes features that allow you to communicate over local area networks. You are responsible for:
+   a) Ensuring compliance with all applicable laws and regulations
+   b) Respecting the privacy and rights of other users
+   c) Not using the software for harassment, spam, or malicious activities
+   d) Complying with your organization's network policies
+
+5. PRIVACY AND DATA
+The Software Product operates on local networks and does not transmit data to external servers. However:
+   a) Messages and communications are transmitted over your local network
+   b) You are responsible for the content of your communications
+   c) The software may store local configuration and chat history
+   d) No personal data is collected or transmitted to external services
+
+6. DISCLAIMER OF WARRANTIES
+THE SOFTWARE PRODUCT IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE PRODUCT IS WITH YOU.
+
+7. LIMITATION OF LIABILITY
+IN NO EVENT SHALL THE DEVELOPERS OF NIDEA LAN CHAT BE LIABLE FOR ANY SPECIAL, INCIDENTAL, INDIRECT, OR CONSEQUENTIAL DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION, LOSS OF BUSINESS INFORMATION, OR ANY OTHER PECUNIARY LOSS) ARISING OUT OF THE USE OF OR INABILITY TO USE THE SOFTWARE PRODUCT.
+
+8. TERMINATION
+This license terminates automatically if you fail to comply with the limitations described in this EULA. On termination, you must destroy all copies of the Software Product.
+
+9. GOVERNING LAW
+This EULA shall be governed by the laws of the jurisdiction in which you reside, without regard to conflict of law principles.
+
+10. ENTIRE AGREEMENT
+This EULA constitutes the entire agreement between you and the developers of Nidea LAN Chat concerning the Software Product and supersedes all prior or contemporaneous oral or written communications, proposals, and representations with respect to the Software Product or any other subject matter covered by this EULA.
+
+11. OPEN SOURCE COMPONENTS
+This Software Product may include open source components. The licenses for these components are available in the software documentation or source code repository.
+
+12. UPDATES AND MODIFICATIONS
+The developers of Nidea LAN Chat reserve the right to modify this EULA at any time. Continued use of the Software Product after such modifications constitutes acceptance of the updated terms.
+
+For questions regarding this license, please contact the developers through the project repository.
+
+Version: 1.0
+Last Updated: August 2024 
