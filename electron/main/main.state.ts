@@ -14,6 +14,7 @@ import { AbanadonAction } from "../../server/lib/chat/Action/variants/AbandonAct
 import { GetHistoryAction } from "../../server/lib/chat/Action/variants/GetHistory";
 import { EventActionTypes } from "../../common/interfaces/event.interface";
 import { MessageEventPayload } from "../../common/lib/Event/variants/MessageEvent";
+import { createWindow } from "./global.functions";
 
 export class MainState {
 
@@ -40,7 +41,9 @@ export class MainState {
 
   private _roomScanner: RoomScanner = new RoomScanner()
   
-  private constructor() {}
+  private constructor() {
+    this.loadWindowEvents()
+  }
 
   private _searching = false
   
@@ -122,16 +125,25 @@ export class MainState {
   setWindow(window: BrowserWindow) {
     this._window = window
     this.redirectEvents(window.webContents)
-    this.loadWindowEvents()
-    this._socketManager.onDisconnect(() => {
-      window.webContents.send('disconnect')
+    window.on("close", () => {
+      this._window = null
     })
   }
 
   redirectEvents(wb: WebContents) {
     this._socketManager.on("*", (event) => {
-      wb.send(event.type, event)
+      if (!wb.isDestroyed()) {
+        wb.send(event.type, event)
+      }
     })
+  }
+
+  showWindow() {
+    if (!this._window) {
+      createWindow()
+    } else {
+      this._window.focus()
+    }
   }
 
   private _lastNotificationTime: number = 0;
@@ -142,13 +154,19 @@ export class MainState {
       if (!this._window?.isFocused()) {
         const now = Date.now();
         if (now - this._lastNotificationTime > 5e3) {
-          new Notification({
+          const notification = new Notification({
+            closeButtonText: "awacate",
             title: "New message!",
-            body: content
-          }).show();
+            body: content,
+          });
+          notification.on("click", () => {
+            this.showWindow()
+          })
+          notification.show()
           this._lastNotificationTime = now;
         }
       }
     })
   }
+
 }

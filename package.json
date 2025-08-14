@@ -65,6 +65,7 @@
       "build": {
       "appId": "com.nidea.lan.chat",
       "productName": "Nidea LAN Chat",
+      "icon": "assets/icon",
       "copyright": "Copyright © 2025 RaynierPM",
       "directories": {
         "output": "dist"

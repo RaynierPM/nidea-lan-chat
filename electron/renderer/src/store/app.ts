@@ -11,7 +11,8 @@ type AppStore = {
   setUser: (username: UserI) => void,
   addMessage: (message: MessageI, roomId?: number) => void,
   addParticipant: (participant: ParticipantInfo) => void,
-  removeParticipant: (userId: UserI['id']) => void
+  removeParticipant: (userId: UserI['id']) => void,
+  updateParticipant: (userId: UserI['id'], participant: Partial<UserI & ParticipantInfo>) => void
 }
 
 export const useAppStore = create<AppStore>((set, get) => ({
@@ -25,16 +26,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
   setUser: (user: UserI) => {
     set(() => ({
       user: user,
-    }))
-  },
-  addParticipant: (participant: ParticipantInfo) => {
-    const room = get().room
-    if (!room) throw new ValidationError("Not allowed action")
-    set((state) => ({
-      room: {
-        ...state.room!,
-        participants: [...state.room!.participants, participant],
-      },
     }))
   },
   addMessage: (message: MessageI, roomId?: number) => {
@@ -60,5 +51,26 @@ export const useAppStore = create<AppStore>((set, get) => ({
         participants: state.room!.participants.filter(part => part.id !== userId),
       },
     }))
-  }
+  },
+   addParticipant: (participant: ParticipantInfo) => {
+    const room = get().room
+    if (!room) throw new ValidationError("Not allowed action")
+    set((state) => ({
+      room: {
+        ...state.room!,
+        participants: [...state.room!.participants, participant],
+      },
+    }))
+  },
+  updateParticipant(userId, participant) {
+    if (!get().room) return
+    set((state) => ({
+      room: {
+        ...state.room!,
+        participants: state.room!.participants.map(p =>
+          p.id === userId ? { ...p, ...participant } : p
+        )
+      }
+    }))
+  },
 }))

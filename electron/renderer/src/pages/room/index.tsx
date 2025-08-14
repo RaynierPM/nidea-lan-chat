@@ -8,7 +8,6 @@ import { EmojiPicker } from "../../components/EmojiPicker"
 import { useNavigate } from "react-router-dom"
 import { BackToHomeButton } from "../../components/BackToHomeButton"
 import { Icon } from "@iconify/react/dist/iconify.js"
-import { DisconnectModal } from "../../components/features/room/DisconnectModal"
 import { PopOver } from "../../components/common/pop-over"
 
 export function RoomPage() {
@@ -16,7 +15,6 @@ export function RoomPage() {
   const setRoom = useAppStore(state => state.setRoom)
   const [content, setContent] = useState("")
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
-  const [disconnected, setDisconnected] = useState(false)
   const [autoScrollOnMsg, setAutoScrollOnMsg] = useState(true)
   const scrollRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -47,14 +45,6 @@ export function RoomPage() {
       cleanDisconnect && cleanDisconnect()
     }
   }, [room])
-
-  useEffect(() => {
-    const cleanup = window.core.onDisconnect(() => {
-      setDisconnected(true)
-      setRoom(null)
-    })
-    return cleanup
-  }, [])
 
   function sendMessage() {
     if (!content.trim().length) return
@@ -124,14 +114,6 @@ export function RoomPage() {
 
   return (
     <div>
-      <DisconnectModal
-        open={disconnected}
-        onClose={() => {
-          setDisconnected(false)
-          navigate("/", { replace: true })
-        }}
-        message={"The server has been closed or you have been disconnected from the network."}
-      />
       <div className="flex flex-col md:flex-row items-center justify-center min-h-screen gap-6" style={{background: 'none'}}>
         <div className="card w-full max-w-2xl flex flex-col h-[80vh]">
           <div className="flex justify-between items-center mb-2">

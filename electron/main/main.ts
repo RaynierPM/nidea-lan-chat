@@ -1,34 +1,25 @@
-import {app, BrowserWindow, ipcMain } from 'electron/main'
-import {join, resolve} from 'node:path'
-import {is} from '@electron-toolkit/utils'
+import {app, Menu, MenuItem } from 'electron/main'
 import { loadHandlers } from './handler'
-import { MainState } from './main.state'
+import { configureTray, createWindow } from './global.functions'
 
-function createWindow() {
-  const win = new BrowserWindow({
-    width: 1000,
-    height: 800,
-    webPreferences: {
-      preload: resolve(__dirname, '../preload/main.mjs'),
-      sandbox: false,
-    },
-  })
-
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    win.loadURL(process.env['ELECTRON_RENDERER_URL'])
-  } else {
-    win.loadFile(join(__dirname, '../renderer/index.html'))
-  }
-
-  if (!app.isPackaged) {
-    win.webContents.openDevTools()
-  }
-
-  MainState.instance.setWindow(win)
-}
+app.setAppUserModelId("com.nidea.chat")
 
 app.whenReady()
 .then(() => {
-  loadHandlers(ipcMain)
+  loadHandlers()
   createWindow()
+  configureTray()
 })
+
+app.on("window-all-closed", () => {})
+
+const menu = new Menu()
+menu.append(new MenuItem({
+  toolTip: "Quit this super menu",
+  id: "quit-button",
+  label: "Quit",
+  click() {
+    app.quit()
+  }
+}))
+Menu.setApplicationMenu(menu)

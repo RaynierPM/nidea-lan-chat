@@ -1,10 +1,11 @@
+import { ipcMain as IpcMain } from "electron/main"
 import { ConnectPayload, InitPayload, InitServerPayload } from "."
 import { FakeUsernameUtil } from "../../client/utils/usernameFaker"
 import { UserI } from "../../common/interfaces/User.interface"
 import { MessageActionPayload } from "../../server/lib/chat/Action/variants/MessageAction"
 import { MainState } from "./main.state"
 
-export function loadHandlers(IpcMain: Electron.IpcMain) {
+export function loadHandlers() {
   IpcMain.handle("init", (_, {username}:InitPayload): UserI => {
     return MainState.instance.auth(username || FakeUsernameUtil.generate())
   })
@@ -20,9 +21,6 @@ export function loadHandlers(IpcMain: Electron.IpcMain) {
   IpcMain.handle("get:user", async ():Promise<UserI | null> => {
     return MainState.instance.user
   })
-  IpcMain.handle("disconnect", async ():Promise<void> => {
-    await MainState.instance.disconnect()
-  }) 
   // Actions
   IpcMain.handle("action:message", (_, {content, chatId}:MessageActionPayload) => {
     MainState.instance.sendMessage({content, chatId})

@@ -15,7 +15,6 @@ declare global {
       connectRoom: ({host, port, password}:{host: string, port?: number, password?: string}) => Promise<void>,
       createServer: (payload: InitServerPayload) => Promise<boolean>,
       sendMessage: (payload: MessageActionPayload) => Promise<void>,
-      disconnect: () => Promise<void>,
       leave:(chatId: number) => Promise<void>,
       on: (type: EventActionTypes, cb: (payload) => void) => () => void,
       onDisconnect: (cb: () => void) => () => void,

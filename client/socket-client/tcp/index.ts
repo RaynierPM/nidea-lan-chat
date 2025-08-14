@@ -23,7 +23,6 @@ export class SocketManager {
     return new Promise<void>((res, rej) => {
       if (this.isConnected) rej(alreadyConnectedError)
       
-      console.log("Trying to connect to: ", addr, port)
       this.connection = createConnection(port, addr, () => {
         this.emit(new JoinAction(payload))
         this._connectCallbacks.forEach(cb => {
@@ -58,6 +57,11 @@ export class SocketManager {
 
   onDisconnect(callback: () => void) {
     this._disconnectCallbacks.push(callback)
+  }
+
+  removeDisconnect(cbToRemove: () => void) {
+    this._disconnectCallbacks = this._disconnectCallbacks
+    .filter(cb => cb === cbToRemove)
   }
 
   emit(action: ActionBase) {
