@@ -125,9 +125,6 @@ export class MainState {
   setWindow(window: BrowserWindow) {
     this._window = window
     this.redirectEvents(window.webContents)
-    window.on("close", () => {
-      this._window = null
-    })
   }
 
   redirectEvents(wb: WebContents) {
@@ -141,8 +138,16 @@ export class MainState {
   showWindow() {
     if (!this._window) {
       createWindow()
-    } else {
-      this._window.focus()
+    } 
+
+    if (!this._window?.isVisible()) this._window?.show() 
+    
+    this._window?.focus()
+  }
+
+  destroyWindow() {
+    if (this._window) {
+      this._window.destroy()
     }
   }
 

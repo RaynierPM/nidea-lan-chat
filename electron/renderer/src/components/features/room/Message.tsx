@@ -1,6 +1,7 @@
-import { MessageI } from "../../../../../common/interfaces/message.interface";
-import { useAppStore } from "../../store/app";
+import { MessageI } from "../../../../../../common/interfaces/message.interface";
+import { useAppStore } from "../../../store/app";
 import { marked } from "marked";
+import { cn } from "../../../utils/cn.util";
 
 type MessageProps = {
   message: MessageI
@@ -46,14 +47,16 @@ if (typeof window !== 'undefined' && !document.getElementById('markdown-compact-
 }
 
 export function Message({message}:MessageProps) {
+  const { getParticipant } = useAppStore()
   const isSystem = !message.userId
-  const author = useAppStore(state => state.room)
-    ?.participants
-    .find(part => part.id === message.userId)
+  const author = getParticipant(message.userId!)
   const isMee = useAppStore(state => state.user)?.id === author?.id 
   return (
     <div className={isMee ? "bubble-me" : "bubble-other"}>
-      <span className="font-semibold mr-2">{isSystem? "System" : isMee? "Me" : author?.username}:</span>
+      <span className={cn(
+        "font-semibold mr-2",
+        !isSystem && !author?.username? "text-red-☺700" : ""
+      )}>{isSystem? "System" : isMee? "Me" : author?.username ?? "Unknown"}:</span>
       <span
         className="markdown-compact"
         style={{whiteSpace: 'pre-line'}}

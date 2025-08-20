@@ -1,4 +1,4 @@
-import { useAppStore } from "../../store/app"
+import { useAppStore } from "../../../store/app"
 import { useState } from "react"
 
 const statusColors = {

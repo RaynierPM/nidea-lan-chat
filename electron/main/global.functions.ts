@@ -23,6 +23,7 @@ export function configureTray() {
       label: "Quit",
       type: "normal",
       click() {
+        MainState.instance.destroyWindow()
         app.quit()
       }
     }
@@ -55,6 +56,16 @@ export function createWindow() {
   if (!app.isPackaged) {
     win.webContents.openDevTools()
   }
+
+  win.on("show", () => {
+    win.setSkipTaskbar(false)
+  })
+
+  win.on("close", e => {
+    e.preventDefault()
+    win.setSkipTaskbar(true)
+    win.hide()
+  })
 
   MainState.instance.setWindow(win)
 }

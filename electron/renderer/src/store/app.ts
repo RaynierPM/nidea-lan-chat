@@ -12,7 +12,8 @@ type AppStore = {
   addMessage: (message: MessageI, roomId?: number) => void,
   addParticipant: (participant: ParticipantInfo) => void,
   removeParticipant: (userId: UserI['id']) => void,
-  updateParticipant: (userId: UserI['id'], participant: Partial<UserI & ParticipantInfo>) => void
+  updateParticipant: (userId: UserI['id'], participant: Partial<UserI & ParticipantInfo>) => void,
+  getParticipant: (userId: UserI["id"])=> (UserI & ParticipantInfo) | undefined
 }
 
 export const useAppStore = create<AppStore>((set, get) => ({
@@ -73,4 +74,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
       }
     }))
   },
+  getParticipant(userId) {
+    return get()?.room?.participants.find(user => user.id === userId)
+  }
 }))
