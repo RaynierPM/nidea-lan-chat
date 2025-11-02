@@ -29,6 +29,8 @@ export function loadHandlers() {
     MainState.instance.leaveChat(chatId)
   })
   IpcMain.handle("action:getHistory", () => {
-    MainState.instance.getHistory()
+    if (MainState.instance.isConnected) {
+      MainState.instance.getHistory()
+    }
   })
 }

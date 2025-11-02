@@ -31,6 +31,7 @@ export class JoinAction extends ActionBase {
 
   handle(socket: SocketWithId, room: Room): void {
     const {userId, username} = this._payload
+    console.log({userId, username})
     if (room.withPassword) {
       const isValid = room.verifyPassword(this._payload.password)
       if (!isValid) {

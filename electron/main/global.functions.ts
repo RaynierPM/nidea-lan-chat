@@ -6,6 +6,7 @@ import { join, resolve } from "path"
 import { MainState } from "./main.state"
 
 const isWindows = process.platform === "win32"
+const isLinux = process.platform === "linux"
 const iconPath = join(__dirname, "..", "..", "assets", isWindows? "icon.ico" : "icon.png")
 export const icon = nativeImage.createFromPath(iconPath)
 
@@ -16,7 +17,7 @@ export function configureTray() {
       label: "Open", 
       type: "normal", 
       click() {
-        createWindow()
+        MainState.instance.showWindow()
       }
     },
     {
@@ -33,6 +34,17 @@ export function configureTray() {
   tray.on("double-click", () => {
     MainState.instance.showWindow()
   })
+
+  tray.on("click", () => {
+    if (!isLinux) {
+      tray.popUpContextMenu()
+    }
+
+    if (isLinux) {
+      MainState.instance.showWindow()
+    }
+  })
+
   return tray
 }
 

@@ -78,6 +78,7 @@ export class SocketManager {
 
   private handleConnection(socket: SocketWithId) {
     const scId = this.getSocketIdentifier(socket)
+    console.log({socket, scId})
     if (scId) this.connections[scId] = socket
 
     const participant = this.room?.participants
