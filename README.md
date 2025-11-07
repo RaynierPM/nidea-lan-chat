@@ -106,6 +106,14 @@ nidea-lan-chat/
 ├── server/          # Chat server
 └── dist/            # Build output (generated)
 ```
+## Images
+
+![Main page image](https://raw.githubusercontent.com/RaynierPM/nidea-lan-chat/refs/heads/main/readme-images/nidea-lan-chat-main-page.png)
+
+![Search rooms](https://raw.githubusercontent.com/RaynierPM/nidea-lan-chat/refs/heads/main/readme-images/nidea-lan-chat.png)
+
+![Chat room](https://raw.githubusercontent.com/RaynierPM/nidea-lan-chat/refs/heads/main/readme-images/nidea-lan-chat-room.png)
+
 
 ## License
 
