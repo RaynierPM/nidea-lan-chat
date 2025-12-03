@@ -89,7 +89,6 @@ export function RootLayout() {
 
   useEffect(() => {
     const cleanup = window.core.onDisconnect(() => {
-      console.log({disconnected})
       setDisconnected(true)
       setRoom(null)
     })

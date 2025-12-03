@@ -18,7 +18,6 @@ export class RoomExposer {
 
     this.socket = createSocket({
       type: 'udp4', 
-      reusePort: true,
       signal: this.abortController.signal,
     })
     
