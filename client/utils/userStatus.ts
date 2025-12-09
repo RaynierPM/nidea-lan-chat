@@ -7,6 +7,8 @@ export function getStatusText(status: UserStatuses) {
       return styleText("greenBright", "Active")
     case UserStatuses.DISCONNECTED:
       return styleText("blackBright", "Disconnected")
+    case UserStatuses.TYPING:
+      return styleText("blue", "Typing")
     case UserStatuses.INACTIVE:
       return styleText("yellow", "Iddle")
     default:

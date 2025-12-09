@@ -9,6 +9,7 @@ import { DisconnectEvent } from "../../../common/lib/Event/variants/Disconnect.e
 import { EventBase } from "../../../common/lib/Event/Event";
 import { AbandonEvent } from "../../../common/lib/Event/variants/Abandon.event";
 import { ChatInfo } from "../../../common/interfaces/Chat.interface";
+import { TimestampUtils } from "../../../common/utils/timestamp";
 
 export class Chat {
   private _id: number;
@@ -94,11 +95,11 @@ export class Chat {
   removeParticipant(userId: string) {
     const participant = this.participants.find(part => part.id === userId)
     if (participant) {
-      this._participants = this._participants.filter(u => u.id !== userId)
       participant.notify(new MessageEvent({
         content: "**You** abandoned chat.",
         roomId: this._id
       }))
+      participant.leavedAt = TimestampUtils.getTimestampFrom()
       this.addMessage(new Message(null, `<font color="#432dd7">**${participant.username}**</font> has abandoned this chat.`))
       this.notifyAll(new AbandonEvent({userId}))
     }

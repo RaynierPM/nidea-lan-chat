@@ -41,6 +41,15 @@ export class Participant implements UserI {
   get timestamp() {
     return this._timestamp
   }
+
+  private _leavedAt: number | null = null;
+  get leavedAt(): number | null {
+    return this._leavedAt
+  }
+
+  set leavedAt(timestamp: number) {
+    this._leavedAt = timestamp
+  }
   
   constructor(id: string, username: string, socket: SocketWithId) {
     this._id = id
